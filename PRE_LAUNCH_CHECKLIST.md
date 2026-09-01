@@ -1,5 +1,5 @@
-# PRE-LAUNCH CHECKLIST - WITP:AE Player Help Utility
-> Must be cleared before launch. Updated 2026-09-01
+# PRE-LAUNCH CHECKLIST - WITP:AE Player Help Utility - v0.01 BASELINE
+> Must be cleared before launch. Updated 2026-09-01 | Version: 0.01 (only user bumps) | Baseline: `docs/DEVELOPMENT_BASELINE.md:1`
 
 ## BLOCKED / AWAITING INPUT
 - [ ] **1. Turn Result Files** - User to provide specific file list + sample folder structure (combatReport.txt, operationsReport.txt, sigint etc.) - *status: AWAITING USER*
@@ -18,6 +18,12 @@
 - [ ] Define "battlefield awareness" metrics (e.g., enemy TF movements, airframe losses, base build-up)
 - [ ] Define "intent deduction" heuristics (e.g., mass shipping at X -> invasion likely)
 
+## BASELINE RULES (LOCKED - v0.01)
+- [x] **Versioning:** Start 0.01, only user triggers bump (`VERSION:1`)
+- [x] **Documentation:** Vigorous - every file/func/class documented (see `docs/DEVELOPMENT_BASELINE.md:1`)
+- [x] **Version Control:** Every code change versioned, tagged `v0.01`
+
 ## NOTES
 - Do not launch without clearing BLOCKED items above.
 - User explicitly allows skipping WITP:AE folder check during testing.
+- All docs/commits reference `v0.01` until user says increase.
