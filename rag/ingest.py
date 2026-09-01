@@ -13,8 +13,8 @@ DOCS_DIR = Path(__file__).parent.parent / "docs" / "rag"
 DB_PATH = Path(__file__).parent.parent / "chroma_db"
 COLLECTION_NAME = "code_rag"
 EMBED_MODEL = "all-MiniLM-L6-v2"  # free, local, 384 dims, unlimited. Alternative: nomic-embed-text via Ollama
-CHUNK_SIZE = 800
-CHUNK_OVERLAP = 100
+CHUNK_SIZE = 1200
+CHUNK_OVERLAP = 200
 
 def chunk_markdown(text, size=CHUNK_SIZE, overlap=CHUNK_OVERLAP):
     # Simple header-aware chunking: split by ## then by size
@@ -55,23 +55,38 @@ def main():
         pass
     collection = client.get_or_create_collection(name=COLLECTION_NAME, embedding_function=ef)
 
-    md_files = list(DOCS_DIR.glob("*.md"))
+    # Support .md and .txt, recursive (docs/rag/witp-ae/*.md)
+    md_files = list(DOCS_DIR.glob("*.md")) + list(DOCS_DIR.glob("**/*.md")) + list(DOCS_DIR.glob("**/*.txt"))
+    # dedupe
+    md_files = sorted(set(md_files))
     if not md_files:
         print("No .md files found")
         return
 
     total = 0
+    BATCH = 64
     for md in md_files:
-        text = md.read_text(encoding="utf-8")
+        # Skip huge files > 5MB to avoid OOM (the .md export with images is 41MB)
+        if md.stat().st_size > 5_000_000:
+            print(f"Skipping {md.name}: {md.stat().st_size} bytes > 5MB")
+            continue
+        try:
+            text = md.read_text(encoding="utf-8")
+        except:
+            text = md.read_text(encoding="utf-8", errors="ignore")
+        # strip BOM
+        if text and text[0] == "\ufeff":
+            text = text[1:]
         chunks = chunk_markdown(text)
-        print(f"{md.name}: {len(chunks)} chunks")
-        for idx, chunk in enumerate(chunks):
-            collection.add(
-                ids=[f"{md.stem}_{idx}"],
-                documents=[chunk],
-                metadatas=[{"source": str(md.name), "chunk": idx}]
-            )
-            total += 1
+        print(f"{md.name}: {len(chunks)} chunks ({md.stat().st_size} bytes)")
+        # Batch add for speed + progress
+        for i in range(0, len(chunks), BATCH):
+            batch_chunks = chunks[i:i+BATCH]
+            batch_ids = [f"{md.stem}_{j}" for j in range(i, i+len(batch_chunks))]
+            batch_metas = [{"source": str(md.name), "chunk": j} for j in range(i, i+len(batch_chunks))]
+            collection.add(ids=batch_ids, documents=batch_chunks, metadatas=batch_metas)
+            total += len(batch_chunks)
+            print(f"  -> {total} total, batch {i//BATCH+1}/{(len(chunks)+BATCH-1)//BATCH}")
 
     print(f"Done. Total chunks: {total}")
     print(f"Test query:")
