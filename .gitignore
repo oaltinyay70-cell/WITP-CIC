@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+
+# ChromaDB - keep structure but ignore binary data (optional - uncomment to ignore)
+# chroma_db/
+*.sqlite3
+*.bin
+
+# But keep docs/rag source
+!docs/rag/
+
+# OS
+Thumbs.db
+.DS_Store
+*.log
+
+# Installer / exe
+*.exe
+*.msi
+*.spec
+
+# IDE
+.vscode/
+.idea/
