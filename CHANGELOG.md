@@ -6,3 +6,4 @@ v0.01
 - Initial setup.
 - Added `__main__.py` entry point for executable target.
 - Added `scripts/build_exe.py` to compile using PyInstaller.
+- Created `DEVELOPMENT_BASELINE.md` with core project rules.
