@@ -1,0 +1,133 @@
+COMBAT EVENTS FOR 12/07/41
+
+Observers report object partially submerged in channel at Pearl Harbor
+Observers sight object in channel at Pearl Harbor
+Observers report activity in water at Pearl Harbor
+Observers report object partially submerged in channel at Pearl Harbor
+Observers sight object in channel at Pearl Harbor
+ADJUST TASK FORCE MISSIONS 
+CALCULATE RANGE TO ENEMY
+CALCULATE AIR SUPERIORITY
+Combat Events:
+NAVAL REACTION PHASE
+LOADING/UNLOADING TASK FORCES
+TASK FORCE LOADING/UNLOADING COMPLETE
+CALCULATING TASK FORCE PATHS
+MINESWEEPING OPERATIONS
+NAVAL MOVEMENT PHASE
+ADJUST SHIP FUEL
+AIR OPERATIONS PHASE : AM
+TF 420 detects Japanese Aircraft at 52,82 near Mersing
+TF 420 shadowed by Japanese Float Plane at 52,82 near Mersing
+AG Antares shadowed by Japanese Float Plane at 180,107 near Pearl Harbor
+DD Ward observes Japanese Float Plane at 180,107 near Pearl Harbor
+TF 417 sights Japanese Torpedo Bomber at 180,107 near Pearl Harbor
+CL Danae sights E13A1 Jake at 50,84 near Singapore
+SOC-1 Seagull reports oil slick at 168, 103 near French Frigate Shoal
+C.XI-W sighting report: 6 Japanese ships at 51,99 near Kalidjati, speed 16, Moving Northwest
+AIR STRIKES
+PC Reliance sinks....
+xAKL Manini sinks....
+No.700 Sqn  FAA S-1 planes diverting to Singapore
+AIRCRAFT LANDING
+DIVIDE CRIPPLED TFs
+AIR OPERATIONS PHASE : PM
+TF 42 detected by Japanese Aircraft at 52,82 near Mersing
+TF 42 sights Japanese Float Plane at 52,82 near Mersing
+SOC-1 Seagull sighting report: 4 Japanese ships at 151,145 near Sydney Island, speed 19, Moving East
+PBY-5 Catalina sighting report: Japanese SS at 180,106 near Pearl Harbor   
+PBY-4 Catalina sighting report: Japanese AO at 158,91 near Midway Island  , Moving Southeast 
+PBY-4 Catalina sighting report: 2 Japanese ships at 158,91 near Midway Island  , Moving Southeast
+PBY-5 Catalina sighting report: 4 Japanese ships at 178,96 near Lihue  , Moving Southeast
+PBY-4 Catalina sighting report: 9 Japanese ships at 85,70 near Batan Island  , Moving East
+PBY-4 Catalina sighting report: 3 Japanese ships at 85,70 near Batan Island  , Moving East
+PBY-4 Catalina sighting report: 6 Japanese ships at 83,65 near Takao  , Moving Southwest
+PBY-4 Catalina sighting report: 2 Japanese ships at 83,65 near Takao  , Moving Southwest
+PBY-4 Catalina sighting report: 2 Japanese ships at 85,84 near Catbalogan  , Moving Northwest
+PBY-4 Catalina sighting report: 6 Japanese ships at 83,65 near Takao  , Moving Southwest
+PBY-4 Catalina sighting report: 2 Japanese ships at 84,65 near Takao  , Moving Southwest
+Do-24K-1 sighting report: Japanese CA at 64,72 near Cam Ranh Bay  , Moving West 
+Do-24K-1 sighting report: 6 Japanese ships at 51,75 near Kota Bharu  , Moving Southwest
+Do-24K-1 sighting report: 2 Japanese ships at 90,96 near Babeldaob  , Moving West
+Catalina I sighting report: 10 Japanese ships at 51,75 near Kota Bharu  , Moving West
+Catalina I sighting report: 2 Japanese ships at 64,72 near Cam Ranh Bay  , Moving West
+Catalina I sighting report: Japanese DD at 51,72 near Singora  , Moving West 
+AIR STRIKES
+Training mission from 24th PG/20th PS caught up in attack
+No.700 Sqn FAA S-5 planes diverting to Singapore
+AIRCRAFT LANDING
+AIR TRANSPORT PHASE
+AIRCRAFT LANDING
+SURFACE COMBAT CHECK
+DIVIDE CRIPPLED TFs
+Japanese Ships Bombarding Midway Island
+Amphibious TF 85 offshore of Kota Bharu
+Amphibious TF 90 offshore of Batan Island
+Amphibious TF 96 offshore of Batan Island
+REPAIRING SHIPS
+END 12 HOUR PULSE
+DIVIDE CRIPPLED TFs
+CHECKING TF FUEL
+TF'S RETURN TO PORT
+Japanese forces CAPTURE Batan Island !!!
+RECALCULATING ZONES OF CONTROL
+SUPPLY REQUIREMENTS PHASE
+March Field expands fortifications to size 1
+Portland expands fortifications to size 1
+Ogden expands fortifications to size 1
+San Diego expands fortifications to size 1
+San Francisco expands fortifications to size 1
+Tacoma expands fortifications to size 1
+Juneau expands fortifications to size 1
+Kodiak expands fortifications to size 1
+Canton Island expands fortifications to size 1
+Johnston Island expands fortifications to size 1
+Cebu expands fortifications to size 1
+Suva expands fortifications to size 1
+Adelaide expands fortifications to size 1
+Brisbane expands fortifications to size 1
+Melbourne expands fortifications to size 1
+Newcastle expands fortifications to size 1
+Perth expands fortifications to size 1
+Hobart expands fortifications to size 1
+Auckland expands fortifications to size 1
+Christchurch expands fortifications to size 1
+Dunedin expands fortifications to size 1
+Wellington expands fortifications to size 1
+MOVING OIL AND RESOURCES
+PRODUCTION PHASE
+SUPPLY MOVEMENT PHASE
+CALCULATING SPOILAGE
+AIRCRAFT REPAIR PHASE
+AIRCRAFT SUPPLY PHASE
+UPGRADING SHIPS
+UPGRADING AIR UNITS
+UPGRADING LAND UNITS
+SUPPLY PHASE COMPLETE
+END OF DAY
+TRAINING SHIP CREWS
+DISBANDING HUMAN CONTROLLED TASK FORCES
+ADJUSTING AVIATION SUPPORT
+LAND UNIT REPLACEMENT PHASE
+AIR UNIT REPLACEMENT PHASE
+MERGING SUB UNITS
+SUB UNIT MERGE COMPLETE
+DIVIDE CRIPPLED TFs
+Low garrison leads to damage and 1 VP loss from partisan attack at Colombo (29, 48)!
+Low garrison leads to damage and 1 VP loss from partisan attack at Howrah (52, 36)!
+Low garrison leads to damage and 1 VP loss from partisan attack at Madurai (30, 42)!
+Low garrison leads to damage and 1 VP loss from partisan attack at Sholapur (36, 29)!
+LEADER REASSIGNMENT PHASE
+CA Minneapolis arrives at Pearl Harbor
+DMS Hovey arrives at Pearl Harbor
+DMS Boggs arrives at Pearl Harbor
+DMS Lamberton arrives at Pearl Harbor
+DMS Chandler arrives at Pearl Harbor
+xAP Maori arrives at Sydney
+TK Inge Maersk arrives at Colombo
+VS-1D13 arrives at Los Angeles
+144th Infantry Regiment arrives at Tacoma
+SEARCHING FOR ADJACENT ENEMY UNITS
+REASSIGNING TRANSPORT GROUPS
+No.100 Sqn RAF sub-groups COMBINING at Soerabaja
+No.21 Sqn RAAF sub-groups COMBINING at Singapore

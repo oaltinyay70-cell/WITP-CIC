@@ -1,0 +1,23 @@
+
+G INT REPORT FOR Dec 07, 41
+
+85th JAAF AF Coy  is located at Saigon(60,71).
+48th Field Artillery Regiment is located at Pescadores(84,63).
+21st Ind.Mixed Brigade is located at Hanoi(68,56).
+2nd Border Defense Fortress is located at 111,43.
+40th Division is located at Wuchang(84,51).
+9th Tank Regiment is located at Yenki(110,44).
+Radio transmissions detected at 135,124.
+4/20th Infantry Regiment is loaded on a Std-E Cargo class xAKL moving to Legaspi.
+Heavy Volume of Radio transmissions detected at Cam Ranh Bay (64,72).
+5th Field Artillery Regiment is located at Singora(51,72).
+Heavy Volume of Radio transmissions detected at Ominato (119,54).
+Radio transmissions detected at Taiyuan (91,40).
+Heavy Volume of Radio transmissions detected at Samah (69,63).
+32nd JAAF AF Coy  is located at Takao(84,65).
+55th Engineer Regiment is located at Battambang(58,65).
+9th Tank Regiment is located at Yenki(110,44).
+Heavy Volume of Radio transmissions detected at 90,96.
+116th Division is located at Anking(88,52).
+2nd Ind.Mixed Regiment is located at Shaohing(91,56).
+16th Ind.Mixed Brigade is located at Kaoping(89,42).
