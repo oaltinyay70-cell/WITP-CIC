@@ -1,5 +1,5 @@
 # WITP:AE CIC HELPER — SOFTWARE DESIGN DOCUMENT (SDD)
-**Version:** 1.0 (final, consolidated) · **Target platform:** macOS · **Stack:** Python 3.11+, Terminal/Console UI, SQLite
+**Version:** 1.0 (final, consolidated) · **Target platform:** macOS · **Stack:** C++ (Core/UI) and C++ (RAG Backend), Terminal/Console UI, SQLite
 
 This document is complete and self-contained. An implementation agent must follow it literally: use the regexes, SQL, defaults, and algorithms exactly as written. "Log raw" = store the line in `observations` with `event_type='RAW'`, never raise.
 
