@@ -7,3 +7,4 @@ v0.01
 - Added `__main__.py` entry point for executable target.
 - Added `scripts/build_exe.py` to compile using PyInstaller.
 - Created `DEVELOPMENT_BASELINE.md` with core project rules.
+- Added `requirements.txt` and installed specified free RAG stack (ChromaDB 1.5.9, sentence-transformers 6.0.1).
