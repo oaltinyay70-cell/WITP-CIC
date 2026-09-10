@@ -10,3 +10,5 @@ v0.01
 - Added `requirements.txt` and installed specified free RAG stack (ChromaDB 1.5.9, sentence-transformers 6.0.1).
 - Restored `WITPAE_Manual.txt` and added `scripts/rag_ingest.py` to ingest manual into ChromaDB.
 - Added `assets/map.jpg` to be used for the SIGINT Map.
+
+- Created comprehensive README.md summarizing project MVP, architecture, and repository structure.
