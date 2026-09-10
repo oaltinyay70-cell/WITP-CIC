@@ -328,8 +328,8 @@ namespace ui {
             }
             
             // Draw What's New Box
-            int box_left = 65;
-            int box_top = 18; // Aligns with the menu items
+            int box_left = 72;
+            int box_top = 2; // Top right of the screen
             
             setColor(2);
             gotoxy(box_left, box_top); std::cout << "+---------------------------------+";
