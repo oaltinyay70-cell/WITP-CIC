@@ -155,20 +155,50 @@ namespace ui {
 
         void drawSplash() {
             clear();
-            setColor(11);
-            std::cout << "\n\n";
-            std::cout << "         *-----------------------------------------------------*\n";
-            std::cout << "         |                 [ ALLIED FORCES ]                   |\n";
-            std::cout << "         |                                                     |\n";
-            std::cout << "         |   [ US ]   [ GBR ]       [ ANZAC ]   [ ROC ]        |\n";
-            std::cout << "         |   * * *    +--+--+       *     *     +----+         |\n";
-            std::cout << "         |   * * *    |  |  |         *         | () |         |\n";
-            std::cout << "         |   * * *    +--+--+       *   * *     +----+         |\n";
-            std::cout << "         |                                                     |\n";
-            std::cout << "         |         WAR IN THE PACIFIC - C.I.C. SYSTEM          |\n";
-            std::cout << "         *-----------------------------------------------------*\n";
-            setColor(7);
-            std::cout << "\n\n                     Press any key to initialize...";
+            setColor(10); // Light green
+            std::cout << "\n";
+            std::cout << R"(
+                                         |
+                                       __|__
+                                ___   |  |  |   ___
+                               /   \__|__|__|__/   \
+                           ___/                     \___
+        __________________/                             \_________________
+        \                                                                /
+         \______________________________________________________________/
+            )" << "\n";
+            
+            std::cout << R"(
+        ███╗   ███╗  ██╗  ██╗  ████████╗  ██╗  ██╗  ██╗   ██╗  ██████╗ 
+        ████╗ ████║  ██║  ██║  ╚══██╔══╝  ██║  ██║  ██║   ██║  ██╔══██╗
+        ██╔████╔██║  ██║  ██║     ██║     ███████║  ██║   ██║  ██████╔╝
+        ██║╚██╔╝██║  ██║  ██║     ██║     ██╔══██║  ██║   ██║  ██╔══██╗
+        ██║ ╚═╝ ██║▄ ██║  ██║▄    ██║  ▄  ██║  ██║▄ ╚██████╔╝▄ ██║  ██║▄
+        ╚═╝     ╚═╝▀ ╚══════╝▀    ╚═╝  ▀  ╚═╝  ╚═╝▀  ╚═════╝ ▀ ╚═╝  ╚═╝▀
+            )" << "\n";
+            
+            setColor(10); // Light green
+            std::cout << "        INTERFACE 1943.12 INITIALIZED\n";
+            std::cout << "        ============================================================\n\n";
+            
+            setColor(160); // Background Green (160 = Green background, black foreground or similar)
+            // Windows console: 10 is light green, 2 is dark green. 
+            // 2 << 4 = 32 (Dark Green BG). 10 << 4 = 160 (Light Green BG).
+            // Let's use 160 (Light Green BG, Black Text) for the selected feel.
+            std::cout << "        COMBAT SIMULATION        \n";
+            
+            setColor(2); // Dark Green
+            std::cout << "        NAVIGATION GRID\n";
+            std::cout << "        WEAPONS ARRAY\n";
+            std::cout << "        SYSTEM DIAGNOSTICS\n";
+            std::cout << "        LOGOUT\n";
+            
+            std::cout << "\n\n\n";
+            setColor(10); // Light green
+            std::cout << "                                                                 \xDB v1.0.7\n";
+            
+            // Revert back to safe color, hide cursor behavior during wait
+            setColor(2);
         }
 
         void drawMain() {
