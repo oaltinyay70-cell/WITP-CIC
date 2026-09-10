@@ -6,7 +6,7 @@
 
 namespace ui {
 
-    enum class State { HUB_MENU, MAIN, MODAL_INFO, MODAL_EXIT, LIST_VIEW, WIKI_VIEW };
+    enum class State { HUB_MENU, MAIN, MODAL_INFO, MODAL_EXIT, LIST_VIEW, WIKI_VIEW, DIR_CONFIG };
     enum class ItemType { EXIT, BACK, INTEL, MORE_CRITICAL, MORE_HVT, MORE_DISCOVERED };
 
     struct MenuItem {
@@ -26,7 +26,7 @@ namespace ui {
         DWORD last_esc_time = 0;
         
         std::vector<MenuItem> current_menu;
-        const engine::IntelligenceEngine& engine;
+        engine::IntelligenceEngine& engine;
         engine::DataStats stats;
         
         engine::IntelCategory list_view_category = engine::IntelCategory::CRITICAL;
@@ -38,10 +38,17 @@ namespace ui {
         int first_d_idx = -1;
         
         std::string active_war_room = "ALLIED";
+        
+        // Directory config
+        std::vector<std::string> data_dirs;
+        std::string dir_input_buf;
+        int dir_selected = -1; // -1 = input field, 0+ = listed dir index
+        const int HUB_ITEMS = 4;
 
     public:
-        InteractiveTUI(const engine::IntelligenceEngine& eng) : engine(eng) {
+        InteractiveTUI(engine::IntelligenceEngine& eng) : engine(eng) {
             stats = engine.stats;
+            data_dirs.push_back("data/samples"); // default directory
         }
 
     private:
@@ -209,8 +216,8 @@ namespace ui {
             std::cout << "     INTERFACE 1943.12 INITIALIZED\n";
             std::cout << "     ============================================================\n\n";
             
-            std::string hub_items[3] = {"ALLIED WAR ROOM", "JAPANESE WAR ROOM", "WIKI"};
-            for(int i=0; i<3; i++) {
+            std::string hub_items[4] = {"ALLIED WAR ROOM", "JAPANESE WAR ROOM", "WIKI", "ADD FILES TO PROCESS"};
+            for(int i=0; i<HUB_ITEMS; i++) {
                 if (i == hub_selected_item) {
                     setColor(160);
                     std::cout << "     " << hub_items[i];
@@ -359,6 +366,61 @@ namespace ui {
             std::cout << "                   Press ESC or ENTER to return.\n";
         }
 
+        void drawDirConfig() {
+            clear();
+            setColor(2);
+            std::cout << "===============================================================================\n";
+            setColor(10);
+            std::cout << " [ FILE DIRECTORY CONFIGURATION ]\n";
+            setColor(2);
+            std::cout << "===============================================================================\n\n";
+
+            setColor(10);
+            std::cout << " Active data directories:\n";
+            setColor(2);
+            std::cout << " -----------------------------------------------------------------------\n";
+            
+            if (data_dirs.empty()) {
+                setColor(2);
+                std::cout << "   (none configured)\n";
+            } else {
+                for (int i = 0; i < (int)data_dirs.size(); i++) {
+                    if (dir_selected == i) {
+                        setColor(160);
+                        std::cout << "   [" << (i+1) << "] " << data_dirs[i];
+                        // Pad
+                        for (size_t p = data_dirs[i].length(); p < 55; p++) std::cout << " ";
+                        std::cout << "[DEL]";
+                        std::cout << "\n";
+                    } else {
+                        setColor(10);
+                        std::cout << "   [" << (i+1) << "] " << data_dirs[i] << "\n";
+                    }
+                }
+            }
+            
+            setColor(2);
+            std::cout << " -----------------------------------------------------------------------\n\n";
+            
+            setColor(10);
+            std::cout << " Add new directory path:\n";
+            
+            // Input field
+            if (dir_selected == -1) {
+                setColor(160);
+            } else {
+                setColor(2);
+            }
+            std::cout << " > " << dir_input_buf << "_";
+            // Pad to clear leftover chars
+            for (size_t p = dir_input_buf.length(); p < 60; p++) std::cout << " ";
+            std::cout << "\n";
+            
+            setColor(2);
+            std::cout << "\n -----------------------------------------------------------------------\n";
+            std::cout << " UP/DOWN: Navigate  |  ENTER: Add/Delete  |  ESC: Back to M.U.T.H.U.R\n";
+        }
+
         void drawModalInfo() {
             auto& item = current_menu[selected_item];
             if (item.solidity == 0) return;
@@ -493,6 +555,7 @@ namespace ui {
             else if (state == State::MAIN) drawMain();
             else if (state == State::LIST_VIEW) drawListView();
             else if (state == State::WIKI_VIEW) drawWiki();
+            else if (state == State::DIR_CONFIG) drawDirConfig();
         }
 
     public:
@@ -531,7 +594,7 @@ namespace ui {
                             else state = State::MAIN;
                             redrawCurrentState();
                             continue;
-                        } else if (state == State::LIST_VIEW || state == State::WIKI_VIEW) {
+                        } else if (state == State::LIST_VIEW || state == State::WIKI_VIEW || state == State::DIR_CONFIG) {
                             playNavSound();
                             if (state == State::LIST_VIEW) state = State::MAIN;
                             else state = State::HUB_MENU;
@@ -558,15 +621,22 @@ namespace ui {
                     if (state == State::HUB_MENU) {
                         if (key == VK_UP) {
                             playNavSound();
-                            hub_selected_item = (hub_selected_item - 1 + 3) % 3;
+                            hub_selected_item = (hub_selected_item - 1 + HUB_ITEMS) % HUB_ITEMS;
                             drawHub();
                         } else if (key == VK_DOWN || key == VK_TAB) {
                             playNavSound();
-                            hub_selected_item = (hub_selected_item + 1) % 3;
+                            hub_selected_item = (hub_selected_item + 1) % HUB_ITEMS;
                             drawHub();
                         } else if (key == VK_RETURN) {
                             playSelectSound();
                             if (hub_selected_item == 0) {
+                                // Reprocess all configured directories
+                                engine.items.clear();
+                                engine.stats = engine::DataStats();
+                                for (const auto& dir : data_dirs) {
+                                    engine.processDirectory(dir);
+                                }
+                                stats = engine.stats;
                                 active_war_room = "ALLIED";
                                 state = State::MAIN;
                                 loadMainMenu();
@@ -574,6 +644,11 @@ namespace ui {
                             } else if (hub_selected_item == 1 || hub_selected_item == 2) {
                                 state = State::WIKI_VIEW;
                                 drawWiki();
+                            } else if (hub_selected_item == 3) {
+                                dir_input_buf.clear();
+                                dir_selected = -1;
+                                state = State::DIR_CONFIG;
+                                drawDirConfig();
                             }
                         }
                     } 
@@ -597,6 +672,60 @@ namespace ui {
                             playNavSound();
                             state = State::HUB_MENU;
                             drawHub();
+                        }
+                    }
+                    else if (state == State::DIR_CONFIG) {
+                        if (key == VK_UP) {
+                            playNavSound();
+                            if (dir_selected == -1 && !data_dirs.empty()) {
+                                dir_selected = (int)data_dirs.size() - 1;
+                            } else if (dir_selected > 0) {
+                                dir_selected--;
+                            } else {
+                                dir_selected = -1; // back to input
+                            }
+                            drawDirConfig();
+                        } else if (key == VK_DOWN || key == VK_TAB) {
+                            playNavSound();
+                            if (dir_selected == -1) {
+                                if (!data_dirs.empty()) dir_selected = 0;
+                            } else if (dir_selected < (int)data_dirs.size() - 1) {
+                                dir_selected++;
+                            } else {
+                                dir_selected = -1; // wrap to input
+                            }
+                            drawDirConfig();
+                        } else if (key == VK_RETURN) {
+                            if (dir_selected == -1) {
+                                // Add new directory from input buffer
+                                if (!dir_input_buf.empty()) {
+                                    playSelectSound();
+                                    data_dirs.push_back(dir_input_buf);
+                                    dir_input_buf.clear();
+                                    drawDirConfig();
+                                } else {
+                                    playErrorSound();
+                                }
+                            } else {
+                                // Delete selected directory
+                                playSelectSound();
+                                data_dirs.erase(data_dirs.begin() + dir_selected);
+                                if (dir_selected >= (int)data_dirs.size()) {
+                                    dir_selected = data_dirs.empty() ? -1 : (int)data_dirs.size() - 1;
+                                }
+                                drawDirConfig();
+                            }
+                        } else if (key == VK_BACK) {
+                            if (dir_selected == -1 && !dir_input_buf.empty()) {
+                                dir_input_buf.pop_back();
+                                drawDirConfig();
+                            }
+                        } else if (dir_selected == -1 && ch >= 32 && ch < 127) {
+                            // Typing into input field
+                            if (dir_input_buf.length() < 60) {
+                                dir_input_buf += ch;
+                                drawDirConfig();
+                            }
                         }
                     }
                     else if (state == State::MAIN || state == State::LIST_VIEW) {
@@ -666,7 +795,7 @@ namespace ui {
         }
     };
 
-    void Dashboard::render(const engine::IntelligenceEngine& engine) {
+    void Dashboard::render(engine::IntelligenceEngine& engine) {
         InteractiveTUI tui(engine);
         tui.run();
     }
