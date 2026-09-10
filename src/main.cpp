@@ -12,8 +12,5 @@ int main(int argc, const char* argv[]) {
     engine.process();
     dashboard.render();
 
-    std::cout << "\nPress Enter to exit...";
-    std::cin.get();
-
     return 0;
 }
