@@ -89,7 +89,6 @@ namespace engine {
                 }
             }
 
-            // DO NOT PARSE IF IT IS NOT A REAL REPORT (e.g. design docs)
             if (!is_valid_report) continue;
 
             while (std::getline(file, line)) {
@@ -104,9 +103,24 @@ namespace engine {
                     item.title = "> [CRITICAL] " + line.substr(0, std::min(line.length(), (size_t)60)) + (line.length()>60?"...":"");
                     item.reasoning = (file_type == 1 ? "OPS REPORT: " : (file_type == 2 ? "SIGINT REPORT: " : "COMBAT REPORT: ")) + line;
                     item.solidity = (file_type == 2) ? 80 : 95; 
-                    item.is_critical = true;
+                    item.category = IntelCategory::CRITICAL;
                     items.push_back(item);
                     continue; 
+                }
+
+                // Discovered Allied Units
+                if (containsIgnoreCase(line, "sighted over") || 
+                    containsIgnoreCase(line, "shadowed by") || 
+                    containsIgnoreCase(line, "sighted by") ||
+                    containsIgnoreCase(line, "observes Japanese")) {
+                    
+                    IntelItem item;
+                    item.title = "> [DISCOVERED] " + line.substr(0, std::min(line.length(), (size_t)65)) + (line.length()>65?"...":"");
+                    item.reasoning = (file_type == 1 ? "OPS REPORT: " : (file_type == 2 ? "SIGINT REPORT: " : "COMBAT REPORT: ")) + line;
+                    item.solidity = (file_type == 2) ? 60 : 100; 
+                    item.category = IntelCategory::DISCOVERED;
+                    items.push_back(item);
+                    continue;
                 }
 
                 if (containsIgnoreCase(line, " CV ") || containsIgnoreCase(line, " BB ") || 
@@ -120,7 +134,7 @@ namespace engine {
                     item.title = "> [HVT] " + line.substr(0, std::min(line.length(), (size_t)65)) + (line.length()>65?"...":"");
                     item.reasoning = (file_type == 1 ? "OPS REPORT: " : (file_type == 2 ? "SIGINT REPORT: " : "COMBAT REPORT: ")) + line;
                     item.solidity = (file_type == 2) ? 60 : 90; 
-                    item.is_critical = false;
+                    item.category = IntelCategory::HVT;
                     items.push_back(item);
                 }
             }

@@ -3,11 +3,18 @@
 #include <vector>
 
 namespace engine {
+
+    enum class IntelCategory {
+        CRITICAL,
+        HVT,
+        DISCOVERED
+    };
+
     struct IntelItem {
         std::string title;
         std::string reasoning;
         int solidity;
-        bool is_critical; // true = Critical, false = HVT
+        IntelCategory category;
     };
 
     struct DataStats {
