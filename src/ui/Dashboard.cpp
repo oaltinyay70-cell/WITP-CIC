@@ -1,4 +1,4 @@
-#include "Dashboard.hpp"
+﻿#include "Dashboard.hpp"
 #include <windows.h>
 #include <iostream>
 #include <vector>
@@ -7,7 +7,6 @@
 namespace ui {
 
     enum class State { SPLASH, MAIN, MODAL_INFO, MODAL_EXIT };
-    enum class MenuIndex { EXIT_BTN = 0, C_ITEM1, C_ITEM2, G_ITEM1, G_ITEM2, MAX };
 
     struct MenuItem {
         std::string title;
@@ -22,27 +21,52 @@ namespace ui {
         int selected_item = 1; 
         int esc_count = 0;
         DWORD last_esc_time = 0;
+        
+        std::vector<MenuItem> items;
+        engine::DataStats stats;
+        
+        int first_c_idx = -1;
+        int first_g_idx = -1;
 
-        std::vector<MenuItem> items = {
-            {"[X] EXIT", "", 0, 1},
-            {"> INVASION WARNING: 4/20th Infantry Regiment loaded on xAKL -> Legaspi", "SIGINT REPORT FOR Dec 07, 41: 4/20th Infantry Regiment is loaded on a Std-E Cargo class xAKL moving to Legaspi.", 90, 12},
-            {"> CONCENTRATION: 6 Japanese ships moving NW near Kalidjati", "OPERATIONAL REPORT FOR Dec 07, 41: C.XI-W sighting report: 6 Japanese ships at 51,99 near Kalidjati, speed 16, Moving Northwest.", 85, 13},
-            {"> CV Akagi        | Last seen: 1 day ago  | Status: UNKNOWN", "SIGINT REPORT FOR Dec 07, 41: Heavy Volume of Radio transmissions detected at 90,96.", 40, 17},
-            {"> TF 420          | Shadowed by Float Plane | Status: ACTIVE", "OPERATIONAL REPORT FOR Dec 07, 41: TF 420 shadowed by Japanese Float Plane at 52,82 near Mersing.", 95, 18}
-        };
-
-        void clear() {
-            system("cls");
+    public:
+        InteractiveTUI(const engine::IntelligenceEngine& engine) {
+            stats = engine.stats;
+            
+            // Build items list
+            items.push_back({"[X] EXIT", "", 0, 1});
+            
+            int current_y = 10;
+            
+            // Critical
+            for (const auto& intel : engine.items) {
+                if (intel.is_critical) {
+                    if (first_c_idx == -1) first_c_idx = items.size();
+                    items.push_back({intel.title, intel.reasoning, intel.solidity, current_y++});
+                }
+            }
+            if (first_c_idx == -1) {
+                items.push_back({"> No critical alerts at this time.", "No data.", 0, current_y++});
+            }
+            
+            current_y += 3; // Space for the HVT header
+            
+            // HVT Tracker
+            for (const auto& intel : engine.items) {
+                if (!intel.is_critical) {
+                    if (first_g_idx == -1) first_g_idx = items.size();
+                    items.push_back({intel.title, intel.reasoning, intel.solidity, current_y++});
+                }
+            }
+            if (first_g_idx == -1) {
+                items.push_back({"> No high value targets detected.", "No data.", 0, current_y++});
+            }
         }
 
-        void setColor(int color) {
-            SetConsoleTextAttribute(hOut, color);
-        }
-
+    private:
+        void clear() { system("cls"); }
+        void setColor(int color) { SetConsoleTextAttribute(hOut, color); }
         void gotoxy(int x, int y) {
-            COORD c;
-            c.X = x;
-            c.Y = y;
+            COORD c; c.X = x; c.Y = y;
             SetConsoleCursorPosition(hOut, c);
         }
 
@@ -88,30 +112,37 @@ namespace ui {
             setColor(8); 
             std::cout << "===============================================================================\n";
             setColor(15);
-            std::cout << " [ ALLIED COMBAT INFORMATION CENTER ]                     Turn: Dec 08, 1941\n";
+            std::cout << " [ ALLIED COMBAT INFORMATION CENTER ]                     Turn: " << stats.turn_date << "\n";
             setColor(8);
             std::cout << "===============================================================================\n";
             
-            // Top data sources box
-            setColor(3); // Cyan
+            setColor(3);
             std::cout << " [ DATA SOURCES SYNCED ]\n";
             setColor(7);
-            std::cout << " > Operations Reports : Last 60 Days\n";
-            std::cout << " > Combat Reports     : Last 80 Days\n";
-            std::cout << " > SIGINT             : Last 30 Days\n";
+            std::cout << " > Operations Reports : Last " << (stats.ops_days == 0 ? 1 : stats.ops_days) << " Days\n";
+            std::cout << " > Combat Reports     : Last " << (stats.combat_days == 0 ? 1 : stats.combat_days) << " Days\n";
+            std::cout << " > SIGINT             : Last " << (stats.sigint_days == 0 ? 1 : stats.sigint_days) << " Days\n";
             setColor(8);
             std::cout << "-------------------------------------------------------------------------------\n\n";
 
-            // Critical alerts
-            setColor(12); // Red
+            setColor(12);
             std::cout << " [C]ritical alerts\n";
             setColor(8);
             std::cout << "-------------------------------------------------------------------------------\n";
-            std::cout << "\n\n\n";
             
-            // Ghost Fleet Tracker
-            setColor(14); // Yellow
-            std::cout << " [G]host Fleet Tracker (High Value Targets)\n";
+            // Draw critical items...
+            int hvt_y = 12;
+            if (first_c_idx != -1) hvt_y = items[first_c_idx].y_pos + 1; // estimate
+            for(int i=1; i < items.size(); ++i) {
+                if (first_g_idx != -1 && i == first_g_idx) {
+                    hvt_y = items[i].y_pos - 2;
+                    break;
+                }
+            }
+            
+            gotoxy(0, hvt_y);
+            setColor(14);
+            std::cout << " [H]igh Value Target Tracker\n";
             setColor(8);
             std::cout << "-------------------------------------------------------------------------------\n";
 
@@ -129,9 +160,10 @@ namespace ui {
 
         void drawModalInfo() {
             auto& item = items[selected_item];
+            if (item.solidity == 0) return; // Empty alert msg
+
             setColor(31); // White on Blue
             
-            // Draw modal background
             for(int i=6; i<18; ++i) {
                 gotoxy(10, i);
                 std::cout << "                                                                "; // 64 spaces
@@ -139,7 +171,6 @@ namespace ui {
             
             gotoxy(12, 7);  std::cout << "INTEL ASSESSMENT";
             
-            // Word wrap the reasoning text
             std::vector<std::string> wrapped_reasoning = wordWrap("REASONING: " + item.reasoning, 60);
             int current_y = 9;
             for(const auto& line : wrapped_reasoning) {
@@ -226,10 +257,10 @@ namespace ui {
                             selected_item = (selected_item + 1) % items.size();
                             drawMain();
                         } else if (ch == 'c' || ch == 'C') {
-                            selected_item = 1; 
+                            if (first_c_idx != -1) selected_item = first_c_idx; 
                             drawMain();
-                        } else if (ch == 'g' || ch == 'G') {
-                            selected_item = 3; 
+                        } else if (ch == 'h' || ch == 'H') {
+                            if (first_g_idx != -1) selected_item = first_g_idx; 
                             drawMain();
                         } else if (ch == 'x' || ch == 'X') {
                             selected_item = 0; 
@@ -239,8 +270,10 @@ namespace ui {
                                 state = State::MODAL_EXIT;
                                 drawModalExit();
                             } else {
-                                state = State::MODAL_INFO;
-                                drawModalInfo();
+                                if (items[selected_item].solidity > 0) {
+                                    state = State::MODAL_INFO;
+                                    drawModalInfo();
+                                }
                             }
                         }
                     }
@@ -254,8 +287,8 @@ namespace ui {
         }
     };
 
-    void Dashboard::render() {
-        InteractiveTUI tui;
+    void Dashboard::render(const engine::IntelligenceEngine& engine) {
+        InteractiveTUI tui(engine);
         tui.run();
     }
 }

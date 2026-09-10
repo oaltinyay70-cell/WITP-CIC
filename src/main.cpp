@@ -1,16 +1,15 @@
 ﻿#include "ui/Dashboard.hpp"
 #include "engine/IntelligenceEngine.hpp"
-#include "parsers/OpsParser.hpp"
 #include <iostream>
 
 int main(int argc, const char* argv[]) {
-    parsers::OpsParser parser;
     engine::IntelligenceEngine engine;
+    
+    // Parse all text files in data/samples
+    engine.processDirectory("data/samples");
+    
     ui::Dashboard dashboard;
-
-    parser.parse("data/samples/media_1788967272339.txt");
-    engine.process();
-    dashboard.render();
+    dashboard.render(engine);
 
     return 0;
 }
