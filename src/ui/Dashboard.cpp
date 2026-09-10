@@ -3,10 +3,11 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <filesystem>
 
 namespace ui {
 
-    enum class State { HUB_MENU, MAIN, MODAL_INFO, MODAL_EXIT, LIST_VIEW, WIKI_VIEW, DIR_CONFIG };
+    enum class State { HUB_MENU, MAIN, MODAL_INFO, MODAL_EXIT, LIST_VIEW, WIKI_VIEW, DIR_CONFIG, DIR_BROWSER };
     enum class ItemType { EXIT, BACK, INTEL, MORE_CRITICAL, MORE_HVT, MORE_DISCOVERED };
 
     struct MenuItem {
@@ -41,9 +42,14 @@ namespace ui {
         
         // Directory config
         std::vector<std::string> data_dirs;
-        std::string dir_input_buf;
         int dir_selected = -1; // -1 = input field, 0+ = listed dir index
         const int HUB_ITEMS = 4;
+        
+        // Directory browser
+        std::filesystem::path browser_path;
+        std::vector<std::string> browser_items;
+        int browser_selected = 0;
+        int browser_scroll = 0;
 
     public:
         InteractiveTUI(engine::IntelligenceEngine& eng) : engine(eng) {
@@ -229,6 +235,20 @@ namespace ui {
                 }
             }
             
+            // Draw What's New Box
+            int box_left = 40;
+            int box_top = 18; // Aligns with the menu items
+            
+            setColor(2);
+            gotoxy(box_left, box_top); std::cout << "+---------------------------------+";
+            gotoxy(box_left, box_top+1); std::cout << "| "; setColor(10); std::cout << "WHAT'S NEW - v0.01             "; setColor(2); std::cout << "|";
+            gotoxy(box_left, box_top+2); std::cout << "|---------------------------------|";
+            gotoxy(box_left, box_top+3); std::cout << "| "; setColor(10); std::cout << "- MUTHUR CRT Interface         "; setColor(2); std::cout << "|";
+            gotoxy(box_left, box_top+4); std::cout << "| "; setColor(10); std::cout << "- Directory Config feature     "; setColor(2); std::cout << "|";
+            gotoxy(box_left, box_top+5); std::cout << "| "; setColor(10); std::cout << "- Tactical Early Warnings      "; setColor(2); std::cout << "|";
+            gotoxy(box_left, box_top+6); std::cout << "| "; setColor(10); std::cout << "- HVT & Discovered Tracking    "; setColor(2); std::cout << "|";
+            gotoxy(box_left, box_top+7); std::cout << "+---------------------------------+";
+            
             // Get window height and position the version at the bottom
             CONSOLE_SCREEN_BUFFER_INFO csbi;
             GetConsoleScreenBufferInfo(hOut, &csbi);
@@ -405,20 +425,91 @@ namespace ui {
             setColor(10);
             std::cout << " Add new directory path:\n";
             
-            // Input field
+            // Input field changed to a button
             if (dir_selected == -1) {
                 setColor(160);
+                std::cout << " > [ BROWSE FOR DIRECTORY ]                                      \n";
             } else {
                 setColor(2);
+                std::cout << " > [ BROWSE FOR DIRECTORY ]                                      \n";
             }
-            std::cout << " > " << dir_input_buf << "_";
-            // Pad to clear leftover chars
-            for (size_t p = dir_input_buf.length(); p < 60; p++) std::cout << " ";
-            std::cout << "\n";
             
             setColor(2);
             std::cout << "\n -----------------------------------------------------------------------\n";
-            std::cout << " UP/DOWN: Navigate  |  ENTER: Add/Delete  |  ESC: Back to M.U.T.H.U.R\n";
+            std::cout << " UP/DOWN: Navigate  |  ENTER: Select/Delete  |  ESC: Back to M.U.T.H.U.R\n";
+        }
+
+        void loadBrowserItems() {
+            browser_items.clear();
+            if (browser_path.has_parent_path() && browser_path != browser_path.parent_path()) {
+                browser_items.push_back("..");
+            }
+            try {
+                for (const auto& entry : std::filesystem::directory_iterator(browser_path)) {
+                    if (entry.is_directory()) {
+                        browser_items.push_back(entry.path().filename().string());
+                    }
+                }
+            } catch (...) {}
+            browser_selected = 0;
+            browser_scroll = 0;
+        }
+
+        void drawDirBrowser() {
+            clear();
+            setColor(2);
+            std::cout << "===============================================================================\n";
+            setColor(10);
+            std::cout << " [ SELECT DIRECTORY ]\n";
+            setColor(2);
+            std::cout << "===============================================================================\n\n";
+
+            setColor(15);
+            std::string p_str = browser_path.string();
+            if (p_str.length() > 60) p_str = "..." + p_str.substr(p_str.length() - 57);
+            std::cout << " CURRENT: " << p_str << "\n\n";
+
+            // The 'Select this directory' button is index 0 visually, but let's make it part of the scroll list.
+            // Actually, let's keep it fixed at the top.
+            if (browser_selected == -1) {
+                setColor(160);
+                std::cout << " > [ CHOOSE THIS DIRECTORY ]                                     \n\n";
+            } else {
+                setColor(10);
+                std::cout << " > [ CHOOSE THIS DIRECTORY ]                                     \n\n";
+            }
+
+            setColor(2);
+            std::cout << " Subdirectories:\n";
+            std::cout << " -----------------------------------------------------------------------\n";
+
+            int max_visible = 12;
+            if (browser_selected >= 0) {
+                if (browser_selected < browser_scroll) browser_scroll = browser_selected;
+                if (browser_selected >= browser_scroll + max_visible) browser_scroll = browser_selected - max_visible + 1;
+            }
+
+            for (int i = 0; i < max_visible; i++) {
+                int idx = browser_scroll + i;
+                if (idx >= (int)browser_items.size()) {
+                    std::cout << "\n";
+                    continue;
+                }
+
+                if (browser_selected == idx) {
+                    setColor(160);
+                    std::cout << "   " << browser_items[idx];
+                    for(size_t p=browser_items[idx].length(); p<65; p++) std::cout << " ";
+                    std::cout << "\n";
+                } else {
+                    setColor(10);
+                    std::cout << "   " << browser_items[idx] << "\n";
+                }
+            }
+
+            setColor(2);
+            std::cout << " -----------------------------------------------------------------------\n";
+            std::cout << " UP/DOWN: Navigate  |  ENTER: Enter/Select  |  ESC: Cancel\n";
         }
 
         void drawModalInfo() {
@@ -556,6 +647,7 @@ namespace ui {
             else if (state == State::LIST_VIEW) drawListView();
             else if (state == State::WIKI_VIEW) drawWiki();
             else if (state == State::DIR_CONFIG) drawDirConfig();
+            else if (state == State::DIR_BROWSER) drawDirBrowser();
         }
 
     public:
@@ -594,9 +686,10 @@ namespace ui {
                             else state = State::MAIN;
                             redrawCurrentState();
                             continue;
-                        } else if (state == State::LIST_VIEW || state == State::WIKI_VIEW || state == State::DIR_CONFIG) {
+                        } else if (state == State::LIST_VIEW || state == State::WIKI_VIEW || state == State::DIR_CONFIG || state == State::DIR_BROWSER) {
                             playNavSound();
                             if (state == State::LIST_VIEW) state = State::MAIN;
+                            else if (state == State::DIR_BROWSER) state = State::DIR_CONFIG;
                             else state = State::HUB_MENU;
                             
                             if (state == State::MAIN) loadMainMenu();
@@ -645,7 +738,6 @@ namespace ui {
                                 state = State::WIKI_VIEW;
                                 drawWiki();
                             } else if (hub_selected_item == 3) {
-                                dir_input_buf.clear();
                                 dir_selected = -1;
                                 state = State::DIR_CONFIG;
                                 drawDirConfig();
@@ -697,15 +789,12 @@ namespace ui {
                             drawDirConfig();
                         } else if (key == VK_RETURN) {
                             if (dir_selected == -1) {
-                                // Add new directory from input buffer
-                                if (!dir_input_buf.empty()) {
-                                    playSelectSound();
-                                    data_dirs.push_back(dir_input_buf);
-                                    dir_input_buf.clear();
-                                    drawDirConfig();
-                                } else {
-                                    playErrorSound();
-                                }
+                                // Open directory browser
+                                playSelectSound();
+                                browser_path = std::filesystem::current_path();
+                                loadBrowserItems();
+                                state = State::DIR_BROWSER;
+                                drawDirBrowser();
                             } else {
                                 // Delete selected directory
                                 playSelectSound();
@@ -715,16 +804,46 @@ namespace ui {
                                 }
                                 drawDirConfig();
                             }
-                        } else if (key == VK_BACK) {
-                            if (dir_selected == -1 && !dir_input_buf.empty()) {
-                                dir_input_buf.pop_back();
-                                drawDirConfig();
+                        }
+                    }
+                    else if (state == State::DIR_BROWSER) {
+                        if (key == VK_UP) {
+                            playNavSound();
+                            if (browser_selected == -1 && !browser_items.empty()) {
+                                browser_selected = (int)browser_items.size() - 1;
+                            } else if (browser_selected > 0) {
+                                browser_selected--;
+                            } else {
+                                browser_selected = -1; // back to select button
                             }
-                        } else if (dir_selected == -1 && ch >= 32 && ch < 127) {
-                            // Typing into input field
-                            if (dir_input_buf.length() < 60) {
-                                dir_input_buf += ch;
+                            drawDirBrowser();
+                        } else if (key == VK_DOWN || key == VK_TAB) {
+                            playNavSound();
+                            if (browser_selected == -1) {
+                                if (!browser_items.empty()) browser_selected = 0;
+                            } else if (browser_selected < (int)browser_items.size() - 1) {
+                                browser_selected++;
+                            } else {
+                                browser_selected = -1; // wrap to select button
+                            }
+                            drawDirBrowser();
+                        } else if (key == VK_RETURN) {
+                            playSelectSound();
+                            if (browser_selected == -1) {
+                                // Add this path and go back to config
+                                data_dirs.push_back(browser_path.string());
+                                state = State::DIR_CONFIG;
                                 drawDirConfig();
+                            } else {
+                                // Navigate to selected subfolder
+                                std::string selected_name = browser_items[browser_selected];
+                                if (selected_name == "..") {
+                                    browser_path = browser_path.parent_path();
+                                } else {
+                                    browser_path /= selected_name;
+                                }
+                                loadBrowserItems();
+                                drawDirBrowser();
                             }
                         }
                     }
