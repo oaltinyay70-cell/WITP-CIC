@@ -43,7 +43,7 @@ namespace ui {
         // Directory config
         std::vector<std::string> data_dirs;
         int dir_selected = -1; // -1 = input field, 0+ = listed dir index
-        const int HUB_ITEMS = 4;
+        const int HUB_ITEMS = 5;
         
         // Directory browser
         std::filesystem::path browser_path;
@@ -222,7 +222,7 @@ namespace ui {
             std::cout << "     INTERFACE 1943.12 INITIALIZED\n";
             std::cout << "     ============================================================\n\n";
             
-            std::string hub_items[4] = {"ALLIED WAR ROOM", "JAPANESE WAR ROOM", "WIKI", "ADD FILES TO PROCESS"};
+            std::string hub_items[5] = {"ALLIED WAR ROOM", "JAPANESE WAR ROOM", "WIKI", "ADD FILES TO PROCESS", "PREFERENCES"};
             for(int i=0; i<HUB_ITEMS; i++) {
                 if (i == hub_selected_item) {
                     setColor(160);
@@ -734,7 +734,7 @@ namespace ui {
                                 state = State::MAIN;
                                 loadMainMenu();
                                 drawMain();
-                            } else if (hub_selected_item == 1 || hub_selected_item == 2) {
+                            } else if (hub_selected_item == 1 || hub_selected_item == 2 || hub_selected_item == 4) {
                                 state = State::WIKI_VIEW;
                                 drawWiki();
                             } else if (hub_selected_item == 3) {
