@@ -236,7 +236,7 @@ namespace ui {
             }
             
             // Draw What's New Box
-            int box_left = 40;
+            int box_left = 65;
             int box_top = 18; // Aligns with the menu items
             
             setColor(2);
