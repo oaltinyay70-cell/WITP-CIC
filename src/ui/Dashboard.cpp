@@ -1,4 +1,4 @@
-﻿#include "Dashboard.hpp"
+#include "Dashboard.hpp"
 #include <windows.h>
 #include <iostream>
 #include <vector>
@@ -49,7 +49,27 @@ namespace ui {
         void playSelectSound() { Beep(800, 40); }
         void playErrorSound() { Beep(200, 100); }
 
-        void clear() { system("cls"); }
+        void initConsole() {
+            // Lock the screen buffer to the visible window size — no scrollbar
+            CONSOLE_SCREEN_BUFFER_INFO csbi;
+            GetConsoleScreenBufferInfo(hOut, &csbi);
+            COORD bufSize;
+            bufSize.X = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+            bufSize.Y = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+            SetConsoleScreenBufferSize(hOut, bufSize);
+        }
+
+        void clear() {
+            CONSOLE_SCREEN_BUFFER_INFO csbi;
+            GetConsoleScreenBufferInfo(hOut, &csbi);
+            DWORD len = csbi.dwSize.X * csbi.dwSize.Y;
+            DWORD written;
+            COORD origin = {0, 0};
+            FillConsoleOutputCharacterA(hOut, ' ', len, origin, &written);
+            FillConsoleOutputAttribute(hOut, csbi.wAttributes, len, origin, &written);
+            SetConsoleCursorPosition(hOut, origin);
+        }
+
         void setColor(int color) { SetConsoleTextAttribute(hOut, color); }
         void gotoxy(int x, int y) {
             COORD c; c.X = x; c.Y = y;
@@ -162,48 +182,44 @@ namespace ui {
 
         void drawHub() {
             clear();
-            setColor(10); // Light green for CRT theme
-            std::cout << "\n";
-            std::cout << R"(
-                                         |
-                                       __|__
-                                ___   |  |  |   ___
-                               /   \__|__|__|__/   \
-                           ___/                     \___
-        __________________/                             \_________________
-        \                                                                /
-         \______________________________________________________________/
-            )" << "\n";
-            
-            std::cout << R"(
-        __  __   _    _   _______   _    _   _    _   _____ 
-        |  \/  | | |  | | |__   __| | |  | | | |  | | |  __ \
-        | \  / | | |  | |    | |    | |__| | | |  | | | |__) |
-        | |\/| | | |  | |    | |    |  __  | | |  | | |  _  /
-        | |  | | | |__| |    | |    | |  | | | |__| | | | \ \
-        |_|  |_|  \____/     |_|    |_|  |_|  \____/  |_|  \_\
-            )" << "\n";
-            
-            setColor(10); 
-            std::cout << "        INTERFACE 1943.12 INITIALIZED\n";
-            std::cout << "        ============================================================\n\n";
+            setColor(10);
+            std::cout << "                                      |\n";
+            std::cout << "                                    __|__\n";
+            std::cout << "                             ___   |  |  |   ___\n";
+            std::cout << "                            /   \\__|__|__|__/   \\\n";
+            std::cout << "                        ___/                     \\___\n";
+            std::cout << "     __________________/                             \\_________________\n";
+            std::cout << "     \\                                                                /\n";
+            std::cout << "      \\______________________________________________________________/\n\n";
+            std::cout << "     __  __   _    _   _______   _    _   _    _   _____\n";
+            std::cout << "     |  \\/  | | |  | | |__   __| | |  | | | |  | | |  __ \\\n";
+            std::cout << "     | \\  / | | |  | |    | |    | |__| | | |  | | | |__) |\n";
+            std::cout << "     | |\\/| | | |  | |    | |    |  __  | | |  | | |  _  /\n";
+            std::cout << "     | |  | | | |__| |    | |    | |  | | | |__| | | | \\ \\\n";
+            std::cout << "     |_|  |_|  \\____/     |_|    |_|  |_|  \\____/  |_|  \\_\\\n\n";
+            std::cout << "     INTERFACE 1943.12 INITIALIZED\n";
+            std::cout << "     ============================================================\n\n";
             
             std::string hub_items[3] = {"ALLIED WAR ROOM", "JAPANESE WAR ROOM", "WIKI"};
             for(int i=0; i<3; i++) {
                 if (i == hub_selected_item) {
-                    setColor(160); // Green BG, Black FG
-                    std::cout << "        " << hub_items[i];
+                    setColor(160);
+                    std::cout << "     " << hub_items[i];
                     for(size_t j=hub_items[i].length(); j<25; j++) std::cout << " ";
                     std::cout << "\n";
                 } else {
-                    setColor(2); // Dark Green
-                    std::cout << "        " << hub_items[i] << "\n";
+                    setColor(2);
+                    std::cout << "     " << hub_items[i] << "\n";
                 }
             }
             
-            std::cout << "\n\n\n\n";
+            // Get window height and position the version at the bottom
+            CONSOLE_SCREEN_BUFFER_INFO csbi;
+            GetConsoleScreenBufferInfo(hOut, &csbi);
+            int bottom = csbi.srWindow.Bottom - csbi.srWindow.Top;
+            gotoxy(64, bottom);
             setColor(10);
-            std::cout << "                                                                 v0.01\n";
+            std::cout << "v0.01";
             setColor(2);
         }
 
@@ -385,6 +401,8 @@ namespace ui {
         void run() {
             hOut = GetStdHandle(STD_OUTPUT_HANDLE);
             hIn = GetStdHandle(STD_INPUT_HANDLE);
+
+            initConsole();
 
             CONSOLE_CURSOR_INFO cursorInfo;
             GetConsoleCursorInfo(hOut, &cursorInfo);
