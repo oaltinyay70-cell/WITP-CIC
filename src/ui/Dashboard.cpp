@@ -348,45 +348,122 @@ namespace ui {
             auto& item = current_menu[selected_item];
             if (item.solidity == 0) return;
 
-            setColor(160); // Green on Black... actually, Modal should be dark background with light green text
-            // Let's use 32 (Dark Green BG) with 10 (Light green text) = 42
-            setColor(42); 
-            
-            for(int i=6; i<18; ++i) {
-                gotoxy(10, i);
-                std::cout << "                                                                "; // 64 spaces
+            int box_top = 4, box_bot = 20, box_left = 6, box_right = 74;
+            int inner_width = box_right - box_left - 1;
+
+            // Draw border in bright green on black
+            setColor(10);
+            gotoxy(box_left, box_top);
+            std::cout << "+";
+            for(int x = box_left+1; x < box_right; x++) std::cout << "-";
+            std::cout << "+";
+
+            gotoxy(box_left, box_bot);
+            std::cout << "+";
+            for(int x = box_left+1; x < box_right; x++) std::cout << "-";
+            std::cout << "+";
+
+            for(int y = box_top+1; y < box_bot; y++) {
+                gotoxy(box_left, y);
+                std::cout << "|";
+                // Fill interior with black background, white text
+                setColor(15); // Bright white on black
+                for(int x = box_left+1; x < box_right; x++) std::cout << " ";
+                setColor(10);
+                std::cout << "|";
             }
-            
-            gotoxy(12, 7);  std::cout << "INTEL ASSESSMENT";
-            
-            std::vector<std::string> wrapped_reasoning = wordWrap("REASONING: " + item.reasoning, 60);
-            int current_y = 9;
+
+            // Title bar
+            setColor(160); // Green BG, black text - just for the title line
+            gotoxy(box_left+1, box_top+1);
+            std::string title_bar = " INTEL ASSESSMENT ";
+            std::cout << title_bar;
+            for(int x = title_bar.length(); x < inner_width; x++) std::cout << " ";
+
+            // Separator under title
+            setColor(10);
+            gotoxy(box_left+1, box_top+2);
+            for(int x = 0; x < inner_width; x++) std::cout << "-";
+
+            // Reasoning text - bright white on black for max contrast
+            setColor(15);
+            std::vector<std::string> wrapped_reasoning = wordWrap("REASONING: " + item.reasoning, inner_width - 4);
+            int current_y = box_top + 4;
             for(const auto& line : wrapped_reasoning) {
-                gotoxy(12, current_y++);
+                if (current_y >= box_bot - 4) break; // don't overflow
+                gotoxy(box_left + 3, current_y++);
                 std::cout << line;
             }
-            
-            current_y++; 
-            gotoxy(12, current_y++); std::cout << "SOLIDITY (CONFIDENCE): " << item.solidity << "%";
-            
+
+            // Solidity
+            current_y++;
+            setColor(10); // Green label
+            gotoxy(box_left + 3, current_y);
+            std::cout << "SOLIDITY: ";
+            setColor(15); // White value
+            std::cout << item.solidity << "%";
+            current_y++;
+
+            // Progress bar
             int meter_len = item.solidity / 5;
-            gotoxy(12, current_y++);
+            gotoxy(box_left + 3, current_y);
+            setColor(10);
             std::cout << "[";
-            for(int i=0; i<20; ++i) std::cout << (i < meter_len ? "#" : ".");
+            for(int i=0; i<20; ++i) {
+                if (i < meter_len) { setColor(160); std::cout << " "; } // filled = green block
+                else { setColor(10); std::cout << "."; }
+            }
+            setColor(10);
             std::cout << "]";
 
-            gotoxy(12, current_y + 1); std::cout << "Press ENTER or ESC to close.";
+            // Close hint
+            setColor(2);
+            gotoxy(box_left + 3, box_bot - 1);
+            std::cout << "Press ENTER or ESC to close.";
             setColor(2);
         }
 
         void drawModalExit() {
-            setColor(42); 
-            for(int i=5; i<10; ++i) {
-                gotoxy(20, i);
-                std::cout << "                                        ";
+            int box_top = 8, box_bot = 15, box_left = 18, box_right = 60;
+            int inner_width = box_right - box_left - 1;
+
+            // Border
+            setColor(10);
+            gotoxy(box_left, box_top);
+            std::cout << "+";
+            for(int x = box_left+1; x < box_right; x++) std::cout << "-";
+            std::cout << "+";
+
+            gotoxy(box_left, box_bot);
+            std::cout << "+";
+            for(int x = box_left+1; x < box_right; x++) std::cout << "-";
+            std::cout << "+";
+
+            for(int y = box_top+1; y < box_bot; y++) {
+                gotoxy(box_left, y);
+                std::cout << "|";
+                setColor(15);
+                for(int x = box_left+1; x < box_right; x++) std::cout << " ";
+                setColor(10);
+                std::cout << "|";
             }
-            gotoxy(22, 6); std::cout << "SYSTEM LOGOUT";
-            gotoxy(22, 8); std::cout << "Confirm Logout? (Y/N)";
+
+            // Title
+            setColor(160);
+            gotoxy(box_left+1, box_top+1);
+            std::string title = " SYSTEM LOGOUT ";
+            std::cout << title;
+            for(int x = title.length(); x < inner_width; x++) std::cout << " ";
+
+            // Separator
+            setColor(10);
+            gotoxy(box_left+1, box_top+2);
+            for(int x = 0; x < inner_width; x++) std::cout << "-";
+
+            // Question
+            setColor(15);
+            gotoxy(box_left+3, box_top+4);
+            std::cout << "Confirm Logout? (Y/N)";
             setColor(2);
         }
 
