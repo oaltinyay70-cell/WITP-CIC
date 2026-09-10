@@ -345,12 +345,18 @@ namespace ui {
             setColor(2);
             std::cout << "===============================================================================\n\n";
             setColor(10);
-            std::cout << " > No Wiki entries available in this sector.\n";
-            std::cout << " > Awaiting datalink transmission...\n\n\n";
+            std::cout << "\n\n\n";
+            std::cout << "                   +--------------------------------------+\n";
+            std::cout << "                   |                                      |\n";
+            std::cout << "                   |   [ SECTION UNDER DEVELOPMENT ]      |\n";
+            std::cout << "                   |                                      |\n";
+            std::cout << "                   |   This module is not yet active.      |\n";
+            std::cout << "                   |   Check back in a future release.     |\n";
+            std::cout << "                   |                                      |\n";
+            std::cout << "                   +--------------------------------------+\n\n\n";
             
-            setColor(160);
-            std::cout << " [BACK] ";
             setColor(2);
+            std::cout << "                   Press ESC or ENTER to return.\n";
         }
 
         void drawModalInfo() {
@@ -565,12 +571,7 @@ namespace ui {
                                 state = State::MAIN;
                                 loadMainMenu();
                                 drawMain();
-                            } else if (hub_selected_item == 1) {
-                                active_war_room = "JAPANESE";
-                                state = State::MAIN;
-                                loadMainMenu();
-                                drawMain();
-                            } else if (hub_selected_item == 2) {
+                            } else if (hub_selected_item == 1 || hub_selected_item == 2) {
                                 state = State::WIKI_VIEW;
                                 drawWiki();
                             }
