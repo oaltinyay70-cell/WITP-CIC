@@ -32,16 +32,17 @@ namespace ui {
         InteractiveTUI(const engine::IntelligenceEngine& engine) {
             stats = engine.stats;
             
-            // Build items list
             items.push_back({"[X] EXIT", "", 0, 1});
             
             int current_y = 10;
             
             // Critical
+            int c_count = 0;
             for (const auto& intel : engine.items) {
-                if (intel.is_critical) {
+                if (intel.is_critical && c_count < 6) {
                     if (first_c_idx == -1) first_c_idx = items.size();
                     items.push_back({intel.title, intel.reasoning, intel.solidity, current_y++});
+                    c_count++;
                 }
             }
             if (first_c_idx == -1) {
@@ -51,10 +52,12 @@ namespace ui {
             current_y += 3; // Space for the HVT header
             
             // HVT Tracker
+            int hvt_count = 0;
             for (const auto& intel : engine.items) {
-                if (!intel.is_critical) {
+                if (!intel.is_critical && hvt_count < 10) { // Limit HVT items to 10
                     if (first_g_idx == -1) first_g_idx = items.size();
                     items.push_back({intel.title, intel.reasoning, intel.solidity, current_y++});
+                    hvt_count++;
                 }
             }
             if (first_g_idx == -1) {
@@ -130,9 +133,8 @@ namespace ui {
             setColor(8);
             std::cout << "-------------------------------------------------------------------------------\n";
             
-            // Draw critical items...
             int hvt_y = 12;
-            if (first_c_idx != -1) hvt_y = items[first_c_idx].y_pos + 1; // estimate
+            if (first_c_idx != -1) hvt_y = items[first_c_idx].y_pos + 1; 
             for(int i=1; i < items.size(); ++i) {
                 if (first_g_idx != -1 && i == first_g_idx) {
                     hvt_y = items[i].y_pos - 2;
@@ -164,6 +166,7 @@ namespace ui {
 
             setColor(31); // White on Blue
             
+            // Draw modal background
             for(int i=6; i<18; ++i) {
                 gotoxy(10, i);
                 std::cout << "                                                                "; // 64 spaces
