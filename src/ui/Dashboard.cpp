@@ -1,4 +1,4 @@
-﻿#include "Dashboard.hpp"
+#include "Dashboard.hpp"
 #include <windows.h>
 #include <iostream>
 #include <vector>
@@ -25,10 +25,10 @@ namespace ui {
 
         std::vector<MenuItem> items = {
             {"[X] EXIT", "", 0, 1},
-            {"> INVASION WARNING: 16+ ships heading SW from Takao. Est target: Luzon.", "Intercepted intense JN-25 traffic from Takao port facilities. Transport units loading.", 85, 7},
-            {"> CONCENTRATION: Amphibious TF 85 confirmed offshore Kota Bharu.", "Submarine visual sighting + allied recon flights. Troops observed on deck.", 95, 8},
-            {"> CV Akagi        | Last seen: 1 day ago  (Pearl Harbor) | Status: UNKNOWN", "Strike on Pearl Harbor executed. Fleet currently missing from SIGINT. Presumed withdrawing.", 40, 12},
-            {"> BB Haruna       | Last seen: 1 day ago  (Kota Bharu)   | Status: ACTIVE", "Engaged Allied coastal defenses. Positive identification by land forces.", 90, 13}
+            {"> INVASION WARNING: 4/20th Infantry Regiment loaded on xAKL -> Legaspi", "SIGINT REPORT FOR Dec 07, 41: 4/20th Infantry Regiment is loaded on a Std-E Cargo class xAKL moving to Legaspi.", 90, 12},
+            {"> CONCENTRATION: 6 Japanese ships moving NW near Kalidjati", "OPERATIONAL REPORT FOR Dec 07, 41: C.XI-W sighting report: 6 Japanese ships at 51,99 near Kalidjati, speed 16, Moving Northwest.", 85, 13},
+            {"> CV Akagi        | Last seen: 1 day ago  | Status: UNKNOWN", "SIGINT REPORT FOR Dec 07, 41: Heavy Volume of Radio transmissions detected at 90,96.", 40, 17},
+            {"> TF 420          | Shadowed by Float Plane | Status: ACTIVE", "OPERATIONAL REPORT FOR Dec 07, 41: TF 420 shadowed by Japanese Float Plane at 52,82 near Mersing.", 95, 18}
         };
 
         void clear() {
@@ -46,9 +46,28 @@ namespace ui {
             SetConsoleCursorPosition(hOut, c);
         }
 
+        std::vector<std::string> wordWrap(const std::string& text, size_t max_width) {
+            std::vector<std::string> lines;
+            size_t start = 0;
+            while (start < text.length()) {
+                if (text.length() - start <= max_width) {
+                    lines.push_back(text.substr(start));
+                    break;
+                }
+                size_t end = start + max_width;
+                size_t last_space = text.rfind(' ', end);
+                if (last_space != std::string::npos && last_space > start) {
+                    end = last_space;
+                }
+                lines.push_back(text.substr(start, end - start));
+                start = end + 1;
+            }
+            return lines;
+        }
+
         void drawSplash() {
             clear();
-            setColor(11); // Cyan
+            setColor(11);
             std::cout << "\n\n";
             std::cout << "         *-----------------------------------------------------*\n";
             std::cout << "         |                 [ ALLIED FORCES ]                   |\n";
@@ -71,8 +90,18 @@ namespace ui {
             setColor(15);
             std::cout << " [ ALLIED COMBAT INFORMATION CENTER ]                     Turn: Dec 08, 1941\n";
             setColor(8);
-            std::cout << "===============================================================================\n\n";
+            std::cout << "===============================================================================\n";
             
+            // Top data sources box
+            setColor(3); // Cyan
+            std::cout << " [ DATA SOURCES SYNCED ]\n";
+            setColor(7);
+            std::cout << " > Operations Reports : Last 60 Days\n";
+            std::cout << " > Combat Reports     : Last 80 Days\n";
+            std::cout << " > SIGINT             : Last 30 Days\n";
+            setColor(8);
+            std::cout << "-------------------------------------------------------------------------------\n\n";
+
             // Critical alerts
             setColor(12); // Red
             std::cout << " [C]ritical alerts\n";
@@ -101,21 +130,33 @@ namespace ui {
         void drawModalInfo() {
             auto& item = items[selected_item];
             setColor(31); // White on Blue
-            for(int i=5; i<15; ++i) {
+            
+            // Draw modal background
+            for(int i=6; i<18; ++i) {
                 gotoxy(10, i);
-                std::cout << "                                                             ";
+                std::cout << "                                                                "; // 64 spaces
             }
-            gotoxy(12, 6);  std::cout << "INTEL ASSESSMENT";
-            gotoxy(12, 8);  std::cout << "REASONING: " << item.reasoning;
-            gotoxy(12, 10); std::cout << "SOLIDITY (CONFIDENCE): " << item.solidity << "%";
+            
+            gotoxy(12, 7);  std::cout << "INTEL ASSESSMENT";
+            
+            // Word wrap the reasoning text
+            std::vector<std::string> wrapped_reasoning = wordWrap("REASONING: " + item.reasoning, 60);
+            int current_y = 9;
+            for(const auto& line : wrapped_reasoning) {
+                gotoxy(12, current_y++);
+                std::cout << line;
+            }
+            
+            current_y++; // spacer
+            gotoxy(12, current_y++); std::cout << "SOLIDITY (CONFIDENCE): " << item.solidity << "%";
             
             int meter_len = item.solidity / 5;
-            gotoxy(12, 11);
+            gotoxy(12, current_y++);
             std::cout << "[";
             for(int i=0; i<20; ++i) std::cout << (i < meter_len ? "#" : ".");
             std::cout << "]";
 
-            gotoxy(12, 13); std::cout << "Press ENTER or ESC to close.";
+            gotoxy(12, current_y + 1); std::cout << "Press ENTER or ESC to close.";
             setColor(7);
         }
 
@@ -135,7 +176,6 @@ namespace ui {
             hOut = GetStdHandle(STD_OUTPUT_HANDLE);
             hIn = GetStdHandle(STD_INPUT_HANDLE);
 
-            // Hide cursor
             CONSOLE_CURSOR_INFO cursorInfo;
             GetConsoleCursorInfo(hOut, &cursorInfo);
             cursorInfo.bVisible = FALSE;
@@ -153,7 +193,6 @@ namespace ui {
                     WORD key = ir.Event.KeyEvent.wVirtualKeyCode;
                     char ch = ir.Event.KeyEvent.uChar.AsciiChar;
 
-                    // Triple Esc logic
                     if (key == VK_ESCAPE) {
                         DWORD now = GetTickCount();
                         if (now - last_esc_time < 500) esc_count++;
@@ -187,13 +226,13 @@ namespace ui {
                             selected_item = (selected_item + 1) % items.size();
                             drawMain();
                         } else if (ch == 'c' || ch == 'C') {
-                            selected_item = 1; // First item of C
+                            selected_item = 1; 
                             drawMain();
                         } else if (ch == 'g' || ch == 'G') {
-                            selected_item = 3; // First item of G
+                            selected_item = 3; 
                             drawMain();
                         } else if (ch == 'x' || ch == 'X') {
-                            selected_item = 0; // Exit button
+                            selected_item = 0; 
                             drawMain();
                         } else if (key == VK_RETURN) {
                             if (selected_item == 0) {
