@@ -50,6 +50,12 @@ namespace ui {
         void playErrorSound() { Beep(200, 100); }
 
         void initConsole() {
+            // Enable ANSI escape sequences (blink, etc.)
+            DWORD mode = 0;
+            GetConsoleMode(hOut, &mode);
+            mode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+            SetConsoleMode(hOut, mode);
+
             // Lock the screen buffer to the visible window size — no scrollbar
             CONSOLE_SCREEN_BUFFER_INFO csbi;
             GetConsoleScreenBufferInfo(hOut, &csbi);
@@ -400,11 +406,17 @@ namespace ui {
 
             // Solidity
             current_y++;
-            setColor(10); // Green label
             gotoxy(box_left + 3, current_y);
-            std::cout << "SOLIDITY: ";
-            setColor(15); // White value
-            std::cout << item.solidity << "%";
+            if (item.solidity >= 90) {
+                // Blink for high confidence
+                setColor(10);
+                std::cout << "\033[5m" << "SOLIDITY: " << item.solidity << "%" << "\033[0m";
+            } else {
+                setColor(10);
+                std::cout << "SOLIDITY: ";
+                setColor(15);
+                std::cout << item.solidity << "%";
+            }
             current_y++;
 
             // Progress bar
