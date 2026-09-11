@@ -45,6 +45,7 @@ namespace ui {
         // Directory config
         std::vector<std::string> data_dirs;
         int dir_selected = -1; // -1 = input field, 0+ = listed dir index
+        std::string dir_error_msg = "";
         const int HUB_ITEMS = 5;
         
         // Directory browser
@@ -496,6 +497,12 @@ namespace ui {
             std::cout << " [ FILE DIRECTORY CONFIGURATION ]\n";
             setColor(2);
             std::cout << "===============================================================================\n\n";
+            
+            if (!dir_error_msg.empty()) {
+                setColor(12); // Light red
+                std::cout << " " << dir_error_msg << "\n\n";
+                setColor(2);
+            }
 
             setColor(10);
             std::cout << " Active data directories:\n";
@@ -824,22 +831,39 @@ namespace ui {
                             drawHub();
                         } else if (key == VK_RETURN) {
                             playSelectSound();
-                            if (hub_selected_item == 0) {
-                                // Reprocess all configured directories
+                            if (hub_selected_item == 0 || hub_selected_item == 1) {
+                                // First process directories
                                 engine.items.clear();
                                 engine.stats = engine::DataStats();
                                 for (const auto& dir : data_dirs) {
                                     engine.processDirectory(dir);
                                 }
-                                stats = engine.stats;
-                                active_war_room = "ALLIED";
-                                state = State::MAIN;
-                                loadMainMenu();
-                                drawMain();
-                            } else if (hub_selected_item == 1 || hub_selected_item == 2 || hub_selected_item == 4) {
+                                
+                                if (engine.items.empty()) {
+                                    dir_error_msg = "[!] NO VALID ARCHIVE FILES (OPERATIONS/SIGINT) FOUND IN THE CONFIGURED DIRECTORIES.";
+                                    dir_selected = -1;
+                                    state = State::DIR_CONFIG;
+                                    drawDirConfig();
+                                    playErrorSound();
+                                } else {
+                                    dir_error_msg = "";
+                                    if (hub_selected_item == 0) {
+                                        stats = engine.stats;
+                                        active_war_room = "ALLIED";
+                                        state = State::MAIN;
+                                        loadMainMenu();
+                                        drawMain();
+                                    } else {
+                                        // Japanese War Room is under development
+                                        state = State::WIKI_VIEW;
+                                        drawWiki();
+                                    }
+                                }
+                            } else if (hub_selected_item == 2 || hub_selected_item == 4) {
                                 state = State::WIKI_VIEW;
                                 drawWiki();
                             } else if (hub_selected_item == 3) {
+                                dir_error_msg = ""; // clear on manual entry
                                 dir_selected = -1;
                                 state = State::DIR_CONFIG;
                                 drawDirConfig();

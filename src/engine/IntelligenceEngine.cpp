@@ -1,4 +1,4 @@
-﻿#include "IntelligenceEngine.hpp"
+#include "IntelligenceEngine.hpp"
 #include <iostream>
 #include <fstream>
 #include <filesystem>
@@ -38,8 +38,6 @@ namespace engine {
         int ops_min = 999999, ops_max = 0;
         int sigint_min = 999999, sigint_max = 0;
         int combat_min = 999999, combat_max = 0;
-        
-        items.clear();
 
         if (!fs::exists(path)) return;
 
