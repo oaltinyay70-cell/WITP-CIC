@@ -100,6 +100,7 @@ namespace ui {
         int ai_input_field = 0; // 0=key, 1=model, 2=endpoint, 3=local_model
         std::string ai_input_buffer = "";
         std::string settings_status_msg = "";
+        int modal_solidity_y = 0;
 
     public:
         InteractiveTUI(engine::IntelligenceEngine& eng) : engine(eng) {
@@ -254,9 +255,9 @@ namespace ui {
                 "    - SIGINT Reports   : Moderate confidence (60% - 80%).",
                 "    - Ops/Combat Reps  : Absolute certainty (90% - 100%).",
                 " ",
-                " When the engine determines a Solidity of 90% or greater, the solidity",
-                " indicator will BLINK RAPIDLY. This signifies highly reliable, confirmed",
-                " intelligence that requires your immediate attention.",
+                " When the engine determines a Solidity of 90% or greater, the indicator",
+                " will BLINK RAPIDLY AT 4 TIMES PER SECOND (4 Hz). This signifies highly",
+                " reliable, confirmed intelligence that requires your immediate attention.",
                 "",
                 " 5. NAVIGATION",
                 " ------------------------------------------------------------------------------",
@@ -1141,11 +1142,12 @@ namespace ui {
 
             // Solidity
             current_y++;
+            modal_solidity_y = current_y;
             gotoxy(box_left + 3, current_y);
             if (item.solidity >= 90) {
-                // Blink for high confidence
+                // Blink for high confidence (4 times per second)
                 setColor(10);
-                std::cout << "\033[6m" << "SOLIDITY: " << item.solidity << "%" << "\033[0m";
+                std::cout << "\033[6m" << "SOLIDITY: " << item.solidity << "%  [CONFIRMED INTEL]" << "\033[0m";
             } else {
                 setColor(10);
                 std::cout << "SOLIDITY: ";
@@ -1170,6 +1172,49 @@ namespace ui {
             setColor(2);
             gotoxy(box_left + 3, box_bot - 1);
             std::cout << "Press ENTER or ESC to close.";
+            setColor(2);
+        }
+
+        void updateBlinkModal(bool phase) {
+            auto& item = current_menu[selected_item];
+            if (item.solidity < 90 || modal_solidity_y <= 0) return;
+            int box_left = 6;
+            gotoxy(box_left + 3, modal_solidity_y);
+            if (phase) {
+                setColor(10);
+                std::cout << "\033[6m" << "SOLIDITY: " << item.solidity << "%  [CONFIRMED INTEL]" << "\033[0m";
+            } else {
+                setColor(2);
+                std::cout << "SOLIDITY: " << item.solidity << "%  [CONFIRMED INTEL]";
+            }
+        }
+
+        void updateBlinkMain(bool phase) {
+            for(size_t i=0; i < current_menu.size(); ++i) {
+                if (current_menu[i].solidity >= 90 && (int)i != selected_item) {
+                    gotoxy(i==0 ? 68 : 2, current_menu[i].y_pos);
+                    if (phase) {
+                        setColor(10); // Bright Green
+                    } else {
+                        setColor(2);  // Dim Dark Green (flashes at 4 Hz)
+                    }
+                    std::cout << current_menu[i].title;
+                }
+            }
+            setColor(2);
+        }
+
+        void updateBlinkListView(bool phase) {
+            int draw_y = 7;
+            for (int i = 0; i < MAX_VISIBLE_LIST; ++i) {
+                int item_idx = list_scroll_offset + 1 + i;
+                if (item_idx >= (int)current_menu.size()) break;
+                if (current_menu[item_idx].solidity >= 90 && item_idx != selected_item) {
+                    gotoxy(2, draw_y + i);
+                    if (phase) setColor(10); else setColor(2);
+                    std::cout << current_menu[item_idx].title;
+                }
+            }
             setColor(2);
         }
 
@@ -1247,8 +1292,22 @@ namespace ui {
             DWORD cc;
             INPUT_RECORD ir;
             bool running = true;
+            bool blink_phase = false;
 
             while(running) {
+                DWORD wait_res = WaitForSingleObject(hIn, 125); // 125ms = 4 full blinks per second (4 Hz)
+                if (wait_res == WAIT_TIMEOUT) {
+                    blink_phase = !blink_phase;
+                    if (state == State::MODAL_INFO) {
+                        updateBlinkModal(blink_phase);
+                    } else if (state == State::MAIN) {
+                        updateBlinkMain(blink_phase);
+                    } else if (state == State::LIST_VIEW) {
+                        updateBlinkListView(blink_phase);
+                    }
+                    continue;
+                }
+
                 ReadConsoleInput(hIn, &ir, 1, &cc);
                 if (ir.EventType == KEY_EVENT && ir.Event.KeyEvent.bKeyDown) {
                     WORD key = ir.Event.KeyEvent.wVirtualKeyCode;

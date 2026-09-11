@@ -1,1 +1,7 @@
-{"provider": "gemini", "gemini_api_key": "", "gemini_model": "gemini-2.0-flash", "local_endpoint": "http://localhost:11434/v1", "local_model": "llama3.2"}
+{
+  "provider": "gemini",
+  "gemini_api_key": "",
+  "gemini_model": "gemini-2.0-flash",
+  "local_endpoint": "http://localhost:11434/v1",
+  "local_model": "llama3.2"
+}
