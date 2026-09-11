@@ -822,15 +822,19 @@ namespace ui {
                 }
             }
 
-            gotoxy(0, 24);
+            CONSOLE_SCREEN_BUFFER_INFO csbi;
+            GetConsoleScreenBufferInfo(hOut, &csbi);
+            int b_line = csbi.srWindow.Bottom - csbi.srWindow.Top;
+
+            gotoxy(0, b_line - 3);
             setColor(2);
             std::cout << "-------------------------------------------------------------------------------\n";
             setColor(10);
             std::cout << " ASK STAFF OFFICER > ";
             setColor(15);
-            std::cout << chat_input << "_";
+            std::cout << chat_input << "_\n";
             setColor(2);
-            std::cout << "\n [ENTER] Transmit Query  |  [ESC] Return\n";
+            std::cout << "\n [ENTER] Transmit Query  |  [ESC] Return";
         }
 
         void drawSettingsMenu() {
