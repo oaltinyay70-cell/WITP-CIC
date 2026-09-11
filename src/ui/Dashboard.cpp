@@ -14,7 +14,7 @@
 
 namespace ui {
 
-    enum class State { HUB_MENU, MAIN, MODAL_INFO, MODAL_EXIT, LIST_VIEW, WIKI_VIEW, DIR_CONFIG, DIR_BROWSER, CAMPAIGN_MGR, AI_CHAT, SETTINGS_MENU, SETTINGS_AI };
+    enum class State { HUB_MENU, MAIN, MODAL_INFO, MODAL_EXIT, LIST_VIEW, WIKI_VIEW, DIR_CONFIG, DIR_BROWSER, CAMPAIGN_MGR, AI_CHAT, SETTINGS_MENU, SETTINGS_AI, VAULT_MENU };
     enum class ItemType { EXIT, BACK, INTEL, MORE_CRITICAL, MORE_HVT, MORE_DISCOVERED };
 
     struct MenuItem {
@@ -59,7 +59,8 @@ namespace ui {
         std::vector<std::string> data_dirs;
         int dir_selected = -1; // -1 = input field, 0+ = listed dir index
         std::string dir_error_msg = "";
-        const int HUB_ITEMS = 7;
+        const int HUB_ITEMS = 5;
+        int vault_menu_selected = 0;
         
         // Directory browser
         std::filesystem::path browser_path;
@@ -215,18 +216,18 @@ namespace ui {
 
             // Populate WIKI
             wiki_content = {
-                " M.U.T.H.U.R USER MANUAL & WIKI DATABASE",
+                " W.U.T.H.U.R USER MANUAL & WIKI DATABASE",
                 " ==============================================================================",
                 "",
                 " 1. HOW IT WORKS",
                 " ------------------------------------------------------------------------------",
-                " M.U.T.H.U.R processes your daily output text files from War in the Pacific:",
+                " W.U.T.H.U.R processes your daily output text files from War in the Pacific:",
                 " Admiral's Edition (Operations Reports, SIGINT, Combat Reports). It aggregates",
                 " historical data from the 'SAVE\\archive' folder to extract vital intelligence.",
                 "",
                 " 2. SETUP & DIRECTORIES",
                 " ------------------------------------------------------------------------------",
-                " Use the [ADD FILES TO PROCESS] menu to map your game directory.",
+                " Use the [ADD/MANAGE CAMPAIGN VAULT] menu to map your game directory.",
                 " The system requires files to be located in the 'SAVE\\archive' subdirectory.",
                 " If you map the 'SAVE' directory, the engine will automatically adjust to",
                 " process the 'archive' subdirectory. Only text files (.txt) are processed.",
@@ -497,19 +498,12 @@ namespace ui {
 )" << "\n";
             std::cout << "     INTERFACE 1943.12 INITIALIZED\n";
             std::cout << "     ============================================================\n";
-            setColor(10);
-            std::cout << "     [ ACTIVE CAMPAIGN: " << vault.meta.name << " ]\n";
-            setColor(2);
-            std::cout << "     Vault Storage: " << vault.vault_path << "\n\n";
-            
-            std::string hub_items[7] = {
+            std::string hub_items[5] = {
                 "ALLIED WAR ROOM", 
                 "JAPANESE WAR ROOM", 
-                "AI STAFF OFFICER", 
-                "CAMPAIGN VAULT (MANAGE / EXPORT)", 
+                "ADD/MANAGE CAMPAIGN VAULT", 
                 "SETTINGS",
-                "WIKI & MANUAL", 
-                "ADD FILES TO PROCESS"
+                "WIKI & MANUAL"
             };
             for(int i=0; i<HUB_ITEMS; i++) {
                 if (i == hub_selected_item) {
@@ -666,7 +660,7 @@ namespace ui {
             if (hub_selected_item == 1) {
                 std::cout << " [ JAPANESE WAR ROOM ]\n";
             } else {
-                std::cout << " [ M.U.T.H.U.R WIKI DATABASE ]\n";
+                std::cout << " [ W.U.T.H.U.R WIKI DATABASE ]\n";
             }
             setColor(2);
             std::cout << "===============================================================================\n\n";
@@ -701,7 +695,7 @@ namespace ui {
                 
                 setColor(2);
                 std::cout << "-------------------------------------------------------------------------------\n";
-                std::cout << " UP/DOWN: Scroll  |  ENTER/ESC: Return to M.U.T.H.U.R\n";
+                std::cout << " UP/DOWN: Scroll  |  ENTER/ESC: Return to W.U.T.H.U.R\n";
             }
         }
 
@@ -776,7 +770,7 @@ namespace ui {
                 setColor(10);
                 std::cout << " [ENTER] Switch Vault  |  [N] New Vault  |  [E] Export ZIP  |  [I] Import ZIP\n";
                 setColor(2);
-                std::cout << " [ESC] Return to Hub\n";
+                std::cout << " [ESC] Return to Vault Menu\n";
             }
         }
 
@@ -785,7 +779,7 @@ namespace ui {
             setColor(2);
             std::cout << "===============================================================================\n";
             setColor(10);
-            std::cout << " [ M.U.T.H.U.R TACTICAL STAFF OFFICER ]              Campaign: " << vault.meta.name << "\n";
+            std::cout << " [ W.U.T.H.U.R TACTICAL STAFF OFFICER ]              Campaign: " << vault.meta.name << "\n";
             setColor(2);
             std::cout << "===============================================================================\n";
 
@@ -844,7 +838,7 @@ namespace ui {
             setColor(2);
             std::cout << "===============================================================================\n";
             setColor(10);
-            std::cout << " [ M.U.T.H.U.R SYSTEM SETTINGS & PREFERENCES ]\n";
+            std::cout << " [ W.U.T.H.U.R SYSTEM SETTINGS & PREFERENCES ]\n";
             setColor(2);
             std::cout << "===============================================================================\n\n";
 
@@ -856,7 +850,7 @@ namespace ui {
             std::string s_items[3] = {
                 "AI MENTOR & MODEL CONFIGURATION (Cloud & Local)",
                 "FILE ARCHIVE DIRECTORIES",
-                "[<] RETURN TO M.U.T.H.U.R HUB"
+                "[<] RETURN TO W.U.T.H.U.R HUB"
             };
 
             for (int i = 0; i < 3; ++i) {
@@ -1014,7 +1008,7 @@ namespace ui {
             
             setColor(2);
             std::cout << "\n -----------------------------------------------------------------------\n";
-            std::cout << " UP/DOWN: Navigate  |  ENTER: Select/Delete  |  ESC: Back to M.U.T.H.U.R\n";
+            std::cout << " UP/DOWN: Navigate  |  ENTER: Select/Delete  |  ESC: Back to W.U.T.H.U.R\n";
         }
 
         void loadBrowserItems() {
@@ -1088,6 +1082,54 @@ namespace ui {
             setColor(2);
             std::cout << " -----------------------------------------------------------------------\n";
             std::cout << " UP/DOWN: Navigate  |  ENTER: Enter/Select  |  ESC: Cancel\n";
+        }
+
+        void drawVaultMenu() {
+            clear();
+            setColor(2);
+            std::cout << "===============================================================================\n";
+            setColor(10);
+            std::cout << " [ W.U.T.H.U.R CAMPAIGN VAULT & FILE MANAGER ]\n";
+            setColor(2);
+            std::cout << "===============================================================================\n\n";
+
+            setColor(10);
+            std::cout << " CURRENT ACTIVE CAMPAIGN:\n";
+            setColor(15);
+            std::cout << "   Name     : " << vault.meta.name << "\n";
+            std::cout << "   Storage  : " << vault.vault_path << "\n";
+            if (!vault.meta.scenario.empty()) {
+                std::cout << "   Scenario : " << vault.meta.scenario << "\n";
+            }
+            setColor(2);
+            std::cout << " -------------------------------------------------------------------------------\n\n";
+
+            setColor(10);
+            std::cout << " SELECT VAULT MANAGEMENT OPTION:\n";
+            setColor(2);
+            std::cout << " -------------------------------------------------------------------------------\n\n";
+
+            std::string v_items[3] = {
+                "CAMPAIGN VAULT (MANAGE / EXPORT)",
+                "FILE ARCHIVE DIRECTORIES",
+                "[<] RETURN TO W.U.T.H.U.R HUB"
+            };
+
+            for (int i = 0; i < 3; ++i) {
+                if (i == vault_menu_selected) {
+                    setColor(160);
+                    std::cout << "   " << v_items[i];
+                    for (size_t p = v_items[i].length(); p < 60; ++p) std::cout << " ";
+                    std::cout << "\n";
+                } else {
+                    setColor(10);
+                    std::cout << "   " << v_items[i] << "\n";
+                }
+            }
+
+            setColor(2);
+            std::cout << "\n -------------------------------------------------------------------------------\n";
+            std::cout << " UP/DOWN: Navigate  |  ENTER: Select  |  ESC: Return to Hub\n";
         }
 
         void drawModalInfo() {
@@ -1274,6 +1316,7 @@ namespace ui {
             else if (state == State::AI_CHAT) drawAIChat();
             else if (state == State::SETTINGS_MENU) drawSettingsMenu();
             else if (state == State::SETTINGS_AI) drawSettingsAI();
+            else if (state == State::VAULT_MENU) drawVaultMenu();
         }
 
     public:
@@ -1328,7 +1371,7 @@ namespace ui {
                             state = State::SETTINGS_MENU;
                             drawSettingsMenu();
                             continue;
-                        } else if (state == State::SETTINGS_MENU) {
+                        } else if (state == State::SETTINGS_MENU || state == State::VAULT_MENU) {
                             playNavSound();
                             state = State::HUB_MENU;
                             drawHub();
@@ -1337,6 +1380,7 @@ namespace ui {
                             playNavSound();
                             if (state == State::LIST_VIEW) state = State::MAIN;
                             else if (state == State::DIR_BROWSER) state = State::DIR_CONFIG;
+                            else if (state == State::CAMPAIGN_MGR || state == State::DIR_CONFIG) state = State::VAULT_MENU;
                             else if (state == State::AI_CHAT && active_war_room != "") state = State::MAIN;
                             else state = State::HUB_MENU;
                             
@@ -1441,28 +1485,45 @@ namespace ui {
                                     }
                                 }
                             } else if (hub_selected_item == 2) {
-                                state = State::AI_CHAT;
-                                ai_officer.start(vault.vault_path);
-                                drawAIChat();
+                                state = State::VAULT_MENU;
+                                vault_menu_selected = 0;
+                                drawVaultMenu();
                             } else if (hub_selected_item == 3) {
+                                state = State::SETTINGS_MENU;
+                                settings_selected = 0;
+                                drawSettingsMenu();
+                            } else if (hub_selected_item == 4) {
+                                state = State::WIKI_VIEW;
+                                drawWiki();
+                            }
+                        }
+                    } 
+                    else if (state == State::VAULT_MENU) {
+                        if (key == VK_UP) {
+                            playNavSound();
+                            vault_menu_selected = (vault_menu_selected - 1 + 3) % 3;
+                            drawVaultMenu();
+                        } else if (key == VK_DOWN || key == VK_TAB) {
+                            playNavSound();
+                            vault_menu_selected = (vault_menu_selected + 1) % 3;
+                            drawVaultMenu();
+                        } else if (key == VK_RETURN) {
+                            playSelectSound();
+                            if (vault_menu_selected == 0) {
                                 state = State::CAMPAIGN_MGR;
                                 campaign_selected = 0;
                                 vault_status_msg = "";
                                 campaign_input_mode = false;
                                 zip_import_mode = false;
                                 drawCampaignMgr();
-                            } else if (hub_selected_item == 4) {
-                                state = State::SETTINGS_MENU;
-                                settings_selected = 0;
-                                drawSettingsMenu();
-                            } else if (hub_selected_item == 5) {
-                                state = State::WIKI_VIEW;
-                                drawWiki();
-                            } else if (hub_selected_item == 6) {
-                                dir_error_msg = ""; // clear on manual entry
+                            } else if (vault_menu_selected == 1) {
+                                dir_error_msg = "";
                                 dir_selected = -1;
                                 state = State::DIR_CONFIG;
                                 drawDirConfig();
+                            } else if (vault_menu_selected == 2) {
+                                state = State::HUB_MENU;
+                                drawHub();
                             }
                         }
                     } 
@@ -1825,8 +1886,8 @@ namespace ui {
                                 drawCampaignMgr();
                             } else if (key == VK_ESCAPE) {
                                 playNavSound();
-                                state = State::HUB_MENU;
-                                drawHub();
+                                state = State::VAULT_MENU;
+                                drawVaultMenu();
                             }
                         }
                     }

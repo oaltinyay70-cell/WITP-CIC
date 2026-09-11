@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-M.U.T.H.U.R PWS Binary Extractor CLI
+W.U.T.H.U.R PWS Binary Extractor CLI
 Extracts header, AAR, SIGINT, and ships from a .pws file and writes JSON output.
 Usage: python pws_extractor.py <input.pws> <output.json>
 """

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-M.U.T.H.U.R AI Staff Officer Sidecar
+W.U.T.H.U.R AI Staff Officer Sidecar
 Supports:
 1. Google Gemini (Cloud API via google-genai)
 2. Local Models (Ollama, LM Studio via standard OpenAI-compatible HTTP API)
@@ -71,7 +71,7 @@ def get_gemini_api_key(cfg):
                 pass
     return ""
 
-SYSTEM_PROMPT = """You are MUTHR (Military Unit Tactical Helper & Resource), a World War 2 Pacific Theater 
+SYSTEM_PROMPT = """You are W.U.T.H.U.R, a World War 2 Pacific Theater 
 intelligence staff officer assigned to the Allied Combined Intelligence Center.
 
 You have access to operational reports, SIGINT intercepts, after action reports, and ship 
@@ -206,7 +206,7 @@ def main():
                     if not key:
                         send_response({
                             "type": "error",
-                            "text": "Gemini API key is not configured.\nGo to SETTINGS -> AI MODEL CONFIGURATION in M.U.T.H.U.R to enter your key or switch to a Local Model (Ollama).\n(Get a free key from https://aistudio.google.com)"
+                            "text": "Gemini API key is not configured.\nGo to SETTINGS -> AI MODEL CONFIGURATION in W.U.T.H.U.R to enter your key or switch to a Local Model (Ollama).\n(Get a free key from https://aistudio.google.com)"
                         })
                         continue
                         
