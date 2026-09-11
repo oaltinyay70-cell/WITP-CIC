@@ -257,8 +257,8 @@ namespace ui {
                 "    - Ops/Combat Reps  : Absolute certainty (90% - 100%).",
                 " ",
                 " When the engine determines a CONFIDENCE LVL above 90%, the indicator",
-                " inside the Item Detail Modal will BLINK at a gentle 2/3 times per second",
-                " (0.67 Hz) frequency. This signifies confirmed intelligence that requires attention.",
+                " inside the Item Detail Modal will BLINK at a rate of once every second",
+                " (1.0 Hz) frequency. This signifies confirmed intelligence that requires attention.",
                 " The main board listing remains completely static for comfortable reading.",
                 "",
                 " 5. NAVIGATION",
@@ -1188,9 +1188,9 @@ namespace ui {
             modal_solidity_y = current_y;
             gotoxy(box_left + 3, current_y);
             if (item.solidity > 90) {
-                // Blink for confidence level above 90% (2/3 times per second = 0.67 Hz)
+                // Blink for confidence level above 90% (once every second = 1.0 Hz)
                 setColor(10);
-                std::cout << "\033[6m" << "CONFIDENCE LVL: " << item.solidity << "%  [CONFIRMED INTEL]" << "\033[0m";
+                std::cout << "CONFIDENCE LVL: " << item.solidity << "%  [CONFIRMED INTEL]";
             } else {
                 setColor(10);
                 std::cout << "CONFIDENCE LVL: ";
@@ -1225,7 +1225,7 @@ namespace ui {
             gotoxy(box_left + 3, modal_solidity_y);
             if (phase) {
                 setColor(10);
-                std::cout << "\033[6m" << "CONFIDENCE LVL: " << item.solidity << "%  [CONFIRMED INTEL]" << "\033[0m";
+                std::cout << "CONFIDENCE LVL: " << item.solidity << "%  [CONFIRMED INTEL]";
             } else {
                 setColor(2);
                 std::cout << "CONFIDENCE LVL: " << item.solidity << "%  [CONFIRMED INTEL]";
@@ -1239,7 +1239,7 @@ namespace ui {
                     if (phase) {
                         setColor(10); // Bright Green
                     } else {
-                        setColor(2);  // Dim Dark Green (flashes at 4 Hz)
+                        setColor(2);  // Dim Dark Green (flashes at 1 Hz)
                     }
                     std::cout << current_menu[i].title;
                 }
@@ -1339,7 +1339,7 @@ namespace ui {
             bool blink_phase = false;
 
             while(running) {
-                DWORD wait_res = WaitForSingleObject(hIn, 750); // 750ms half-cycle = 1500ms period = 2/3 blinks per second (0.67 Hz)
+                DWORD wait_res = WaitForSingleObject(hIn, 500); // 500ms half-cycle = 1000ms period = 1 blink per second (1.0 Hz)
                 if (wait_res == WAIT_TIMEOUT) {
                     blink_phase = !blink_phase;
                     if (state == State::MODAL_INFO) {
