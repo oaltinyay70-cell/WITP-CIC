@@ -249,15 +249,15 @@ namespace ui {
                 "                cruisers (CA), Tankers, Task Forces (TF), and major land",
                 "                elements (Corps, Commands, Divisions, Brigades, Regiments).",
                 "",
-                " 4. SOLIDITY AND BLINKING",
+                " 4. CONFIDENCE LVL AND BLINKING",
                 " ------------------------------------------------------------------------------",
-                " 'SOLIDITY' measures the confidence level and reliability of an intel report.",
+                " 'CONFIDENCE LVL' measures the reliability and certainty of an intel report.",
                 "    - SIGINT Reports   : Moderate confidence (60% - 80%).",
                 "    - Ops/Combat Reps  : Absolute certainty (90% - 100%).",
                 " ",
-                " When the engine determines a Solidity of 90% or greater, the indicator",
-                " inside the Item Detail Modal will BLINK 2 TIMES PER SECOND (2 Hz).",
-                " This signifies confirmed intelligence that requires your attention.",
+                " When the engine determines a CONFIDENCE LVL above 90%, the indicator",
+                " inside the Item Detail Modal will BLINK at a gentle 2/3 times per second",
+                " (0.67 Hz) frequency. This signifies confirmed intelligence that requires attention.",
                 " The main board listing remains completely static for comfortable reading.",
                 "",
                 " 5. NAVIGATION",
@@ -1141,17 +1141,17 @@ namespace ui {
                 std::cout << line;
             }
 
-            // Solidity
+            // Confidence Level
             current_y++;
             modal_solidity_y = current_y;
             gotoxy(box_left + 3, current_y);
-            if (item.solidity >= 90) {
-                // Blink for high confidence (4 times per second)
+            if (item.solidity > 90) {
+                // Blink for confidence level above 90% (2/3 times per second = 0.67 Hz)
                 setColor(10);
-                std::cout << "\033[6m" << "SOLIDITY: " << item.solidity << "%  [CONFIRMED INTEL]" << "\033[0m";
+                std::cout << "\033[6m" << "CONFIDENCE LVL: " << item.solidity << "%  [CONFIRMED INTEL]" << "\033[0m";
             } else {
                 setColor(10);
-                std::cout << "SOLIDITY: ";
+                std::cout << "CONFIDENCE LVL: ";
                 setColor(15);
                 std::cout << item.solidity << "%";
             }
@@ -1178,15 +1178,15 @@ namespace ui {
 
         void updateBlinkModal(bool phase) {
             auto& item = current_menu[selected_item];
-            if (item.solidity < 90 || modal_solidity_y <= 0) return;
+            if (item.solidity <= 90 || modal_solidity_y <= 0) return;
             int box_left = 6;
             gotoxy(box_left + 3, modal_solidity_y);
             if (phase) {
                 setColor(10);
-                std::cout << "\033[6m" << "SOLIDITY: " << item.solidity << "%  [CONFIRMED INTEL]" << "\033[0m";
+                std::cout << "\033[6m" << "CONFIDENCE LVL: " << item.solidity << "%  [CONFIRMED INTEL]" << "\033[0m";
             } else {
                 setColor(2);
-                std::cout << "SOLIDITY: " << item.solidity << "%  [CONFIRMED INTEL]";
+                std::cout << "CONFIDENCE LVL: " << item.solidity << "%  [CONFIRMED INTEL]";
             }
         }
 
@@ -1296,7 +1296,7 @@ namespace ui {
             bool blink_phase = false;
 
             while(running) {
-                DWORD wait_res = WaitForSingleObject(hIn, 250); // 250ms half-cycle = 500ms period = 2 full blinks per second (2 Hz)
+                DWORD wait_res = WaitForSingleObject(hIn, 750); // 750ms half-cycle = 1500ms period = 2/3 blinks per second (0.67 Hz)
                 if (wait_res == WAIT_TIMEOUT) {
                     blink_phase = !blink_phase;
                     if (state == State::MODAL_INFO) {
