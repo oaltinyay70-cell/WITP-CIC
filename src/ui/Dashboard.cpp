@@ -1,4 +1,7 @@
 #include "Dashboard.hpp"
+#include "../storage/CampaignVault.hpp"
+#include "../parsers/PWSParser.hpp"
+#include "../ai/StaffOfficer.hpp"
 #include <windows.h>
 #include <iostream>
 #include <vector>
@@ -9,7 +12,7 @@
 
 namespace ui {
 
-    enum class State { HUB_MENU, MAIN, MODAL_INFO, MODAL_EXIT, LIST_VIEW, WIKI_VIEW, DIR_CONFIG, DIR_BROWSER };
+    enum class State { HUB_MENU, MAIN, MODAL_INFO, MODAL_EXIT, LIST_VIEW, WIKI_VIEW, DIR_CONFIG, DIR_BROWSER, CAMPAIGN_MGR, AI_CHAT };
     enum class ItemType { EXIT, BACK, INTEL, MORE_CRITICAL, MORE_HVT, MORE_DISCOVERED };
 
     struct MenuItem {
@@ -46,7 +49,7 @@ namespace ui {
         std::vector<std::string> data_dirs;
         int dir_selected = -1; // -1 = input field, 0+ = listed dir index
         std::string dir_error_msg = "";
-        const int HUB_ITEMS = 5;
+        const int HUB_ITEMS = 6;
         
         // Directory browser
         std::filesystem::path browser_path;
@@ -60,6 +63,24 @@ namespace ui {
         // Wiki state
         int wiki_scroll = 0;
         std::vector<std::string> wiki_content;
+
+        // Storage & Campaign Vault
+        storage::CampaignVault vault;
+        std::string vault_root;
+        std::vector<std::string> campaign_list;
+        int campaign_selected = 0;
+        std::string campaign_input_name = "";
+        std::string vault_status_msg = "";
+        bool campaign_input_mode = false;
+        bool zip_import_mode = false;
+        std::string zip_import_path = "";
+
+        // AI Staff Officer
+        ai::StaffOfficer ai_officer;
+        std::string chat_input = "";
+        std::vector<std::pair<std::string, std::string>> chat_history;
+        int chat_scroll = 0;
+        std::string ai_status_msg = "";
 
     public:
         InteractiveTUI(engine::IntelligenceEngine& eng) : engine(eng) {
@@ -224,6 +245,28 @@ namespace ui {
                 " Press ENTER to view detailed intelligence assessments.",
                 " Press ESC multiple times to return to the Hub or Exit."
             };
+
+            // Setup Vault Root
+            std::string default_vault_root = "data/muthr_vaults";
+            for (char c = 'C'; c <= 'Z'; ++c) {
+                std::string parent_save = std::string(1, c) + ":\\Matrix Games\\War in the Pacific Admiral's Edition\\SAVE";
+                if (std::filesystem::exists(parent_save) && std::filesystem::is_directory(parent_save)) {
+                    default_vault_root = parent_save + "\\muthr_vaults";
+                    break;
+                }
+            }
+            std::filesystem::create_directories(default_vault_root);
+            vault_root = default_vault_root;
+            
+            // Discover existing campaigns
+            campaign_list = storage::CampaignVault::listCampaigns(vault_root);
+            if (campaign_list.empty()) {
+                vault.create(vault_root, "Pacific 1941");
+                campaign_list.push_back("Pacific 1941");
+            } else {
+                vault.load((std::filesystem::path(vault_root) / campaign_list[0]).string());
+            }
+            chat_history = vault.loadChatHistory();
         }
 
     private:
@@ -380,14 +423,25 @@ namespace ui {
      |_|  |_|  \___/    |_|   |_| |_|  \___/  |_| \_\
 )" << "\n";
             std::cout << "     INTERFACE 1943.12 INITIALIZED\n";
-            std::cout << "     ============================================================\n\n";
+            std::cout << "     ============================================================\n";
+            setColor(10);
+            std::cout << "     [ ACTIVE CAMPAIGN: " << vault.meta.name << " ]\n";
+            setColor(2);
+            std::cout << "     Vault Storage: " << vault.vault_path << "\n\n";
             
-            std::string hub_items[5] = {"ALLIED WAR ROOM", "JAPANESE WAR ROOM", "WIKI", "ADD FILES TO PROCESS", "PREFERENCES"};
+            std::string hub_items[6] = {
+                "ALLIED WAR ROOM", 
+                "JAPANESE WAR ROOM", 
+                "AI STAFF OFFICER", 
+                "CAMPAIGN VAULT (MANAGE / EXPORT)", 
+                "WIKI & MANUAL", 
+                "ADD FILES TO PROCESS"
+            };
             for(int i=0; i<HUB_ITEMS; i++) {
                 if (i == hub_selected_item) {
                     setColor(160);
                     std::cout << "     " << hub_items[i];
-                    for(size_t j=hub_items[i].length(); j<25; j++) std::cout << " ";
+                    for(size_t j=hub_items[i].length(); j<35; j++) std::cout << " ";
                     std::cout << "\n";
                 } else {
                     setColor(2);
@@ -401,12 +455,12 @@ namespace ui {
             
             setColor(2);
             gotoxy(box_left, box_top); std::cout << "+---------------------------------+";
-            gotoxy(box_left, box_top+1); std::cout << "| "; setColor(10); std::cout << "WHAT'S NEW - v0.01             "; setColor(2); std::cout << "|";
+            gotoxy(box_left, box_top+1); std::cout << "| "; setColor(10); std::cout << "WHAT'S NEW - v0.02             "; setColor(2); std::cout << "|";
             gotoxy(box_left, box_top+2); std::cout << "|---------------------------------|";
-            gotoxy(box_left, box_top+3); std::cout << "| "; setColor(10); std::cout << "- MUTHUR CRT Interface         "; setColor(2); std::cout << "|";
-            gotoxy(box_left, box_top+4); std::cout << "| "; setColor(10); std::cout << "- Directory Config feature     "; setColor(2); std::cout << "|";
-            gotoxy(box_left, box_top+5); std::cout << "| "; setColor(10); std::cout << "- Tactical Early Warnings      "; setColor(2); std::cout << "|";
-            gotoxy(box_left, box_top+6); std::cout << "| "; setColor(10); std::cout << "- HVT & Discovered Tracking    "; setColor(2); std::cout << "|";
+            gotoxy(box_left, box_top+3); std::cout << "| "; setColor(10); std::cout << "- Campaign Vault Storage       "; setColor(2); std::cout << "|";
+            gotoxy(box_left, box_top+4); std::cout << "| "; setColor(10); std::cout << "- ZIP Export & Import          "; setColor(2); std::cout << "|";
+            gotoxy(box_left, box_top+5); std::cout << "| "; setColor(10); std::cout << "- PWS Binary Auto-Extraction   "; setColor(2); std::cout << "|";
+            gotoxy(box_left, box_top+6); std::cout << "| "; setColor(10); std::cout << "- AI Staff Officer Chat        "; setColor(2); std::cout << "|";
             gotoxy(box_left, box_top+7); std::cout << "+---------------------------------+";
             
             // Get window height and position the version at the bottom
@@ -415,7 +469,7 @@ namespace ui {
             int bottom = csbi.srWindow.Bottom - csbi.srWindow.Top;
             gotoxy(64, bottom);
             setColor(10);
-            std::cout << "v0.01";
+            std::cout << "v0.02";
             setColor(2);
         }
 
@@ -468,6 +522,13 @@ namespace ui {
                 std::cout << current_menu[i].title;
                 setColor(2); // reset to dark green
             }
+
+            CONSOLE_SCREEN_BUFFER_INFO csbi;
+            GetConsoleScreenBufferInfo(hOut, &csbi);
+            int b_line = csbi.srWindow.Bottom - csbi.srWindow.Top;
+            gotoxy(2, b_line);
+            setColor(2);
+            std::cout << "[A] AI Staff Officer  |  [C/H/D] Jump  |  [X] Logout  |  [ENTER] Inspect";
         }
 
         void drawListView() {
@@ -568,6 +629,140 @@ namespace ui {
                 std::cout << "-------------------------------------------------------------------------------\n";
                 std::cout << " UP/DOWN: Scroll  |  ENTER/ESC: Return to M.U.T.H.U.R\n";
             }
+        }
+
+        void drawCampaignMgr() {
+            clear();
+            setColor(2);
+            std::cout << "===============================================================================\n";
+            setColor(10);
+            std::cout << " [ CAMPAIGN VAULT MANAGER & PORTABILITY ]\n";
+            setColor(2);
+            std::cout << "===============================================================================\n\n";
+
+            if (!vault_status_msg.empty()) {
+                setColor(12);
+                std::cout << " " << vault_status_msg << "\n\n";
+                setColor(2);
+            }
+
+            setColor(10);
+            std::cout << " Current Active Vault:\n";
+            setColor(15);
+            std::cout << "   Name     : " << vault.meta.name << "\n";
+            std::cout << "   Location : " << vault.vault_path << "\n";
+            if (!vault.meta.scenario.empty()) {
+                std::cout << "   Scenario : " << vault.meta.scenario << "\n";
+            }
+            setColor(2);
+            std::cout << " -------------------------------------------------------------------------------\n\n";
+
+            setColor(10);
+            std::cout << " AVAILABLE CAMPAIGN VAULTS (in " << vault_root << "):\n\n";
+
+            campaign_list = storage::CampaignVault::listCampaigns(vault_root);
+            if (campaign_list.empty()) {
+                setColor(2);
+                std::cout << "   (No campaigns found)\n\n";
+            } else {
+                for (int i = 0; i < (int)campaign_list.size(); ++i) {
+                    bool isActive = (campaign_list[i] == vault.meta.name);
+                    if (i == campaign_selected) {
+                        setColor(160);
+                        std::cout << "   [" << (i + 1) << "] " << campaign_list[i];
+                        if (isActive) std::cout << "  (ACTIVE)";
+                        for (size_t p = campaign_list[i].length() + (isActive ? 10 : 0); p < 45; ++p) std::cout << " ";
+                    } else {
+                        setColor(isActive ? 10 : 2);
+                        std::cout << "   [" << (i + 1) << "] " << campaign_list[i];
+                        if (isActive) std::cout << "  (ACTIVE)";
+                    }
+                    std::cout << "\n";
+                }
+                std::cout << "\n";
+            }
+
+            setColor(2);
+            std::cout << " -------------------------------------------------------------------------------\n";
+            if (campaign_input_mode) {
+                setColor(10);
+                std::cout << " ENTER NEW CAMPAIGN NAME: ";
+                setColor(15);
+                std::cout << campaign_input_name << "_\n\n";
+                setColor(2);
+                std::cout << " [ENTER] Create Vault  |  [ESC] Cancel\n";
+            } else if (zip_import_mode) {
+                setColor(10);
+                std::cout << " ENTER PATH TO IMPORT .ZIP: ";
+                setColor(15);
+                std::cout << zip_import_path << "_\n\n";
+                setColor(2);
+                std::cout << " [ENTER] Import Archive  |  [ESC] Cancel\n";
+            } else {
+                setColor(10);
+                std::cout << " [ENTER] Switch Vault  |  [N] New Vault  |  [E] Export ZIP  |  [I] Import ZIP\n";
+                setColor(2);
+                std::cout << " [ESC] Return to Hub\n";
+            }
+        }
+
+        void drawAIChat() {
+            clear();
+            setColor(2);
+            std::cout << "===============================================================================\n";
+            setColor(10);
+            std::cout << " [ M.U.T.H.U.R TACTICAL STAFF OFFICER ]              Campaign: " << vault.meta.name << "\n";
+            setColor(2);
+            std::cout << "===============================================================================\n";
+
+            if (!ai_status_msg.empty()) {
+                setColor(14);
+                std::cout << " >>> " << ai_status_msg << "\n";
+                setColor(2);
+                std::cout << "-------------------------------------------------------------------------------\n";
+            }
+
+            int start_idx = 0;
+            if (chat_history.size() > 4) {
+                start_idx = (int)chat_history.size() - 4;
+            }
+
+            if (chat_history.empty()) {
+                setColor(10);
+                std::cout << "\n STAFF OFFICER > Commander, I am standing by to analyze operational intelligence,\n";
+                std::cout << "                 track enemy fleet dispositions, or assess high-value targets.\n";
+                std::cout << "                 Ask any question regarding your current campaign.\n\n";
+            } else {
+                for (size_t i = start_idx; i < chat_history.size(); ++i) {
+                    const auto& item = chat_history[i];
+                    if (item.first == "user" || item.first == "COMMANDER") {
+                        setColor(15);
+                        std::cout << " COMMANDER > ";
+                        setColor(10);
+                        std::cout << item.second << "\n\n";
+                    } else {
+                        setColor(14);
+                        std::cout << " STAFF OFFICER > ";
+                        setColor(10);
+                        auto wrapped = wordWrap(item.second, 74);
+                        for (size_t wi = 0; wi < wrapped.size(); ++wi) {
+                            if (wi > 0) std::cout << "                 ";
+                            std::cout << wrapped[wi] << "\n";
+                        }
+                        std::cout << "\n";
+                    }
+                }
+            }
+
+            gotoxy(0, 24);
+            setColor(2);
+            std::cout << "-------------------------------------------------------------------------------\n";
+            setColor(10);
+            std::cout << " ASK STAFF OFFICER > ";
+            setColor(15);
+            std::cout << chat_input << "_";
+            setColor(2);
+            std::cout << "\n [ENTER] Transmit Query  |  [ESC] Return\n";
         }
 
         void drawDirConfig() {
@@ -838,6 +1033,8 @@ namespace ui {
             else if (state == State::WIKI_VIEW) drawWiki();
             else if (state == State::DIR_CONFIG) drawDirConfig();
             else if (state == State::DIR_BROWSER) drawDirBrowser();
+            else if (state == State::CAMPAIGN_MGR) drawCampaignMgr();
+            else if (state == State::AI_CHAT) drawAIChat();
         }
 
     public:
@@ -876,10 +1073,11 @@ namespace ui {
                             else state = State::MAIN;
                             redrawCurrentState();
                             continue;
-                        } else if (state == State::LIST_VIEW || state == State::WIKI_VIEW || state == State::DIR_CONFIG || state == State::DIR_BROWSER) {
+                        } else if (state == State::LIST_VIEW || state == State::WIKI_VIEW || state == State::DIR_CONFIG || state == State::DIR_BROWSER || state == State::CAMPAIGN_MGR || state == State::AI_CHAT) {
                             playNavSound();
                             if (state == State::LIST_VIEW) state = State::MAIN;
                             else if (state == State::DIR_BROWSER) state = State::DIR_CONFIG;
+                            else if (state == State::AI_CHAT && active_war_room != "") state = State::MAIN;
                             else state = State::HUB_MENU;
                             
                             if (state == State::MAIN) loadMainMenu();
@@ -913,13 +1111,55 @@ namespace ui {
                         } else if (key == VK_RETURN) {
                             playSelectSound();
                             if (hub_selected_item == 0 || hub_selected_item == 1) {
-                                // First process directories
+                                // Scan for .pws files in data_dirs and parent folders
+                                for (const auto& dir : data_dirs) {
+                                    if (std::filesystem::exists(dir)) {
+                                        std::filesystem::path p(dir);
+                                        std::vector<std::filesystem::path> check_paths = {p, p.parent_path()};
+                                        for (const auto& cp : check_paths) {
+                                            if (std::filesystem::exists(cp) && std::filesystem::is_directory(cp)) {
+                                                for (const auto& entry : std::filesystem::directory_iterator(cp)) {
+                                                    if (entry.path().extension() == ".pws") {
+                                                        parsers::PWSExtract ext = parsers::PWSParser::parse(entry.path().string());
+                                                        if (!ext.header.game_date.empty()) {
+                                                            vault.meta.scenario = ext.header.scenario;
+                                                            vault.meta.game_version = ext.header.game_version;
+                                                            if (!ext.after_action_report.empty()) {
+                                                                vault.saveReport("aar_" + ext.header.game_date + ".txt", ext.after_action_report);
+                                                            }
+                                                            if (!ext.sigint_report.empty()) {
+                                                                vault.saveReport("sigint_" + ext.header.game_date + ".txt", ext.sigint_report);
+                                                            }
+                                                            vault.saveMeta();
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // Process directories
                                 engine.items.clear();
                                 engine.stats = engine::DataStats();
                                 for (const auto& dir : data_dirs) {
                                     engine.processDirectory(dir);
                                 }
                                 
+                                if (!engine.items.empty()) {
+                                    vault.saveIntelItems(engine.stats.turn_date, engine.items);
+                                    vault.saveMeta();
+                                } else {
+                                    auto historical = vault.loadAllIntel();
+                                    if (!historical.empty()) {
+                                        engine.items = historical;
+                                        engine.stats.turn_date = vault.meta.last_played;
+                                        engine.stats.ops_days = 1;
+                                        engine.stats.combat_days = 1;
+                                        engine.stats.sigint_days = 1;
+                                    }
+                                }
+
                                 if (engine.items.empty()) {
                                     dir_error_msg = "[!] NO VALID ARCHIVE FILES (OPERATIONS/SIGINT) FOUND IN THE CONFIGURED DIRECTORIES.";
                                     dir_selected = -1;
@@ -940,10 +1180,21 @@ namespace ui {
                                         drawWiki();
                                     }
                                 }
-                            } else if (hub_selected_item == 2 || hub_selected_item == 4) {
+                            } else if (hub_selected_item == 2) {
+                                state = State::AI_CHAT;
+                                ai_officer.start(vault.vault_path);
+                                drawAIChat();
+                            } else if (hub_selected_item == 3) {
+                                state = State::CAMPAIGN_MGR;
+                                campaign_selected = 0;
+                                vault_status_msg = "";
+                                campaign_input_mode = false;
+                                zip_import_mode = false;
+                                drawCampaignMgr();
+                            } else if (hub_selected_item == 4) {
                                 state = State::WIKI_VIEW;
                                 drawWiki();
-                            } else if (hub_selected_item == 3) {
+                            } else if (hub_selected_item == 5) {
                                 dir_error_msg = ""; // clear on manual entry
                                 dir_selected = -1;
                                 state = State::DIR_CONFIG;
@@ -1064,6 +1315,180 @@ namespace ui {
                             }
                         }
                     }
+                    else if (state == State::CAMPAIGN_MGR) {
+                        if (campaign_input_mode) {
+                            if (key == VK_ESCAPE) {
+                                campaign_input_mode = false;
+                                campaign_input_name = "";
+                                drawCampaignMgr();
+                            } else if (key == VK_BACK) {
+                                if (!campaign_input_name.empty()) {
+                                    campaign_input_name.pop_back();
+                                    drawCampaignMgr();
+                                }
+                            } else if (key == VK_RETURN) {
+                                if (!campaign_input_name.empty()) {
+                                    vault.create(vault_root, campaign_input_name);
+                                    campaign_list = storage::CampaignVault::listCampaigns(vault_root);
+                                    vault_status_msg = "NEW CAMPAIGN CREATED: " + campaign_input_name;
+                                    campaign_input_mode = false;
+                                    campaign_input_name = "";
+                                    chat_history = vault.loadChatHistory();
+                                    drawCampaignMgr();
+                                }
+                            } else if (ch >= 32 && ch <= 126) {
+                                campaign_input_name += ch;
+                                drawCampaignMgr();
+                            }
+                        } else if (zip_import_mode) {
+                            if (key == VK_ESCAPE) {
+                                zip_import_mode = false;
+                                zip_import_path = "";
+                                drawCampaignMgr();
+                            } else if (key == VK_BACK) {
+                                if (!zip_import_path.empty()) {
+                                    zip_import_path.pop_back();
+                                    drawCampaignMgr();
+                                }
+                            } else if (key == VK_RETURN) {
+                                if (!zip_import_path.empty()) {
+                                    storage::CampaignVault::importZip(vault_root, zip_import_path);
+                                    campaign_list = storage::CampaignVault::listCampaigns(vault_root);
+                                    vault_status_msg = "CAMPAIGN ARCHIVE IMPORTED SUCCESSFULLY!";
+                                    zip_import_mode = false;
+                                    zip_import_path = "";
+                                    drawCampaignMgr();
+                                }
+                            } else if (ch >= 32 && ch <= 126) {
+                                zip_import_path += ch;
+                                drawCampaignMgr();
+                            }
+                        } else {
+                            if (key == VK_UP) {
+                                playNavSound();
+                                if (!campaign_list.empty()) {
+                                    campaign_selected = (campaign_selected - 1 + campaign_list.size()) % campaign_list.size();
+                                    drawCampaignMgr();
+                                }
+                            } else if (key == VK_DOWN || key == VK_TAB) {
+                                playNavSound();
+                                if (!campaign_list.empty()) {
+                                    campaign_selected = (campaign_selected + 1) % campaign_list.size();
+                                    drawCampaignMgr();
+                                }
+                            } else if (key == VK_RETURN) {
+                                playSelectSound();
+                                if (!campaign_list.empty() && campaign_selected < (int)campaign_list.size()) {
+                                    std::string sel_name = campaign_list[campaign_selected];
+                                    vault.load((std::filesystem::path(vault_root) / sel_name).string());
+                                    vault_status_msg = "SWITCHED ACTIVE CAMPAIGN TO: " + sel_name;
+                                    chat_history = vault.loadChatHistory();
+                                    drawCampaignMgr();
+                                }
+                            } else if (ch == 'n' || ch == 'N') {
+                                playNavSound();
+                                campaign_input_mode = true;
+                                campaign_input_name = "";
+                                drawCampaignMgr();
+                            } else if (ch == 'e' || ch == 'E') {
+                                playSelectSound();
+                                std::string zip_p = vault.exportZip();
+                                vault_status_msg = "EXPORTED ARCHIVE: " + zip_p;
+                                drawCampaignMgr();
+                            } else if (ch == 'i' || ch == 'I') {
+                                playNavSound();
+                                zip_import_mode = true;
+                                zip_import_path = "";
+                                drawCampaignMgr();
+                            } else if (key == VK_ESCAPE) {
+                                playNavSound();
+                                state = State::HUB_MENU;
+                                drawHub();
+                            }
+                        }
+                    }
+                    else if (state == State::AI_CHAT) {
+                        if (key == VK_ESCAPE) {
+                            playNavSound();
+                            if (active_war_room != "") {
+                                state = State::MAIN;
+                                loadMainMenu();
+                                drawMain();
+                            } else {
+                                state = State::HUB_MENU;
+                                drawHub();
+                            }
+                        } else if (key == VK_BACK) {
+                            if (!chat_input.empty()) {
+                                chat_input.pop_back();
+                                drawAIChat();
+                            }
+                        } else if (key == VK_RETURN) {
+                            if (!chat_input.empty()) {
+                                std::string user_msg = chat_input;
+                                chat_input = "";
+                                chat_history.push_back({"user", user_msg});
+                                vault.appendChat("user", user_msg);
+                                ai_status_msg = "STAFF OFFICER ANALYZING INTELLIGENCE & COMMUNICATING...";
+                                drawAIChat();
+
+                                ai_officer.sendMessage(user_msg, vault.vault_path);
+
+                                std::string full_response = "";
+                                DWORD start_wait = GetTickCount();
+                                while (GetTickCount() - start_wait < 20000) {
+                                    std::string line = ai_officer.readLine();
+                                    if (!line.empty()) {
+                                        if (line.find("\"type\": \"error\"") != std::string::npos ||
+                                            line.find("\"type\":\"error\"") != std::string::npos) {
+                                            size_t t = line.find("\"text\"");
+                                            if (t != std::string::npos) {
+                                                size_t q1 = line.find("\"", t + 6);
+                                                size_t q2 = line.find("\"", q1 + 1);
+                                                if (q1 != std::string::npos && q2 != std::string::npos) {
+                                                    full_response = "[ADVISORY] " + line.substr(q1 + 1, q2 - q1 - 1);
+                                                }
+                                            }
+                                            break;
+                                        }
+                                        if (line.find("\"text\"") != std::string::npos) {
+                                            size_t t = line.find("\"text\"");
+                                            size_t q1 = line.find("\"", t + 6);
+                                            size_t q2 = line.find("\"", q1 + 1);
+                                            if (q1 != std::string::npos && q2 != std::string::npos) {
+                                                std::string chunk = line.substr(q1 + 1, q2 - q1 - 1);
+                                                for (size_t ci = 0; ci < chunk.length(); ++ci) {
+                                                    if (chunk[ci] == '\\' && ci + 1 < chunk.length() && chunk[ci+1] == 'n') {
+                                                        full_response += '\n';
+                                                        ci++;
+                                                    } else {
+                                                        full_response += chunk[ci];
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        if (line.find("\"done\": true") != std::string::npos ||
+                                            line.find("\"done\":true") != std::string::npos) {
+                                            break;
+                                        }
+                                    }
+                                    Sleep(50);
+                                }
+
+                                if (full_response.empty()) {
+                                    full_response = "Commander, staff officer is awaiting fresh intelligence or connection to Gemini API. Please ensure your GEMINI_API_KEY environment variable is set or saved in ai/api_key.txt.";
+                                }
+
+                                chat_history.push_back({"officer", full_response});
+                                vault.appendChat("assistant", full_response);
+                                ai_status_msg = "";
+                                drawAIChat();
+                            }
+                        } else if (ch >= 32 && ch <= 126) {
+                            chat_input += ch;
+                            drawAIChat();
+                        }
+                    }
                     else if (state == State::MAIN || state == State::LIST_VIEW) {
                         if (key == VK_UP) {
                             playNavSound();
@@ -1073,6 +1498,10 @@ namespace ui {
                             playNavSound();
                             selected_item = (selected_item + 1) % current_menu.size();
                             redrawCurrentState();
+                        } else if (state == State::MAIN && (ch == 'a' || ch == 'A')) {
+                            state = State::AI_CHAT;
+                            ai_officer.start(vault.vault_path);
+                            drawAIChat();
                         } else if (state == State::MAIN && (ch == 'c' || ch == 'C')) {
                             if (first_c_idx != -1) selected_item = first_c_idx; 
                             playNavSound();

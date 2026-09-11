@@ -1,0 +1,21 @@
+# Build outputs
+*.o
+*.obj
+*.lib
+*.pdb
+*.exe
+build/
+zig_extracted/
+zig-windows-x86_64-0.13.0/
+zig.zip
+
+# Python
+__pycache__/
+*.pyc
+ai/api_key.txt
+
+# Scratch
+scratch/
+temp_edit2.py
+update_docs.py
+-
