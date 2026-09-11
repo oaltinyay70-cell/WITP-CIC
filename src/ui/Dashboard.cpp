@@ -56,6 +56,10 @@ namespace ui {
         // Intro screen arts
         std::vector<std::string> intro_arts;
         int current_art_index = 0;
+        
+        // Wiki state
+        int wiki_scroll = 0;
+        std::vector<std::string> wiki_content;
 
     public:
         InteractiveTUI(engine::IntelligenceEngine& eng) : engine(eng) {
@@ -167,6 +171,59 @@ namespace ui {
 )");
 
             current_art_index = rand() % intro_arts.size();
+
+            // Populate WIKI
+            wiki_content = {
+                " M.U.T.H.U.R USER MANUAL & WIKI DATABASE",
+                " ==============================================================================",
+                "",
+                " 1. HOW IT WORKS",
+                " ------------------------------------------------------------------------------",
+                " M.U.T.H.U.R processes your daily output text files from War in the Pacific:",
+                " Admiral's Edition (Operations Reports, SIGINT, Combat Reports). It aggregates",
+                " historical data from the 'SAVE\\archive' folder to extract vital intelligence.",
+                "",
+                " 2. SETUP & DIRECTORIES",
+                " ------------------------------------------------------------------------------",
+                " Use the [ADD FILES TO PROCESS] menu to map your game directory.",
+                " The system requires files to be located in the 'SAVE\\archive' subdirectory.",
+                " If you map the 'SAVE' directory, the engine will automatically adjust to",
+                " process the 'archive' subdirectory. Only text files (.txt) are processed.",
+                "",
+                " 3. INTELLIGENCE KEYWORDS",
+                " ------------------------------------------------------------------------------",
+                " The intelligence engine categorizes parsed reports using specific keywords:",
+                " ",
+                "  > [CRITICAL] : Tactical early warnings.",
+                "      Triggers: 'loaded on', 'moving to', 'Invasion', 'Amphibious'.",
+                "      Meaning : Imminent enemy operations or major movements.",
+                " ",
+                "  > [DISCOVERED] : Allied unit exposure.",
+                "      Triggers: 'sighted over', 'shadowed by', 'observes Japanese'.",
+                "      Meaning : The enemy has spotted your forces, task forces, or bases.",
+                " ",
+                "  > [HVT] : High Value Target Tracker.",
+                "      Triggers: Mentions of massive strategic assets.",
+                "      Meaning : Tracks carriers (CV, CVL, CVE), battleships (BB), heavy",
+                "                cruisers (CA), Tankers, Task Forces (TF), and major land",
+                "                elements (Corps, Commands, Divisions, Brigades, Regiments).",
+                "",
+                " 4. SOLIDITY AND BLINKING",
+                " ------------------------------------------------------------------------------",
+                " 'SOLIDITY' measures the confidence level and reliability of an intel report.",
+                "    - SIGINT Reports   : Moderate confidence (60% - 80%).",
+                "    - Ops/Combat Reps  : Absolute certainty (90% - 100%).",
+                " ",
+                " When the engine determines a Solidity of 90% or greater, the solidity",
+                " indicator will BLINK RAPIDLY. This signifies highly reliable, confirmed",
+                " intelligence that requires your immediate attention.",
+                "",
+                " 5. NAVIGATION",
+                " ------------------------------------------------------------------------------",
+                " Use UP/DOWN arrows to navigate menus and lists.",
+                " Press ENTER to view detailed intelligence assessments.",
+                " Press ESC multiple times to return to the Hub or Exit."
+            };
         }
 
     private:
@@ -471,22 +528,46 @@ namespace ui {
             setColor(2);
             std::cout << "===============================================================================\n";
             setColor(10);
-            std::cout << " [ M.U.T.H.U.R WIKI DATABASE ]\n";
+            if (hub_selected_item == 1) {
+                std::cout << " [ JAPANESE WAR ROOM ]\n";
+            } else {
+                std::cout << " [ M.U.T.H.U.R WIKI DATABASE ]\n";
+            }
             setColor(2);
             std::cout << "===============================================================================\n\n";
-            setColor(10);
-            std::cout << "\n\n\n";
-            std::cout << "                   +--------------------------------------+\n";
-            std::cout << "                   |                                      |\n";
-            std::cout << "                   |   [ SECTION UNDER DEVELOPMENT ]      |\n";
-            std::cout << "                   |                                      |\n";
-            std::cout << "                   |   This module is not yet active.      |\n";
-            std::cout << "                   |   Check back in a future release.     |\n";
-            std::cout << "                   |                                      |\n";
-            std::cout << "                   +--------------------------------------+\n\n\n";
             
-            setColor(2);
-            std::cout << "                   Press ESC or ENTER to return.\n";
+            if (hub_selected_item == 1) {
+                setColor(10);
+                std::cout << "\n\n\n";
+                std::cout << "                   +--------------------------------------+\n";
+                std::cout << "                   |                                      |\n";
+                std::cout << "                   |   [ SECTION UNDER DEVELOPMENT ]      |\n";
+                std::cout << "                   |                                      |\n";
+                std::cout << "                   |   This module is not yet active.     |\n";
+                std::cout << "                   |   Check back in a future release.    |\n";
+                std::cout << "                   |                                      |\n";
+                std::cout << "                   +--------------------------------------+\n\n\n";
+            } else {
+                int max_lines = 16;
+                if (wiki_scroll < 0) wiki_scroll = 0;
+                if (wiki_scroll > (int)wiki_content.size() - max_lines && wiki_content.size() > max_lines) {
+                    wiki_scroll = (int)wiki_content.size() - max_lines;
+                }
+                
+                setColor(10);
+                for (int i = 0; i < max_lines; ++i) {
+                    int idx = wiki_scroll + i;
+                    if (idx < (int)wiki_content.size()) {
+                        std::cout << wiki_content[idx] << "\n";
+                    } else {
+                        std::cout << "\n";
+                    }
+                }
+                
+                setColor(2);
+                std::cout << "-------------------------------------------------------------------------------\n";
+                std::cout << " UP/DOWN: Scroll  |  ENTER/ESC: Return to M.U.T.H.U.R\n";
+            }
         }
 
         void drawDirConfig() {
@@ -886,7 +967,17 @@ namespace ui {
                         }
                     }
                     else if (state == State::WIKI_VIEW) {
-                        if (key == VK_RETURN || key == VK_ESCAPE) {
+                        if (key == VK_UP) {
+                            if (wiki_scroll > 0) {
+                                wiki_scroll--;
+                                drawWiki();
+                            }
+                        } else if (key == VK_DOWN) {
+                            if (wiki_scroll < (int)wiki_content.size() - 16) {
+                                wiki_scroll++;
+                                drawWiki();
+                            }
+                        } else if (key == VK_RETURN || key == VK_ESCAPE) {
                             playNavSound();
                             state = State::HUB_MENU;
                             drawHub();
