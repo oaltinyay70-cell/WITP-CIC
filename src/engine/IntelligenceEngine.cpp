@@ -39,9 +39,14 @@ namespace engine {
         int sigint_min = 999999, sigint_max = 0;
         int combat_min = 999999, combat_max = 0;
 
-        if (!fs::exists(path)) return;
+        fs::path target_path = path;
+        if (target_path.filename() != "archive" && fs::exists(target_path / "archive") && fs::is_directory(target_path / "archive")) {
+            target_path /= "archive";
+        }
+        
+        if (!fs::exists(target_path)) return;
 
-        for (const auto& entry : fs::directory_iterator(path)) {
+        for (const auto& entry : fs::directory_iterator(target_path)) {
             if (entry.path().extension() != ".txt") continue;
 
             std::ifstream file(entry.path());
@@ -83,6 +88,21 @@ namespace engine {
                     break;
                 } else if (containsIgnoreCase(line, "COMBAT REPORT") || containsIgnoreCase(line, "AFTER ACTION")) {
                     file_type = 3; is_valid_report = true;
+                    // Usually combat reports don't have "FOR xx/xx/xx" on the same line, or they do.
+                    // Let's attempt to find "FOR " just in case, or default to the most recent ops date if not available.
+                    size_t pos = line.find("FOR ");
+                    if (pos != std::string::npos && pos + 4 < line.length()) {
+                        dateStr = line.substr(pos + 4);
+                        days = parseDateToDays(dateStr);
+                        if (days > 0) {
+                            if (days < combat_min) combat_min = days;
+                            if (days > combat_max) combat_max = days;
+                            stats.turn_date = dateStr;
+                        }
+                    } else {
+                        // Sometimes combat reports have the date on the next line or don't have it clearly.
+                        // We will just assume it is synced with the others if missing, or we leave it.
+                    }
                     break;
                 }
             }

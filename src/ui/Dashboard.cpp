@@ -375,7 +375,7 @@ namespace ui {
             std::cout << " [ DATA SOURCES SYNCED ]\n";
             setColor(2);
             std::cout << " > Operations Reports : Last " << (stats.ops_days == 0 ? 1 : stats.ops_days) << " Days\n";
-            std::cout << " > Combat Reports     : Last " << (stats.combat_days == 0 ? 1 : stats.combat_days) << " Days\n";
+            std::cout << " > Combat Reports     : Last " << (stats.combat_days == 0 ? (stats.ops_days == 0 ? 1 : stats.ops_days) : stats.combat_days) << " Days\n";
             std::cout << " > SIGINT             : Last " << (stats.sigint_days == 0 ? 1 : stats.sigint_days) << " Days\n";
             setColor(2);
             std::cout << "-------------------------------------------------------------------------------\n\n";
