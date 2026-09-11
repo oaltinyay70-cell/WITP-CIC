@@ -6,13 +6,15 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <fstream>
+#include <sstream>
 #include <filesystem>
 #include <cstdlib>
 #include <ctime>
 
 namespace ui {
 
-    enum class State { HUB_MENU, MAIN, MODAL_INFO, MODAL_EXIT, LIST_VIEW, WIKI_VIEW, DIR_CONFIG, DIR_BROWSER, CAMPAIGN_MGR, AI_CHAT };
+    enum class State { HUB_MENU, MAIN, MODAL_INFO, MODAL_EXIT, LIST_VIEW, WIKI_VIEW, DIR_CONFIG, DIR_BROWSER, CAMPAIGN_MGR, AI_CHAT, SETTINGS_MENU, SETTINGS_AI };
     enum class ItemType { EXIT, BACK, INTEL, MORE_CRITICAL, MORE_HVT, MORE_DISCOVERED };
 
     struct MenuItem {
@@ -21,6 +23,14 @@ namespace ui {
         std::string reasoning;
         int solidity;
         int y_pos;
+    };
+
+    struct AIConfig {
+        std::string provider = "gemini"; // "gemini", "local"
+        std::string gemini_api_key = "";
+        std::string gemini_model = "gemini-2.0-flash";
+        std::string local_endpoint = "http://localhost:11434/v1";
+        std::string local_model = "llama3.2";
     };
 
     class InteractiveTUI {
@@ -49,7 +59,7 @@ namespace ui {
         std::vector<std::string> data_dirs;
         int dir_selected = -1; // -1 = input field, 0+ = listed dir index
         std::string dir_error_msg = "";
-        const int HUB_ITEMS = 6;
+        const int HUB_ITEMS = 7;
         
         // Directory browser
         std::filesystem::path browser_path;
@@ -75,12 +85,21 @@ namespace ui {
         bool zip_import_mode = false;
         std::string zip_import_path = "";
 
-        // AI Staff Officer
+        // AI Staff Officer & Settings
         ai::StaffOfficer ai_officer;
+        AIConfig ai_config;
         std::string chat_input = "";
         std::vector<std::pair<std::string, std::string>> chat_history;
         int chat_scroll = 0;
         std::string ai_status_msg = "";
+
+        // Settings Menu navigation
+        int settings_selected = 0;
+        int ai_settings_selected = 0;
+        bool ai_input_mode = false;
+        int ai_input_field = 0; // 0=key, 1=model, 2=endpoint, 3=local_model
+        std::string ai_input_buffer = "";
+        std::string settings_status_msg = "";
 
     public:
         InteractiveTUI(engine::IntelligenceEngine& eng) : engine(eng) {
@@ -267,9 +286,61 @@ namespace ui {
                 vault.load((std::filesystem::path(vault_root) / campaign_list[0]).string());
             }
             chat_history = vault.loadChatHistory();
+            loadAIConfig();
         }
 
     private:
+        void loadAIConfig() {
+            std::string path = "ai/ai_config.json";
+            if (!std::filesystem::exists(path)) return;
+            std::ifstream ifs(path);
+            if (!ifs) return;
+            std::stringstream ss;
+            ss << ifs.rdbuf();
+            std::string json = ss.str();
+            
+            auto getVal = [&](const std::string& key) -> std::string {
+                std::string pattern = "\"" + key + "\": \"";
+                size_t p = json.find(pattern);
+                if (p == std::string::npos) return "";
+                p += pattern.length();
+                size_t end = json.find("\"", p);
+                if (end == std::string::npos) return "";
+                return json.substr(p, end - p);
+            };
+
+            std::string prov = getVal("provider");
+            if (!prov.empty()) ai_config.provider = prov;
+            std::string key = getVal("gemini_api_key");
+            if (!key.empty()) ai_config.gemini_api_key = key;
+            std::string gm = getVal("gemini_model");
+            if (!gm.empty()) ai_config.gemini_model = gm;
+            std::string ep = getVal("local_endpoint");
+            if (!ep.empty()) ai_config.local_endpoint = ep;
+            std::string lm = getVal("local_model");
+            if (!lm.empty()) ai_config.local_model = lm;
+        }
+
+        void saveAIConfig() {
+            std::filesystem::create_directories("ai");
+            std::ofstream ofs("ai/ai_config.json");
+            ofs << "{\n";
+            ofs << "  \"provider\": \"" << ai_config.provider << "\",\n";
+            ofs << "  \"gemini_api_key\": \"" << ai_config.gemini_api_key << "\",\n";
+            ofs << "  \"gemini_model\": \"" << ai_config.gemini_model << "\",\n";
+            ofs << "  \"local_endpoint\": \"" << ai_config.local_endpoint << "\",\n";
+            ofs << "  \"local_model\": \"" << ai_config.local_model << "\"\n";
+            ofs << "}\n";
+            ofs.close();
+
+            // Also write key to api_key.txt if present
+            if (!ai_config.gemini_api_key.empty()) {
+                std::ofstream kfs("ai/api_key.txt");
+                kfs << ai_config.gemini_api_key;
+                kfs.close();
+            }
+        }
+
         void playNavSound() { Beep(400, 20); }
         void playSelectSound() { Beep(800, 40); }
         void playErrorSound() { Beep(200, 100); }
@@ -429,11 +500,12 @@ namespace ui {
             setColor(2);
             std::cout << "     Vault Storage: " << vault.vault_path << "\n\n";
             
-            std::string hub_items[6] = {
+            std::string hub_items[7] = {
                 "ALLIED WAR ROOM", 
                 "JAPANESE WAR ROOM", 
                 "AI STAFF OFFICER", 
                 "CAMPAIGN VAULT (MANAGE / EXPORT)", 
+                "SETTINGS",
                 "WIKI & MANUAL", 
                 "ADD FILES TO PROCESS"
             };
@@ -765,6 +837,125 @@ namespace ui {
             std::cout << "\n [ENTER] Transmit Query  |  [ESC] Return\n";
         }
 
+        void drawSettingsMenu() {
+            clear();
+            setColor(2);
+            std::cout << "===============================================================================\n";
+            setColor(10);
+            std::cout << " [ M.U.T.H.U.R SYSTEM SETTINGS & PREFERENCES ]\n";
+            setColor(2);
+            std::cout << "===============================================================================\n\n";
+
+            setColor(10);
+            std::cout << " SELECT CONFIGURATION MODULE:\n";
+            setColor(2);
+            std::cout << " -------------------------------------------------------------------------------\n\n";
+
+            std::string s_items[3] = {
+                "AI MENTOR & MODEL CONFIGURATION (Cloud & Local)",
+                "FILE ARCHIVE DIRECTORIES",
+                "[<] RETURN TO M.U.T.H.U.R HUB"
+            };
+
+            for (int i = 0; i < 3; ++i) {
+                if (i == settings_selected) {
+                    setColor(160);
+                    std::cout << "   " << s_items[i];
+                    for (size_t p = s_items[i].length(); p < 60; ++p) std::cout << " ";
+                    std::cout << "\n";
+                } else {
+                    setColor(10);
+                    std::cout << "   " << s_items[i] << "\n";
+                }
+            }
+
+            setColor(2);
+            std::cout << "\n -------------------------------------------------------------------------------\n";
+            std::cout << " UP/DOWN: Navigate  |  ENTER: Select  |  ESC: Return to Hub\n";
+        }
+
+        void drawSettingsAI() {
+            clear();
+            setColor(2);
+            std::cout << "===============================================================================\n";
+            setColor(10);
+            std::cout << " [ AI MENTOR & MODEL CONFIGURATION ]\n";
+            setColor(2);
+            std::cout << "===============================================================================\n\n";
+
+            if (!settings_status_msg.empty()) {
+                setColor(14);
+                std::cout << " >>> " << settings_status_msg << "\n";
+                setColor(2);
+                std::cout << " -------------------------------------------------------------------------------\n\n";
+            }
+
+            setColor(10);
+            std::cout << " ACTIVE MODEL PROVIDER: ";
+            if (ai_config.provider == "local") {
+                setColor(14);
+                std::cout << "[ LOCAL MODEL (OLLAMA / LM STUDIO) - 100% PRIVATE & OFFLINE ]\n";
+            } else {
+                setColor(11);
+                std::cout << "[ GOOGLE GEMINI (CLOUD API) - HIGH INTELLIGENCE ]\n";
+            }
+            setColor(2);
+            std::cout << " -------------------------------------------------------------------------------\n\n";
+
+            std::vector<std::string> labels = {
+                "AI Engine Provider   : " + (ai_config.provider == "local" ? std::string("LOCAL (Ollama/LM Studio)") : std::string("GOOGLE GEMINI (Cloud)")),
+                "Gemini API Key       : " + (ai_config.gemini_api_key.empty() ? std::string("(NOT SET - REQUIRED FOR CLOUD)") : (ai_config.gemini_api_key.substr(0, std::min<size_t>(8, ai_config.gemini_api_key.length())) + "****************")),
+                "Gemini Model Name    : " + ai_config.gemini_model,
+                "Local Server Endpoint: " + ai_config.local_endpoint,
+                "Local Model Name     : " + ai_config.local_model,
+                "[ TEST AI CONNECTION NOW ]"
+            };
+
+            for (int i = 0; i < (int)labels.size(); ++i) {
+                if (i == ai_settings_selected) {
+                    setColor(160);
+                    std::cout << "  " << (i + 1) << ". " << labels[i];
+                    for (size_t p = labels[i].length() + 5; p < 74; ++p) std::cout << " ";
+                    std::cout << "\n";
+                } else {
+                    setColor(10);
+                    std::cout << "  " << (i + 1) << ". " << labels[i] << "\n";
+                }
+            }
+
+            setColor(2);
+            std::cout << "\n -------------------------------------------------------------------------------\n";
+            setColor(10);
+            std::cout << " EXPLANATIONS & INSTRUCTIONS:\n";
+            setColor(2);
+
+            if (ai_config.provider == "gemini") {
+                std::cout << "  - GOOGLE GEMINI: Fast, high-reasoning tactical AI.\n";
+                std::cout << "  - FREE API KEY: Obtain a 100% free key at: https://aistudio.google.com\n";
+                std::cout << "    (No credit card required. Free tier supports up to 15 requests/min).\n";
+                std::cout << "  - Press [ENTER] on Item 2 to enter or update your API key.\n";
+            } else {
+                std::cout << "  - LOCAL MODEL: Runs 100% locally on your computer with complete privacy.\n";
+                std::cout << "  - Zero internet connection required. Free forever.\n";
+                std::cout << "  - PREREQUISITE: Install Ollama (https://ollama.com) or LM Studio.\n";
+                std::cout << "    Run in terminal: 'ollama run llama3.2' (or mistral, qwen2.5).\n";
+                std::cout << "  - Default endpoint: http://localhost:11434/v1\n";
+            }
+
+            setColor(2);
+            std::cout << " -------------------------------------------------------------------------------\n";
+            if (ai_input_mode) {
+                setColor(10);
+                std::cout << " ENTER NEW VALUE: ";
+                setColor(15);
+                std::cout << ai_input_buffer << "_\n";
+                setColor(2);
+                std::cout << " [ENTER] Confirm  |  [ESC] Cancel\n";
+            } else {
+                std::cout << " UP/DOWN: Select  |  ENTER: Toggle/Edit  |  [T] Test Connection  |  ESC: Save & Back\n";
+            }
+        }
+
         void drawDirConfig() {
             clear();
             setColor(2);
@@ -1035,6 +1226,8 @@ namespace ui {
             else if (state == State::DIR_BROWSER) drawDirBrowser();
             else if (state == State::CAMPAIGN_MGR) drawCampaignMgr();
             else if (state == State::AI_CHAT) drawAIChat();
+            else if (state == State::SETTINGS_MENU) drawSettingsMenu();
+            else if (state == State::SETTINGS_AI) drawSettingsAI();
         }
 
     public:
@@ -1072,6 +1265,17 @@ namespace ui {
                             if (current_menu[0].type == ItemType::BACK) state = State::LIST_VIEW;
                             else state = State::MAIN;
                             redrawCurrentState();
+                            continue;
+                        } else if (state == State::SETTINGS_AI) {
+                            playNavSound();
+                            saveAIConfig();
+                            state = State::SETTINGS_MENU;
+                            drawSettingsMenu();
+                            continue;
+                        } else if (state == State::SETTINGS_MENU) {
+                            playNavSound();
+                            state = State::HUB_MENU;
+                            drawHub();
                             continue;
                         } else if (state == State::LIST_VIEW || state == State::WIKI_VIEW || state == State::DIR_CONFIG || state == State::DIR_BROWSER || state == State::CAMPAIGN_MGR || state == State::AI_CHAT) {
                             playNavSound();
@@ -1192,9 +1396,13 @@ namespace ui {
                                 zip_import_mode = false;
                                 drawCampaignMgr();
                             } else if (hub_selected_item == 4) {
+                                state = State::SETTINGS_MENU;
+                                settings_selected = 0;
+                                drawSettingsMenu();
+                            } else if (hub_selected_item == 5) {
                                 state = State::WIKI_VIEW;
                                 drawWiki();
-                            } else if (hub_selected_item == 5) {
+                            } else if (hub_selected_item == 6) {
                                 dir_error_msg = ""; // clear on manual entry
                                 dir_selected = -1;
                                 state = State::DIR_CONFIG;
@@ -1232,6 +1440,165 @@ namespace ui {
                             playNavSound();
                             state = State::HUB_MENU;
                             drawHub();
+                        }
+                    }
+                    else if (state == State::SETTINGS_MENU) {
+                        if (key == VK_UP) {
+                            playNavSound();
+                            settings_selected = (settings_selected - 1 + 3) % 3;
+                            drawSettingsMenu();
+                        } else if (key == VK_DOWN || key == VK_TAB) {
+                            playNavSound();
+                            settings_selected = (settings_selected + 1) % 3;
+                            drawSettingsMenu();
+                        } else if (key == VK_RETURN) {
+                            playSelectSound();
+                            if (settings_selected == 0) {
+                                state = State::SETTINGS_AI;
+                                ai_settings_selected = 0;
+                                ai_input_mode = false;
+                                settings_status_msg = "";
+                                drawSettingsAI();
+                            } else if (settings_selected == 1) {
+                                dir_error_msg = "";
+                                dir_selected = -1;
+                                state = State::DIR_CONFIG;
+                                drawDirConfig();
+                            } else if (settings_selected == 2) {
+                                state = State::HUB_MENU;
+                                drawHub();
+                            }
+                        }
+                    }
+                    else if (state == State::SETTINGS_AI) {
+                        if (ai_input_mode) {
+                            if (key == VK_ESCAPE) {
+                                playNavSound();
+                                ai_input_mode = false;
+                                ai_input_buffer = "";
+                                drawSettingsAI();
+                            } else if (key == VK_BACK) {
+                                if (!ai_input_buffer.empty()) {
+                                    ai_input_buffer.pop_back();
+                                    drawSettingsAI();
+                                }
+                            } else if (key == VK_RETURN) {
+                                playSelectSound();
+                                if (ai_input_field == 0) {
+                                    ai_config.gemini_api_key = ai_input_buffer;
+                                    settings_status_msg = "Gemini API key updated!";
+                                } else if (ai_input_field == 1) {
+                                    ai_config.gemini_model = ai_input_buffer;
+                                    settings_status_msg = "Gemini model updated to: " + ai_input_buffer;
+                                } else if (ai_input_field == 2) {
+                                    ai_config.local_endpoint = ai_input_buffer;
+                                    settings_status_msg = "Local server endpoint updated to: " + ai_input_buffer;
+                                } else if (ai_input_field == 3) {
+                                    ai_config.local_model = ai_input_buffer;
+                                    settings_status_msg = "Local model updated to: " + ai_input_buffer;
+                                }
+                                saveAIConfig();
+                                ai_input_mode = false;
+                                ai_input_buffer = "";
+                                drawSettingsAI();
+                            } else if (ch >= 32 && ch <= 126) {
+                                ai_input_buffer += ch;
+                                drawSettingsAI();
+                            }
+                        } else {
+                            if (key == VK_UP) {
+                                playNavSound();
+                                ai_settings_selected = (ai_settings_selected - 1 + 6) % 6;
+                                drawSettingsAI();
+                            } else if (key == VK_DOWN || key == VK_TAB) {
+                                playNavSound();
+                                ai_settings_selected = (ai_settings_selected + 1) % 6;
+                                drawSettingsAI();
+                            } else if (key == VK_RETURN) {
+                                playSelectSound();
+                                if (ai_settings_selected == 0) {
+                                    ai_config.provider = (ai_config.provider == "gemini") ? "local" : "gemini";
+                                    saveAIConfig();
+                                    settings_status_msg = "Switched active AI provider to: " + (ai_config.provider == "gemini" ? std::string("Google Gemini (Cloud)") : std::string("Local Model (Ollama/LM Studio)"));
+                                    drawSettingsAI();
+                                } else if (ai_settings_selected == 1) {
+                                    ai_input_mode = true;
+                                    ai_input_field = 0;
+                                    ai_input_buffer = ai_config.gemini_api_key;
+                                    drawSettingsAI();
+                                } else if (ai_settings_selected == 2) {
+                                    if (ai_config.gemini_model == "gemini-2.0-flash") ai_config.gemini_model = "gemini-2.5-flash";
+                                    else if (ai_config.gemini_model == "gemini-2.5-flash") ai_config.gemini_model = "gemini-2.5-pro";
+                                    else ai_config.gemini_model = "gemini-2.0-flash";
+                                    saveAIConfig();
+                                    settings_status_msg = "Model selected: " + ai_config.gemini_model;
+                                    drawSettingsAI();
+                                } else if (ai_settings_selected == 3) {
+                                    ai_input_mode = true;
+                                    ai_input_field = 2;
+                                    ai_input_buffer = ai_config.local_endpoint;
+                                    drawSettingsAI();
+                                } else if (ai_settings_selected == 4) {
+                                    ai_input_mode = true;
+                                    ai_input_field = 3;
+                                    ai_input_buffer = ai_config.local_model;
+                                    drawSettingsAI();
+                                } else if (ai_settings_selected == 5) {
+                                    settings_status_msg = "Testing connection to " + (ai_config.provider == "gemini" ? std::string("Gemini API...") : std::string("Local Model..."));
+                                    drawSettingsAI();
+                                    saveAIConfig();
+                                    ai_officer.start(vault.vault_path);
+                                    ai_officer.sendMessage("{\"type\":\"test\"}", vault.vault_path);
+                                    
+                                    std::string resp = "";
+                                    DWORD start_wait = GetTickCount();
+                                    while (GetTickCount() - start_wait < 10000) {
+                                        std::string l = ai_officer.readLine();
+                                        if (!l.empty()) {
+                                            size_t t = l.find("\"text\"");
+                                            if (t != std::string::npos) {
+                                                size_t q1 = l.find("\"", t + 6);
+                                                size_t q2 = l.find("\"", q1 + 1);
+                                                if (q1 != std::string::npos && q2 != std::string::npos) {
+                                                    resp = l.substr(q1 + 1, q2 - q1 - 1);
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        Sleep(50);
+                                    }
+                                    if (resp.empty()) resp = "No response from AI sidecar.";
+                                    settings_status_msg = resp;
+                                    drawSettingsAI();
+                                }
+                            } else if (ch == 't' || ch == 'T') {
+                                ai_settings_selected = 5;
+                                settings_status_msg = "Testing connection...";
+                                drawSettingsAI();
+                                saveAIConfig();
+                                ai_officer.start(vault.vault_path);
+                                ai_officer.sendMessage("{\"type\":\"test\"}", vault.vault_path);
+                                std::string resp = "";
+                                DWORD start_wait = GetTickCount();
+                                while (GetTickCount() - start_wait < 10000) {
+                                    std::string l = ai_officer.readLine();
+                                    if (!l.empty()) {
+                                        size_t t = l.find("\"text\"");
+                                        if (t != std::string::npos) {
+                                            size_t q1 = l.find("\"", t + 6);
+                                            size_t q2 = l.find("\"", q1 + 1);
+                                            if (q1 != std::string::npos && q2 != std::string::npos) {
+                                                resp = l.substr(q1 + 1, q2 - q1 - 1);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    Sleep(50);
+                                }
+                                if (resp.empty()) resp = "No response from AI sidecar.";
+                                settings_status_msg = resp;
+                                drawSettingsAI();
+                            }
                         }
                     }
                     else if (state == State::DIR_CONFIG) {
