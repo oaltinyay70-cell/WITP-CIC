@@ -59,7 +59,17 @@ namespace ui {
     public:
         InteractiveTUI(engine::IntelligenceEngine& eng) : engine(eng) {
             stats = engine.stats;
-            data_dirs.push_back("data/samples"); // default directory
+            
+            // Auto-discover game directory across all drives
+            std::string default_dir = "data/samples"; // fallback
+            for (char c = 'C'; c <= 'Z'; ++c) {
+                std::string test_path = std::string(1, c) + ":\\Matrix Games\\War in the Pacific Admiral's Edition\\SAVE\\archive";
+                if (std::filesystem::exists(test_path) && std::filesystem::is_directory(test_path)) {
+                    default_dir = test_path;
+                    break;
+                }
+            }
+            data_dirs.push_back(default_dir);
             
             srand((unsigned)time(NULL));
             
@@ -661,7 +671,7 @@ namespace ui {
             if (item.solidity >= 90) {
                 // Blink for high confidence
                 setColor(10);
-                std::cout << "\033[5m" << "SOLIDITY: " << item.solidity << "%" << "\033[0m";
+                std::cout << "\033[6m" << "SOLIDITY: " << item.solidity << "%" << "\033[0m";
             } else {
                 setColor(10);
                 std::cout << "SOLIDITY: ";
