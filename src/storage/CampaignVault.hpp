@@ -18,7 +18,7 @@ namespace storage {
     class CampaignVault {
     public:
         CampaignMeta meta;
-        std::string vault_root;  // e.g. "C:\\...\\SAVE\\muthr_vaults"
+        std::string vault_root;  // e.g. "<project_dir>/data/muthr_vaults"
         std::string vault_path;  // vault_root + "/" + campaign_name
         
         // List all existing campaigns in vault_root

@@ -268,17 +268,10 @@ namespace ui {
                 " Press ESC multiple times to return to the Hub or Exit."
             };
 
-            // Setup Vault Root
-            std::string default_vault_root = "data/muthr_vaults";
-            for (char c = 'C'; c <= 'Z'; ++c) {
-                std::string parent_save = std::string(1, c) + ":\\Matrix Games\\War in the Pacific Admiral's Edition\\SAVE";
-                if (std::filesystem::exists(parent_save) && std::filesystem::is_directory(parent_save)) {
-                    default_vault_root = parent_save + "\\muthr_vaults";
-                    break;
-                }
-            }
-            std::filesystem::create_directories(default_vault_root);
-            vault_root = default_vault_root;
+            // Setup Vault Root strictly inside the project directory
+            std::filesystem::path proj_vault = std::filesystem::current_path() / "data" / "muthr_vaults";
+            std::filesystem::create_directories(proj_vault);
+            vault_root = proj_vault.string();
             
             // Discover existing campaigns
             campaign_list = storage::CampaignVault::listCampaigns(vault_root);

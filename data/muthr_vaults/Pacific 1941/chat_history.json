@@ -1,0 +1,11 @@
+[
+  {
+    "role": "user",
+    "text": "do u think they are coming for rabaul"
+  }
+,
+  {
+    "role": "assistant",
+    "text": "Commander, staff officer is awaiting fresh intelligence or connection to Gemini API. Please ensure your GEMINI_API_KEY environment variable is set or saved in ai/api_key.txt."
+  }
+]
