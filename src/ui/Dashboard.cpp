@@ -256,8 +256,8 @@ namespace ui {
                 "    - Ops/Combat Reps  : Absolute certainty (90% - 100%).",
                 " ",
                 " When the engine determines a Solidity of 90% or greater, the indicator",
-                " inside the Item Detail Modal will BLINK RAPIDLY AT 4 TIMES PER SECOND",
-                " (4 Hz). This signifies confirmed intelligence that requires your attention.",
+                " inside the Item Detail Modal will BLINK 2 TIMES PER SECOND (2 Hz).",
+                " This signifies confirmed intelligence that requires your attention.",
                 " The main board listing remains completely static for comfortable reading.",
                 "",
                 " 5. NAVIGATION",
@@ -1296,7 +1296,7 @@ namespace ui {
             bool blink_phase = false;
 
             while(running) {
-                DWORD wait_res = WaitForSingleObject(hIn, 125); // 125ms = 4 full blinks per second (4 Hz)
+                DWORD wait_res = WaitForSingleObject(hIn, 250); // 250ms half-cycle = 500ms period = 2 full blinks per second (2 Hz)
                 if (wait_res == WAIT_TIMEOUT) {
                     blink_phase = !blink_phase;
                     if (state == State::MODAL_INFO) {
