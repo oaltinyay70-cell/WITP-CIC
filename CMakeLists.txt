@@ -15,11 +15,22 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(ftxui)
 
 # Add Executable
-add_executable(witp_cic src/main.cpp src/ui/Dashboard.cpp src/engine/IntelligenceEngine.cpp)
+add_executable(witp_cic 
+  src/main.cpp 
+  src/ui/Dashboard.cpp 
+  src/engine/IntelligenceEngine.cpp
+  src/storage/CampaignVault.cpp
+  src/ai/StaffOfficer.cpp
+  src/parsers/PWSParser.cpp
+)
+
+# Find ZLIB
+find_package(ZLIB REQUIRED)
 
 # Link Libraries
 target_link_libraries(witp_cic
   PRIVATE ftxui::screen
   PRIVATE ftxui::dom
   PRIVATE ftxui::component
+  PRIVATE ZLIB::ZLIB
 )
