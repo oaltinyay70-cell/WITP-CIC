@@ -216,68 +216,68 @@ namespace ui {
 
             // Populate WIKI
             wiki_content = {
-                " W.U.T.H.U.R USER MANUAL & WIKI DATABASE",
-                " ==============================================================================",
+                "   W.U.T.H.U.R USER MANUAL & WIKI DATABASE",
+                "   ==============================================================================",
                 "",
-                " 1. HOW IT WORKS",
-                " ------------------------------------------------------------------------------",
-                " W.U.T.H.U.R processes your daily output text files from War in the Pacific:",
-                " Admiral's Edition (Operations Reports, SIGINT, Combat Reports). It aggregates",
-                " historical data from the 'SAVE\\archive' folder to extract vital intelligence.",
+                "   1. HOW IT WORKS",
+                "   ------------------------------------------------------------------------------",
+                "   W.U.T.H.U.R processes your daily output text files from War in the Pacific:",
+                "   Admiral's Edition (Operations Reports, SIGINT, Combat Reports). It aggregates",
+                "   historical data from the 'SAVE\\archive' folder to extract vital intelligence.",
                 "",
-                " 2. SETUP & DIRECTORIES",
-                " ------------------------------------------------------------------------------",
-                " Use the [ADD/MANAGE CAMPAIGN VAULT] menu to map your game directory.",
-                " The system requires files to be located in the 'SAVE\\archive' subdirectory.",
-                " If you map the 'SAVE' directory, the engine will automatically adjust to",
-                " process the 'archive' subdirectory. Only text files (.txt) are processed.",
+                "   2. SETUP & DIRECTORIES",
+                "   ------------------------------------------------------------------------------",
+                "   Use the [ADD/MANAGE CAMPAIGN VAULT] menu to map your game directory.",
+                "   The system requires files to be located in the 'SAVE\\archive' subdirectory.",
+                "   If you map the 'SAVE' directory, the engine will automatically adjust to",
+                "   process the 'archive' subdirectory. Only text files (.txt) are processed.",
                 "",
-                " 3. INTELLIGENCE KEYWORDS",
-                " ------------------------------------------------------------------------------",
-                " The intelligence engine categorizes parsed reports using specific keywords:",
-                " ",
-                "  > [CRITICAL] : Tactical early warnings.",
-                "      Triggers: 'loaded on', 'moving to', 'Invasion', 'Amphibious'.",
-                "      Meaning : Imminent enemy operations or major movements.",
-                " ",
-                "  > [DISCOVERED] : Allied unit exposure.",
-                "      Triggers: 'sighted over', 'shadowed by', 'observes Japanese'.",
-                "      Meaning : The enemy has spotted your forces, task forces, or bases.",
-                " ",
-                "  > [HVT] : High Value Target Tracker.",
-                "      Triggers: Mentions of massive strategic assets.",
-                "      Meaning : Tracks carriers (CV, CVL, CVE), battleships (BB), heavy",
-                "                cruisers (CA), Tankers, Task Forces (TF), and major land",
-                "                elements (Corps, Commands, Divisions, Brigades, Regiments).",
+                "   3. INTELLIGENCE KEYWORDS",
+                "   ------------------------------------------------------------------------------",
+                "   The intelligence engine categorizes parsed reports using specific keywords:",
+                "   ",
+                "    > [CRITICAL] : Tactical early warnings.",
+                "        Triggers: 'loaded on', 'moving to', 'Invasion', 'Amphibious'.",
+                "        Meaning : Imminent enemy operations or major movements.",
+                "   ",
+                "    > [DISCOVERED] : Allied unit exposure.",
+                "        Triggers: 'sighted over', 'shadowed by', 'observes Japanese'.",
+                "        Meaning : The enemy has spotted your forces, task forces, or bases.",
+                "   ",
+                "    > [HVT] : High Value Target Tracker.",
+                "        Triggers: Mentions of massive strategic assets.",
+                "        Meaning : Tracks carriers (CV, CVL, CVE), battleships (BB), heavy",
+                "                  cruisers (CA), Tankers, Task Forces (TF), and major land",
+                "                  elements (Corps, Commands, Divisions, Brigades, Regiments).",
                 "",
-                " 4. CONFIDENCE LVL AND BLINKING",
-                " ------------------------------------------------------------------------------",
-                " 'CONFIDENCE LVL' measures the reliability and certainty of an intel report.",
-                "    - SIGINT Reports   : Moderate confidence (60% - 80%).",
-                "    - Ops/Combat Reps  : Absolute certainty (90% - 100%).",
-                " ",
-                " When the engine determines a CONFIDENCE LVL above 90%, the indicator",
-                " inside the Item Detail Modal will BLINK at a rate of once every second",
-                " (1.0 Hz) frequency. This signifies confirmed intelligence that requires attention.",
-                " The main board listing remains completely static for comfortable reading.",
+                "   4. CONFIDENCE LVL AND BLINKING",
+                "   ------------------------------------------------------------------------------",
+                "   'CONFIDENCE LVL' measures the reliability and certainty of an intel report.",
+                "      - SIGINT Reports   : Moderate confidence (60% - 80%).",
+                "      - Ops/Combat Reps  : Absolute certainty (90% - 100%).",
+                "   ",
+                "   When the engine determines a CONFIDENCE LVL above 90%, the indicator",
+                "   inside the Item Detail Modal will BLINK at a rate of once every second",
+                "   (1.0 Hz) frequency. This signifies confirmed intelligence that requires attention.",
+                "   The main board listing remains completely static for comfortable reading.",
                 "",
-                " 5. NAVIGATION",
-                " ------------------------------------------------------------------------------",
-                " Use UP/DOWN arrows to navigate menus and lists.",
-                " Press ENTER to view detailed intelligence assessments.",
-                " Press ESC multiple times to return to the Hub or Exit.",
+                "   5. NAVIGATION",
+                "   ------------------------------------------------------------------------------",
+                "   Use UP/DOWN arrows to navigate menus and lists.",
+                "   Press ENTER to view detailed intelligence assessments.",
+                "   Press ESC multiple times to return to the Hub or Exit.",
                 "",
-                " 6. OFFLINE AI / MENTOR SETUP",
-                " ------------------------------------------------------------------------------",
-                " You can run a powerful, offline Google AI (Gemma 2) locally on your PC:",
-                "   1. Download and install 'Ollama' from https://ollama.com",
-                "   2. Open a standard Windows command prompt and type: ollama run gemma2:2b",
-                "   3. Wait for the download to finish, then type: /bye",
-                "   4. Open W.U.T.H.U.R -> SETTINGS -> AI MODEL CONFIGURATION.",
-                "   5. Press ENTER on the Provider to switch it to 'Local Model (Ollama)'.",
-                "   6. Arrow down to 'Local Model Name', press ENTER, type 'gemma2:2b',",
-                "      and press ENTER again.",
-                "   7. Arrow down to [TEST CONNECTION] to confirm it works."
+                "   6. OFFLINE AI / MENTOR SETUP",
+                "   ------------------------------------------------------------------------------",
+                "   You can run a powerful, offline Google AI (Gemma 2) locally on your PC:",
+                "     1. Download and install 'Ollama' from https://ollama.com",
+                "     2. Open a standard Windows command prompt and type: ollama run gemma2:2b",
+                "     3. Wait for the download to finish, then type: /bye",
+                "     4. Open W.U.T.H.U.R -> SETTINGS -> AI MODEL CONFIGURATION.",
+                "     5. Press ENTER on the Provider to switch it to 'Local Model (Ollama)'.",
+                "     6. Arrow down to 'Local Model Name', press ENTER, type 'gemma2:2b',",
+                "        and press ENTER again.",
+                "     7. Arrow down to [TEST CONNECTION] to confirm it works."
             };
 
             // Setup Vault Root strictly inside the project directory
@@ -607,19 +607,19 @@ namespace ui {
         void drawListView() {
             clear();
             setColor(2);
-            std::cout << "===============================================================================\n";
+            std::cout << "  ===============================================================================\n";
             setColor(10);
-            std::cout << " [ " << active_war_room << " COMBAT INFORMATION CENTER ]                     Turn: " << stats.turn_date << "\n";
+            std::cout << "   [ " << active_war_room << " COMBAT INFORMATION CENTER ]                     Turn: " << stats.turn_date << "\n";
             setColor(2);
-            std::cout << "===============================================================================\n";
+            std::cout << "  ===============================================================================\n";
             
             setColor(10);
-            if (list_view_category == engine::IntelCategory::CRITICAL) std::cout << " [ FULL LIST ] CRITICAL ALERTS\n";
-            else if (list_view_category == engine::IntelCategory::HVT) std::cout << " [ FULL LIST ] HIGH VALUE TARGETS\n";
-            else if (list_view_category == engine::IntelCategory::DISCOVERED) std::cout << " [ FULL LIST ] DISCOVERED UNITS\n";
+            if (list_view_category == engine::IntelCategory::CRITICAL) std::cout << "   [ FULL LIST ] CRITICAL ALERTS\n";
+            else if (list_view_category == engine::IntelCategory::HVT) std::cout << "   [ FULL LIST ] HIGH VALUE TARGETS\n";
+            else if (list_view_category == engine::IntelCategory::DISCOVERED) std::cout << "   [ FULL LIST ] DISCOVERED UNITS\n";
             
             setColor(2);
-            std::cout << "-------------------------------------------------------------------------------\n";
+            std::cout << "  -------------------------------------------------------------------------------\n";
             
             // Render Back button
             gotoxy(70, 1);
@@ -637,7 +637,7 @@ namespace ui {
             int draw_y = 5;
             for (int i = 1; i < current_menu.size(); ++i) {
                 if (i >= list_scroll_offset + 1 && i < list_scroll_offset + 1 + MAX_VISIBLE_LIST) {
-                    gotoxy(2, draw_y);
+                    gotoxy(4, draw_y);
                     if (i == selected_item) setColor(160); else setColor(10);
                     std::cout << current_menu[i].title;
                     current_menu[i].y_pos = draw_y; 
@@ -660,27 +660,27 @@ namespace ui {
         void drawWiki() {
             clear();
             setColor(2);
-            std::cout << "===============================================================================\n";
+            std::cout << "  ===============================================================================\n";
             setColor(10);
             if (hub_selected_item == 1) {
-                std::cout << " [ JAPANESE WAR ROOM ]\n";
+                std::cout << "   [ JAPANESE WAR ROOM ]\n";
             } else {
-                std::cout << " [ W.U.T.H.U.R WIKI DATABASE ]\n";
+                std::cout << "   [ W.U.T.H.U.R WIKI DATABASE ]\n";
             }
             setColor(2);
-            std::cout << "===============================================================================\n\n";
+            std::cout << "  ===============================================================================\n\n";
             
             if (hub_selected_item == 1) {
                 setColor(10);
                 std::cout << "\n\n\n";
-                std::cout << "                   +--------------------------------------+\n";
-                std::cout << "                   |                                      |\n";
-                std::cout << "                   |   [ SECTION UNDER DEVELOPMENT ]      |\n";
-                std::cout << "                   |                                      |\n";
-                std::cout << "                   |   This module is not yet active.     |\n";
-                std::cout << "                   |   Check back in a future release.    |\n";
-                std::cout << "                   |                                      |\n";
-                std::cout << "                   +--------------------------------------+\n\n\n";
+                std::cout << "                     +--------------------------------------+\n";
+                std::cout << "                     |                                      |\n";
+                std::cout << "                     |   [ SECTION UNDER DEVELOPMENT ]      |\n";
+                std::cout << "                     |                                      |\n";
+                std::cout << "                     |   This module is not yet active.     |\n";
+                std::cout << "                     |   Check back in a future release.    |\n";
+                std::cout << "                     |                                      |\n";
+                std::cout << "                     +--------------------------------------+\n\n\n";
             } else {
                 int max_lines = 16;
                 if (wiki_scroll < 0) wiki_scroll = 0;
@@ -699,7 +699,7 @@ namespace ui {
                 }
                 
                 setColor(2);
-                std::cout << "-------------------------------------------------------------------------------\n";
+                std::cout << "  -------------------------------------------------------------------------------\n";
                 std::cout << " UP/DOWN: Scroll  |  ENTER/ESC: Return to W.U.T.H.U.R\n";
             }
         }
@@ -707,11 +707,11 @@ namespace ui {
         void drawCampaignMgr() {
             clear();
             setColor(2);
-            std::cout << "===============================================================================\n";
+            std::cout << "  ===============================================================================\n";
             setColor(10);
-            std::cout << " [ CAMPAIGN VAULT MANAGER & PORTABILITY ]\n";
+            std::cout << "   [ CAMPAIGN VAULT MANAGER & PORTABILITY ]\n";
             setColor(2);
-            std::cout << "===============================================================================\n\n";
+            std::cout << "  ===============================================================================\n\n";
 
             if (!vault_status_msg.empty()) {
                 setColor(12);
@@ -722,10 +722,10 @@ namespace ui {
             setColor(10);
             std::cout << " Current Active Vault:\n";
             setColor(15);
-            std::cout << "   Name     : " << vault.meta.name << "\n";
-            std::cout << "   Location : " << vault.vault_path << "\n";
+            std::cout << "     Name     : " << vault.meta.name << "\n";
+            std::cout << "     Location : " << vault.vault_path << "\n";
             if (!vault.meta.scenario.empty()) {
-                std::cout << "   Scenario : " << vault.meta.scenario << "\n";
+                std::cout << "     Scenario : " << vault.meta.scenario << "\n";
             }
             setColor(2);
             std::cout << " -------------------------------------------------------------------------------\n\n";
@@ -736,19 +736,19 @@ namespace ui {
             campaign_list = storage::CampaignVault::listCampaigns(vault_root);
             if (campaign_list.empty()) {
                 setColor(2);
-                std::cout << "   (No campaigns found)\n\n";
+                std::cout << "     (No campaigns found)\n\n";
             } else {
                 for (int i = 0; i < (int)campaign_list.size(); ++i) {
                     bool isActive = (campaign_list[i] == vault.meta.name);
                     if (i == campaign_selected) {
                         setColor(160);
-                        std::cout << "   [" << (i + 1) << "] " << campaign_list[i];
-                        if (isActive) std::cout << "  (ACTIVE)";
+                        std::cout << "     [" << (i + 1) << "] " << campaign_list[i];
+                        if (isActive) std::cout << "    (ACTIVE)";
                         for (size_t p = campaign_list[i].length() + (isActive ? 10 : 0); p < 45; ++p) std::cout << " ";
                     } else {
                         setColor(isActive ? 10 : 2);
-                        std::cout << "   [" << (i + 1) << "] " << campaign_list[i];
-                        if (isActive) std::cout << "  (ACTIVE)";
+                        std::cout << "     [" << (i + 1) << "] " << campaign_list[i];
+                        if (isActive) std::cout << "    (ACTIVE)";
                     }
                     std::cout << "\n";
                 }
@@ -763,36 +763,36 @@ namespace ui {
                 setColor(15);
                 std::cout << campaign_input_name << "_\n\n";
                 setColor(2);
-                std::cout << " [ENTER] Create Vault  |  [ESC] Cancel\n";
+                std::cout << "   [ENTER] Create Vault  |  [ESC] Cancel\n";
             } else if (zip_import_mode) {
                 setColor(10);
                 std::cout << " ENTER PATH TO IMPORT .ZIP: ";
                 setColor(15);
                 std::cout << zip_import_path << "_\n\n";
                 setColor(2);
-                std::cout << " [ENTER] Import Archive  |  [ESC] Cancel\n";
+                std::cout << "   [ENTER] Import Archive  |  [ESC] Cancel\n";
             } else {
                 setColor(10);
-                std::cout << " [ENTER] Switch Vault  |  [N] New Vault  |  [E] Export ZIP  |  [I] Import ZIP\n";
+                std::cout << "   [ENTER] Switch Vault  |  [N] New Vault  |  [E] Export ZIP  |  [I] Import ZIP\n";
                 setColor(2);
-                std::cout << " [ESC] Return to Vault Menu\n";
+                std::cout << "   [ESC] Return to Vault Menu\n";
             }
         }
 
         void drawAIChat() {
             clear();
             setColor(2);
-            std::cout << "===============================================================================\n";
+            std::cout << "  ===============================================================================\n";
             setColor(10);
-            std::cout << " [ W.U.T.H.U.R TACTICAL STAFF OFFICER ]              Campaign: " << vault.meta.name << "\n";
+            std::cout << "   [ W.U.T.H.U.R TACTICAL STAFF OFFICER ]              Campaign: " << vault.meta.name << "\n";
             setColor(2);
-            std::cout << "===============================================================================\n";
+            std::cout << "  ===============================================================================\n";
 
             if (!ai_status_msg.empty()) {
                 setColor(14);
-                std::cout << " >>> " << ai_status_msg << "\n";
+                std::cout << "   >>> " << ai_status_msg << "\n";
                 setColor(2);
-                std::cout << "-------------------------------------------------------------------------------\n";
+                std::cout << "  -------------------------------------------------------------------------------\n";
             }
 
             int start_idx = 0;
@@ -803,8 +803,8 @@ namespace ui {
             if (chat_history.empty()) {
                 setColor(10);
                 std::cout << "\n STAFF OFFICER > Commander, I am standing by to analyze operational intelligence,\n";
-                std::cout << "                 track enemy fleet dispositions, or assess high-value targets.\n";
-                std::cout << "                 Ask any question regarding your current campaign.\n\n";
+                std::cout << "                   track enemy fleet dispositions, or assess high-value targets.\n";
+                std::cout << "                   Ask any question regarding your current campaign.\n\n";
             } else {
                 for (size_t i = start_idx; i < chat_history.size(); ++i) {
                     const auto& item = chat_history[i];
@@ -819,7 +819,7 @@ namespace ui {
                         setColor(10);
                         auto wrapped = wordWrap(item.second, 74);
                         for (size_t wi = 0; wi < wrapped.size(); ++wi) {
-                            if (wi > 0) std::cout << "                 ";
+                            if (wi > 0) std::cout << "                   ";
                             std::cout << wrapped[wi] << "\n";
                         }
                         std::cout << "\n";
@@ -831,9 +831,9 @@ namespace ui {
             GetConsoleScreenBufferInfo(hOut, &csbi);
             int b_line = csbi.srWindow.Bottom - csbi.srWindow.Top;
 
-            gotoxy(0, b_line - 3);
+            gotoxy(2, b_line - 3);
             setColor(2);
-            std::cout << "-------------------------------------------------------------------------------\n";
+            std::cout << "  -------------------------------------------------------------------------------\n";
             setColor(10);
             std::cout << " ASK STAFF OFFICER > ";
             setColor(15);
@@ -845,11 +845,11 @@ namespace ui {
         void drawSettingsMenu() {
             clear();
             setColor(2);
-            std::cout << "===============================================================================\n";
+            std::cout << "  ===============================================================================\n";
             setColor(10);
-            std::cout << " [ W.U.T.H.U.R SYSTEM SETTINGS & PREFERENCES ]\n";
+            std::cout << "   [ W.U.T.H.U.R SYSTEM SETTINGS & PREFERENCES ]\n";
             setColor(2);
-            std::cout << "===============================================================================\n\n";
+            std::cout << "  ===============================================================================\n\n";
 
             setColor(10);
             std::cout << " SELECT CONFIGURATION MODULE:\n";
@@ -865,12 +865,12 @@ namespace ui {
             for (int i = 0; i < 3; ++i) {
                 if (i == settings_selected) {
                     setColor(160);
-                    std::cout << "   " << s_items[i];
+                    std::cout << "     " << s_items[i];
                     for (size_t p = s_items[i].length(); p < 60; ++p) std::cout << " ";
                     std::cout << "\n";
                 } else {
                     setColor(10);
-                    std::cout << "   " << s_items[i] << "\n";
+                    std::cout << "     " << s_items[i] << "\n";
                 }
             }
 
@@ -882,15 +882,15 @@ namespace ui {
         void drawSettingsAI() {
             clear();
             setColor(2);
-            std::cout << "===============================================================================\n";
+            std::cout << "  ===============================================================================\n";
             setColor(10);
-            std::cout << " [ AI MENTOR & MODEL CONFIGURATION ]\n";
+            std::cout << "   [ AI MENTOR & MODEL CONFIGURATION ]\n";
             setColor(2);
-            std::cout << "===============================================================================\n\n";
+            std::cout << "  ===============================================================================\n\n";
 
             if (!settings_status_msg.empty()) {
                 setColor(14);
-                std::cout << " >>> " << settings_status_msg << "\n";
+                std::cout << "   >>> " << settings_status_msg << "\n";
                 setColor(2);
                 std::cout << " -------------------------------------------------------------------------------\n\n";
             }
@@ -919,12 +919,12 @@ namespace ui {
             for (int i = 0; i < (int)labels.size(); ++i) {
                 if (i == ai_settings_selected) {
                     setColor(160);
-                    std::cout << "  " << (i + 1) << ". " << labels[i];
+                    std::cout << "    " << (i + 1) << ". " << labels[i];
                     for (size_t p = labels[i].length() + 5; p < 74; ++p) std::cout << " ";
                     std::cout << "\n";
                 } else {
                     setColor(10);
-                    std::cout << "  " << (i + 1) << ". " << labels[i] << "\n";
+                    std::cout << "    " << (i + 1) << ". " << labels[i] << "\n";
                 }
             }
 
@@ -935,17 +935,17 @@ namespace ui {
             setColor(2);
 
             if (ai_config.provider == "gemini") {
-                std::cout << "  - GOOGLE GEMINI: Fast, high-reasoning tactical AI.\n";
-                std::cout << "  - FREE API KEY: Obtain a 100% free key at: https://aistudio.google.com\n";
-                std::cout << "    (No credit card required. Free tier supports up to 15 requests/min).\n";
-                std::cout << "  - Press [ENTER] on Item 2 to enter or update your API key.\n";
+                std::cout << "    - GOOGLE GEMINI: Fast, high-reasoning tactical AI.\n";
+                std::cout << "    - FREE API KEY: Obtain a 100% free key at: https://aistudio.google.com\n";
+                std::cout << "      (No credit card required. Free tier supports up to 15 requests/min).\n";
+                std::cout << "    - Press [ENTER] on Item 2 to enter or update your API key.\n";
             } else {
-                std::cout << "  - LOCAL MODEL: Runs 100% locally on your PC with complete privacy.\n";
-                std::cout << "  - RECOMMENDED OFFLINE AI: Google Gemma 2 (2 Billion Parameter)\n";
-                std::cout << "    1. Install Ollama (https://ollama.com)\n";
-                std::cout << "    2. Run in a standard Windows command prompt: ollama run gemma2:2b\n";
-                std::cout << "    3. Change 'Local Model Name' above to: gemma2:2b\n";
-                std::cout << "  - Default endpoint for Ollama: http://localhost:11434/v1\n";
+                std::cout << "    - LOCAL MODEL: Runs 100% locally on your PC with complete privacy.\n";
+                std::cout << "    - RECOMMENDED OFFLINE AI: Google Gemma 2 (2 Billion Parameter)\n";
+                std::cout << "      1. Install Ollama (https://ollama.com)\n";
+                std::cout << "      2. Run in a standard Windows command prompt: ollama run gemma2:2b\n";
+                std::cout << "      3. Change 'Local Model Name' above to: gemma2:2b\n";
+                std::cout << "    - Default endpoint for Ollama: http://localhost:11434/v1\n";
             }
 
             setColor(2);
@@ -956,7 +956,7 @@ namespace ui {
                 setColor(15);
                 std::cout << ai_input_buffer << "_\n";
                 setColor(2);
-                std::cout << " [ENTER] Confirm  |  [ESC] Cancel\n";
+                std::cout << "   [ENTER] Confirm  |  [ESC] Cancel\n";
             } else {
                 std::cout << " UP/DOWN: Select  |  ENTER: Toggle/Edit  |  [T] Test Connection  |  ESC: Save & Back\n";
             }
@@ -965,11 +965,11 @@ namespace ui {
         void drawDirConfig() {
             clear();
             setColor(2);
-            std::cout << "===============================================================================\n";
+            std::cout << "  ===============================================================================\n";
             setColor(10);
-            std::cout << " [ FILE DIRECTORY CONFIGURATION ]\n";
+            std::cout << "   [ FILE DIRECTORY CONFIGURATION ]\n";
             setColor(2);
-            std::cout << "===============================================================================\n\n";
+            std::cout << "  ===============================================================================\n\n";
             
             if (!dir_error_msg.empty()) {
                 setColor(12); // Light red
@@ -984,19 +984,19 @@ namespace ui {
             
             if (data_dirs.empty()) {
                 setColor(2);
-                std::cout << "   (none configured)\n";
+                std::cout << "     (none configured)\n";
             } else {
                 for (int i = 0; i < (int)data_dirs.size(); i++) {
                     if (dir_selected == i) {
                         setColor(160);
-                        std::cout << "   [" << (i+1) << "] " << data_dirs[i];
+                        std::cout << "     [" << (i+1) << "] " << data_dirs[i];
                         // Pad
                         for (size_t p = data_dirs[i].length(); p < 55; p++) std::cout << " ";
                         std::cout << "[DEL]";
                         std::cout << "\n";
                     } else {
                         setColor(10);
-                        std::cout << "   [" << (i+1) << "] " << data_dirs[i] << "\n";
+                        std::cout << "     [" << (i+1) << "] " << data_dirs[i] << "\n";
                     }
                 }
             }
@@ -1010,10 +1010,10 @@ namespace ui {
             // Input field changed to a button
             if (dir_selected == -1) {
                 setColor(160);
-                std::cout << " > [ BROWSE FOR DIRECTORY ]                                      \n";
+                std::cout << "   > [ BROWSE FOR DIRECTORY ]                                      \n";
             } else {
                 setColor(2);
-                std::cout << " > [ BROWSE FOR DIRECTORY ]                                      \n";
+                std::cout << "   > [ BROWSE FOR DIRECTORY ]                                      \n";
             }
             
             setColor(2);
@@ -1040,11 +1040,11 @@ namespace ui {
         void drawDirBrowser() {
             clear();
             setColor(2);
-            std::cout << "===============================================================================\n";
+            std::cout << "  ===============================================================================\n";
             setColor(10);
-            std::cout << " [ SELECT DIRECTORY ]\n";
+            std::cout << "   [ SELECT DIRECTORY ]\n";
             setColor(2);
-            std::cout << "===============================================================================\n\n";
+            std::cout << "  ===============================================================================\n\n";
 
             setColor(15);
             std::string p_str = browser_path.string();
@@ -1055,10 +1055,10 @@ namespace ui {
             // Actually, let's keep it fixed at the top.
             if (browser_selected == -1) {
                 setColor(160);
-                std::cout << " > [ CHOOSE THIS DIRECTORY ]                                     \n\n";
+                std::cout << "   > [ CHOOSE THIS DIRECTORY ]                                     \n\n";
             } else {
                 setColor(10);
-                std::cout << " > [ CHOOSE THIS DIRECTORY ]                                     \n\n";
+                std::cout << "   > [ CHOOSE THIS DIRECTORY ]                                     \n\n";
             }
 
             setColor(2);
@@ -1080,12 +1080,12 @@ namespace ui {
 
                 if (browser_selected == idx) {
                     setColor(160);
-                    std::cout << "   " << browser_items[idx];
+                    std::cout << "     " << browser_items[idx];
                     for(size_t p=browser_items[idx].length(); p<65; p++) std::cout << " ";
                     std::cout << "\n";
                 } else {
                     setColor(10);
-                    std::cout << "   " << browser_items[idx] << "\n";
+                    std::cout << "     " << browser_items[idx] << "\n";
                 }
             }
 
@@ -1097,19 +1097,19 @@ namespace ui {
         void drawVaultMenu() {
             clear();
             setColor(2);
-            std::cout << "===============================================================================\n";
+            std::cout << "  ===============================================================================\n";
             setColor(10);
-            std::cout << " [ W.U.T.H.U.R CAMPAIGN VAULT & FILE MANAGER ]\n";
+            std::cout << "   [ W.U.T.H.U.R CAMPAIGN VAULT & FILE MANAGER ]\n";
             setColor(2);
-            std::cout << "===============================================================================\n\n";
+            std::cout << "  ===============================================================================\n\n";
 
             setColor(10);
             std::cout << " CURRENT ACTIVE CAMPAIGN:\n";
             setColor(15);
-            std::cout << "   Name     : " << vault.meta.name << "\n";
-            std::cout << "   Storage  : " << vault.vault_path << "\n";
+            std::cout << "     Name     : " << vault.meta.name << "\n";
+            std::cout << "     Storage  : " << vault.vault_path << "\n";
             if (!vault.meta.scenario.empty()) {
-                std::cout << "   Scenario : " << vault.meta.scenario << "\n";
+                std::cout << "     Scenario : " << vault.meta.scenario << "\n";
             }
             setColor(2);
             std::cout << " -------------------------------------------------------------------------------\n\n";
@@ -1128,12 +1128,12 @@ namespace ui {
             for (int i = 0; i < 3; ++i) {
                 if (i == vault_menu_selected) {
                     setColor(160);
-                    std::cout << "   " << v_items[i];
+                    std::cout << "     " << v_items[i];
                     for (size_t p = v_items[i].length(); p < 60; ++p) std::cout << " ";
                     std::cout << "\n";
                 } else {
                     setColor(10);
-                    std::cout << "   " << v_items[i] << "\n";
+                    std::cout << "     " << v_items[i] << "\n";
                 }
             }
 
