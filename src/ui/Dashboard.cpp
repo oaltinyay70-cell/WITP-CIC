@@ -734,12 +734,6 @@ wiki_pages = {
                 std::cout << " " << vault_status_msg << "\n\n";
                 setColor(2);
             }
-
-            setColor(10);
-            std::cout << " Current Active Vault:\n";
-            setColor(15);
-            std::cout << "     Name     : " << vault.meta.name << "\n";
-            std::cout << "     Location : " << vault.vault_path << "\n";
             if (!vault.meta.scenario.empty()) {
                 std::cout << "     Scenario : " << vault.meta.scenario << "\n";
             }
@@ -1409,7 +1403,8 @@ wiki_pages = {
                             playNavSound();
                             if (state == State::LIST_VIEW) state = State::MAIN;
                             else if (state == State::DIR_BROWSER) state = State::DIR_CONFIG;
-                            else if (state == State::CAMPAIGN_MGR || state == State::DIR_CONFIG) state = State::VAULT_MENU;
+                            else if (state == State::DIR_CONFIG) returnToHub();
+                              else if (state == State::CAMPAIGN_MGR) returnToHub();
                             else if (state == State::AI_CHAT && active_war_room != "") state = State::MAIN;
                             else { vault.package(); engine.clear(); state = State::HUB_MENU; }
                             
@@ -1514,15 +1509,18 @@ wiki_pages = {
                                         loadMainMenu();
                                         drawMain();
                                     } else {
-                                        // Japanese War Room is under development
-                                        state = State::WIKI_VIEW;
-                                        drawWiki();
-                                    }
+                                          stats = engine.stats;
+                                          active_war_room = "JAPANESE";
+                                          state = State::MAIN;
+                                          loadMainMenu();
+                                          drawMain();
+                                      }
                                 }
                             } else if (hub_selected_item == 2) {
-                                state = State::VAULT_MENU;
-                                vault_menu_selected = 0;
-                                drawVaultMenu();
+                                  state = State::CAMPAIGN_MGR;
+                                  campaign_selected = 0;
+                                  vault_status_msg = "";
+                                  drawCampaignMgr();
                             } else if (hub_selected_item == 3) {
                                 state = State::SETTINGS_MENU;
                                 settings_selected = 0;
@@ -1898,12 +1896,14 @@ wiki_pages = {
                                     vault.create(vault_root, campaign_input_name);
                                       vault.meta.source_dirs = data_dirs;
                                       vault.saveMeta();
-                                    campaign_list = storage::CampaignVault::listCampaigns(vault_root);
-                                    vault_status_msg = "NEW CAMPAIGN CREATED: " + campaign_input_name;
-                                    campaign_input_mode = false;
-                                    campaign_input_name = "";
-                                    chat_history = vault.loadChatHistory();
-                                    drawCampaignMgr();
+                                      campaign_input_mode = false;
+                                      campaign_input_name = "";
+                                      chat_history = vault.loadChatHistory();
+                                      stats = engine.stats;
+                                      active_war_room = "ALLIED";
+                                      state = State::MAIN;
+                                      loadMainMenu();
+                                      drawMain();
                                 }
                             } else if (ch >= 32 && ch <= 126) {
                                 campaign_input_name += ch;
@@ -1966,9 +1966,12 @@ wiki_pages = {
                                               engine.stats.turn_date = vault.meta.last_played;
                                           }
                                       }
-                                    vault_status_msg = "SWITCHED ACTIVE CAMPAIGN TO: " + sel_name;
-                                    chat_history = vault.loadChatHistory();
-                                    drawCampaignMgr();
+                                      chat_history = vault.loadChatHistory();
+                                      stats = engine.stats;
+                                      active_war_room = "ALLIED";
+                                      state = State::MAIN;
+                                      loadMainMenu();
+                                      drawMain();
                                 }
                             } else if (ch == 'n' || ch == 'N') {
                                 playNavSound();
