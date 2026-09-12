@@ -1542,7 +1542,7 @@ namespace ui {
                             std::filesystem::create_directories(yoink_dir);
                             std::string bat_path = "scratch\\run_yoink.bat";
                             std::ofstream bat(bat_path);
-                            bat << "@echo off\ncd /d \"" << yoink_dir << "\"\nyoink\npause\n";
+                            bat << "@echo off\ncd /d \"" << yoink_dir << "\"\necho === YOINK PREDICTIONS ===\ntype *.md 2>nul || echo No predictions found yet.\npause\n";
                             bat.close();
                             std::system(("start \"\" \"" + bat_path + "\"").c_str());
                         }
@@ -1997,7 +1997,7 @@ namespace ui {
                             std::filesystem::create_directories(yoink_dir);
                             std::string bat_path = "scratch\\run_yoink.bat";
                             std::ofstream bat(bat_path);
-                            bat << "@echo off\ncd /d \"" << yoink_dir << "\"\nyoink\npause\n";
+                            bat << "@echo off\ncd /d \"" << yoink_dir << "\"\necho === YOINK PREDICTIONS ===\ntype *.md 2>nul || echo No predictions found yet.\npause\n";
                             bat.close();
                             std::system(("start \"\" \"" + bat_path + "\"").c_str());
                         } else if (state == State::MAIN && (ch == 'c' || ch == 'C')) {
