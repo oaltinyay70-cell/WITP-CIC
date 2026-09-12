@@ -7,7 +7,7 @@ def test_yoink_command_generation():
         code = f.read()
     
     # Verify State restrictions
-    list_view_regex = r"else if \(state == State::LIST_VIEW && \(ch == .y. \|\| ch == .Y.\)\)"
+    list_view_regex = r"else if \(\(state == State::MAIN \|\| state == State::LIST_VIEW\) && \(ch == .y. \|\| ch == .Y.\)\)"
     if re.search(list_view_regex, code):
         print("[PASS] Y hotkey is strictly bound to State::LIST_VIEW (Intel Screen).")
     else:
@@ -15,7 +15,7 @@ def test_yoink_command_generation():
         return False
         
     # Verify Directory Creation and cmd /k
-    cmd_regex = r"mkdir.*?&& start cmd /k"
+    cmd_regex = r"mkdir.*?&& start \\\"\\\" cmd /k"
     if re.search(cmd_regex, code):
         print("[PASS] System command includes directory creation (mkdir) and persistent window (cmd /k).")
     else:
@@ -27,7 +27,7 @@ def test_yoink_command_generation():
     yoink_dir = test_vault_path + "\\\\yoink"
     
     # The exact command from C++
-    cpp_cmd = f"if not exist \"{yoink_dir}\" mkdir \"{yoink_dir}\" && start cmd /c \"echo YOINK TEST SUCCESS && exit\""
+    cpp_cmd = f"if not exist \"{yoink_dir}\" mkdir \"{yoink_dir}\" && start \"\" cmd /c \"echo YOINK TEST SUCCESS && exit\""
     print(f"Simulating C++ system() call: {cpp_cmd}")
     
     res = subprocess.run(cpp_cmd, shell=True)

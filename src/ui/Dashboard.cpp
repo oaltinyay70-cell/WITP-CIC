@@ -1539,7 +1539,7 @@ namespace ui {
                             redrawCurrentState();
                         } else if (ch == 'y' || ch == 'Y') {
                             std::string yoink_dir = vault.vault_path + "\\yoink";
-                            std::string cmd = "if not exist \"" + yoink_dir + "\" mkdir \"" + yoink_dir + "\" && start cmd /k \"cd /d \\\"" + yoink_dir + "\\\" && yoink\"";
+                            std::string cmd = "if not exist \"" + yoink_dir + "\" mkdir \"" + yoink_dir + "\" && start \"\" cmd /k \"cd /d \\\"" + yoink_dir + "\\\" && yoink\"";
                             std::system(cmd.c_str());
                         }
                     }
@@ -1987,10 +1987,10 @@ namespace ui {
                             state = State::AI_CHAT;
                             ai_officer.start(vault.vault_path);
                             drawAIChat();
-                        } else if (state == State::LIST_VIEW && (ch == 'y' || ch == 'Y')) {
+                        } else if ((state == State::MAIN || state == State::LIST_VIEW) && (ch == 'y' || ch == 'Y')) {
                             // ponytail: Create dir if missing, keep window open so user sees errors
                             std::string yoink_dir = vault.vault_path + "\\yoink";
-                            std::string cmd = "if not exist \"" + yoink_dir + "\" mkdir \"" + yoink_dir + "\" && start cmd /k \"cd /d \\\"" + yoink_dir + "\\\" && yoink\"";
+                            std::string cmd = "if not exist \"" + yoink_dir + "\" mkdir \"" + yoink_dir + "\" && start \"\" cmd /k \"cd /d \\\"" + yoink_dir + "\\\" && yoink\"";
                             std::system(cmd.c_str());
                         } else if (state == State::MAIN && (ch == 'c' || ch == 'C')) {
                             if (first_c_idx != -1) selected_item = first_c_idx; 
