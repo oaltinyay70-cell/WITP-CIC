@@ -1537,10 +1537,14 @@ namespace ui {
                             if (current_menu[0].type == ItemType::BACK) state = State::LIST_VIEW;
                             else state = State::MAIN;
                             redrawCurrentState();
-                        } else if (ch == 'y' || ch == 'Y') {
+                        } else if (key == 'Y' || ch == 'y' || ch == 'Y') {
                             std::string yoink_dir = vault.vault_path + "\\yoink";
-                            std::string cmd = "if not exist \"" + yoink_dir + "\" mkdir \"" + yoink_dir + "\" && start \"\" cmd /k \"cd /d \\\"" + yoink_dir + "\\\" && yoink\"";
-                            std::system(cmd.c_str());
+                            std::filesystem::create_directories(yoink_dir);
+                            std::string bat_path = "scratch\\run_yoink.bat";
+                            std::ofstream bat(bat_path);
+                            bat << "@echo off\ncd /d \"" << yoink_dir << "\"\nyoink\npause\n";
+                            bat.close();
+                            std::system(("start \"\" \"" + bat_path + "\"").c_str());
                         }
                     }
                     else if (state == State::WIKI_VIEW) {
@@ -1987,11 +1991,15 @@ namespace ui {
                             state = State::AI_CHAT;
                             ai_officer.start(vault.vault_path);
                             drawAIChat();
-                        } else if ((state == State::MAIN || state == State::LIST_VIEW) && (ch == 'y' || ch == 'Y')) {
-                            // ponytail: Create dir if missing, keep window open so user sees errors
+                        } else if ((state == State::MAIN || state == State::LIST_VIEW) && (key == 'Y' || ch == 'y' || ch == 'Y')) {
+                            // ponytail: generate bat file to bypass cmd quote escaping hell
                             std::string yoink_dir = vault.vault_path + "\\yoink";
-                            std::string cmd = "if not exist \"" + yoink_dir + "\" mkdir \"" + yoink_dir + "\" && start \"\" cmd /k \"cd /d \\\"" + yoink_dir + "\\\" && yoink\"";
-                            std::system(cmd.c_str());
+                            std::filesystem::create_directories(yoink_dir);
+                            std::string bat_path = "scratch\\run_yoink.bat";
+                            std::ofstream bat(bat_path);
+                            bat << "@echo off\ncd /d \"" << yoink_dir << "\"\nyoink\npause\n";
+                            bat.close();
+                            std::system(("start \"\" \"" + bat_path + "\"").c_str());
                         } else if (state == State::MAIN && (ch == 'c' || ch == 'C')) {
                             if (first_c_idx != -1) selected_item = first_c_idx; 
                             playNavSound();
