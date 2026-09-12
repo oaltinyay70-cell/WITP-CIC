@@ -18,6 +18,10 @@ namespace engine {
     };
 
     struct DataStats {
+        std::string ops_date = "None";
+        std::string combat_date = "None";
+        std::string sigint_date = "None";
+        std::string pws_date = "None";
         int ops_days = 0;
         int combat_days = 0;
         int sigint_days = 0;

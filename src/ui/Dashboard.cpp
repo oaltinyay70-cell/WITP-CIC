@@ -538,6 +538,54 @@ wiki_pages = {
             setColor(2);
         }
 
+
+        void syncCampaignData() {
+            for (const auto& dir : data_dirs) {
+                if (std::filesystem::exists(dir)) {
+                    std::filesystem::path p(dir);
+                    std::vector<std::filesystem::path> check_paths = {p, p.parent_path()};
+                    for (const auto& cp : check_paths) {
+                        if (std::filesystem::exists(cp) && std::filesystem::is_directory(cp)) {
+                            for (const auto& entry : std::filesystem::directory_iterator(cp)) {
+                                if (entry.path().extension() == ".pws") {
+                                    parsers::PWSExtract ext = parsers::PWSParser::parse(entry.path().string());
+                                    if (!ext.header.game_date.empty()) {
+                                        vault.meta.scenario = ext.header.scenario;
+                                        vault.meta.game_version = ext.header.game_version;
+                                        engine.stats.pws_date = ext.header.game_date;
+                                        if (!ext.after_action_report.empty()) {
+                                            vault.saveReport("aar_" + ext.header.game_date + ".txt", ext.after_action_report);
+                                        }
+                                        if (!ext.sigint_report.empty()) {
+                                            vault.saveReport("sigint_" + ext.header.game_date + ".txt", ext.sigint_report);
+                                        }
+                                        vault.saveMeta();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            engine.items.clear();
+            engine.stats = engine::DataStats();
+            for (const auto& dir : data_dirs) {
+                if (std::filesystem::exists(dir)) {
+                    engine.processDirectory(dir);
+                }
+            }
+            if (!engine.items.empty()) {
+                vault.saveIntelItems(engine.stats.turn_date, engine.items);
+                vault.saveMeta();
+            } else {
+                auto historical = vault.loadAllIntel();
+                if (!historical.empty()) {
+                    engine.items = historical;
+                    engine.stats.turn_date = vault.meta.last_played;
+                }
+            }
+        }
         void drawMain() {
             clear();
             setColor(2); // Dark Green border
@@ -551,9 +599,10 @@ wiki_pages = {
             setColor(10);
             std::cout << " [ DATA SOURCES SYNCED ]\n";
             setColor(2);
-            std::cout << " > Operations Reports : Last " << (stats.ops_days == 0 ? 1 : stats.ops_days) << " Days\n";
-            std::cout << " > Combat Reports     : Last " << (stats.combat_days == 0 ? (stats.ops_days == 0 ? 1 : stats.ops_days) : stats.combat_days) << " Days\n";
-            std::cout << " > SIGINT             : Last " << (stats.sigint_days == 0 ? 1 : stats.sigint_days) << " Days\n";
+              std::cout << " > Operations Reports : " << stats.ops_date << "\n";
+              std::cout << " > Combat Reports     : " << stats.combat_date << "\n";
+              std::cout << " > SIGINT             : " << stats.sigint_date << "\n";
+              std::cout << " > PWS Save State     : " << stats.pws_date << "\n";
             setColor(2);
             std::cout << "-------------------------------------------------------------------------------\n\n";
 
@@ -1431,54 +1480,7 @@ wiki_pages = {
                                       drawCampaignMgr();
                                       continue;
                                   }
-                                // Scan for .pws files in data_dirs and parent folders
-                                for (const auto& dir : data_dirs) {
-                                    if (std::filesystem::exists(dir)) {
-                                        std::filesystem::path p(dir);
-                                        std::vector<std::filesystem::path> check_paths = {p, p.parent_path()};
-                                        for (const auto& cp : check_paths) {
-                                            if (std::filesystem::exists(cp) && std::filesystem::is_directory(cp)) {
-                                                for (const auto& entry : std::filesystem::directory_iterator(cp)) {
-                                                    if (entry.path().extension() == ".pws") {
-                                                        parsers::PWSExtract ext = parsers::PWSParser::parse(entry.path().string());
-                                                        if (!ext.header.game_date.empty()) {
-                                                            vault.meta.scenario = ext.header.scenario;
-                                                            vault.meta.game_version = ext.header.game_version;
-                                                            if (!ext.after_action_report.empty()) {
-                                                                vault.saveReport("aar_" + ext.header.game_date + ".txt", ext.after_action_report);
-                                                            }
-                                                            if (!ext.sigint_report.empty()) {
-                                                                vault.saveReport("sigint_" + ext.header.game_date + ".txt", ext.sigint_report);
-                                                            }
-                                                            vault.saveMeta();
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-                                // Process directories
-                                engine.items.clear();
-                                engine.stats = engine::DataStats();
-                                for (const auto& dir : data_dirs) {
-                                    engine.processDirectory(dir);
-                                }
-                                
-                                if (!engine.items.empty()) {
-                                    vault.saveIntelItems(engine.stats.turn_date, engine.items);
-                                    vault.saveMeta();
-                                } else {
-                                    auto historical = vault.loadAllIntel();
-                                    if (!historical.empty()) {
-                                        engine.items = historical;
-                                        engine.stats.turn_date = vault.meta.last_played;
-                                        engine.stats.ops_days = 1;
-                                        engine.stats.combat_days = 1;
-                                        engine.stats.sigint_days = 1;
-                                    }
-                                }
+                                syncCampaignData();
 
                                     dir_error_msg = "";
                                     if (hub_selected_item == 0) {
@@ -1878,6 +1880,7 @@ wiki_pages = {
                                     vault.create(vault_root, campaign_input_name);
                                       vault.meta.source_dirs = data_dirs;
                                       vault.saveMeta();
+                                      syncCampaignData();
                                       campaign_input_mode = false;
                                       campaign_input_name = "";
                                       chat_history = vault.loadChatHistory();
@@ -1932,22 +1935,8 @@ wiki_pages = {
                                 if (!campaign_list.empty() && campaign_selected < (int)campaign_list.size()) {
                                     std::string sel_name = campaign_list[campaign_selected];
                                     vault.load((std::filesystem::path(vault_root) / sel_name).string());
-                                      engine.clear();
                                       data_dirs = vault.meta.source_dirs;
-                                      for (const auto& dir : vault.meta.source_dirs) {
-                                          if (std::filesystem::exists(dir)) {
-                                              engine.processDirectory(dir);
-                                          }
-                                      }
-                                      if (!engine.items.empty()) {
-                                          vault.saveIntelItems(engine.stats.turn_date, engine.items);
-                                      } else {
-                                          auto historical = vault.loadAllIntel();
-                                          if (!historical.empty()) {
-                                              engine.items = historical;
-                                              engine.stats.turn_date = vault.meta.last_played;
-                                          }
-                                      }
+                                      syncCampaignData();
                                       chat_history = vault.loadChatHistory();
                                       stats = engine.stats;
                                       active_war_room = "ALLIED";

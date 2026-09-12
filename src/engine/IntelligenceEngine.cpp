@@ -82,6 +82,7 @@ namespace engine {
                         if (days > 0) {
                             if (days < ops_min) ops_min = days;
                             if (days > ops_max) ops_max = days;
+                            stats.ops_date = dateStr;
                             stats.turn_date = dateStr;
                         }
                     }
@@ -95,6 +96,7 @@ namespace engine {
                         if (days > 0) {
                             if (days < sigint_min) sigint_min = days;
                             if (days > sigint_max) sigint_max = days;
+                            stats.sigint_date = dateStr;
                             stats.turn_date = dateStr;
                         }
                     }
@@ -110,6 +112,7 @@ namespace engine {
                         if (days > 0) {
                             if (days < combat_min) combat_min = days;
                             if (days > combat_max) combat_max = days;
+                            stats.combat_date = dateStr;
                             stats.turn_date = dateStr;
                         }
                     } else {
