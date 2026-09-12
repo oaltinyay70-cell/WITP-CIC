@@ -19,3 +19,8 @@ scratch/
 temp_edit2.py
 update_docs.py
 -
+
+# Caches and Frontend
+.zig-cache/
+frontend/node_modules/
+frontend/dist/

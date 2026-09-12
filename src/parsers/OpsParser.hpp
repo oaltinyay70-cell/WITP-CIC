@@ -1,8 +1,0 @@
-﻿#pragma once
-#include <string>
-namespace parsers {
-    class OpsParser {
-    public:
-        void parse(const std::string& filepath);
-    };
-}

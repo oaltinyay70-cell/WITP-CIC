@@ -1,7 +1,0 @@
-﻿#include "OpsParser.hpp"
-#include <iostream>
-namespace parsers {
-    void OpsParser::parse(const std::string& filepath) {
-        std::cout << "Parsing Ops file: " << filepath << std::endl;
-    }
-}

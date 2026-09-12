@@ -1,4 +1,4 @@
-﻿cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.14)
 project(WITP_CIC_Helper VERSION 0.01 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -15,7 +15,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(ftxui)
 
 # Add Executable
-add_executable(witp_cic src/main.cpp src/ui/Dashboard.cpp src/engine/IntelligenceEngine.cpp src/parsers/OpsParser.cpp)
+add_executable(witp_cic src/main.cpp src/ui/Dashboard.cpp src/engine/IntelligenceEngine.cpp)
 
 # Link Libraries
 target_link_libraries(witp_cic
