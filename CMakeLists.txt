@@ -24,13 +24,9 @@ add_executable(witp_cic
   src/parsers/PWSParser.cpp
 )
 
-# Find ZLIB
-find_package(ZLIB REQUIRED)
-
 # Link Libraries
 target_link_libraries(witp_cic
   PRIVATE ftxui::screen
   PRIVATE ftxui::dom
   PRIVATE ftxui::component
-  PRIVATE ZLIB::ZLIB
 )

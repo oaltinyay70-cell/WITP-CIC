@@ -1537,6 +1537,9 @@ namespace ui {
                             if (current_menu[0].type == ItemType::BACK) state = State::LIST_VIEW;
                             else state = State::MAIN;
                             redrawCurrentState();
+                        } else if (ch == 'y' || ch == 'Y') {
+                            std::string cmd = "start cmd /c \"cd /d \\\"" + vault.vault_path + "\\yoink\\\" && yoink\"";
+                            std::system(cmd.c_str());
                         }
                     }
                     else if (state == State::WIKI_VIEW) {
@@ -1983,7 +1986,7 @@ namespace ui {
                             state = State::AI_CHAT;
                             ai_officer.start(vault.vault_path);
                             drawAIChat();
-                        } else if (state == State::MAIN && (ch == 'y' || ch == 'Y')) {
+                        } else if ((state == State::MAIN || state == State::LIST_VIEW) && (ch == 'y' || ch == 'Y')) {
                             // ponytail: OS window manager handles TUI separation natively.
                             std::string cmd = "start cmd /c \"cd /d \\\"" + vault.vault_path + "\\yoink\\\" && yoink\"";
                             std::system(cmd.c_str());
