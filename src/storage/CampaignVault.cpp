@@ -351,13 +351,13 @@ namespace storage {
         vault_path = "";
     }
 
-    void CampaignVault::package() {
+    void CampaignVault::package(bool clear_after) {
         if (vault_path.empty() || meta.name.empty()) return;
         saveMeta();
         std::string zip_name = meta.name + ".zip";
         fs::path zip_path = fs::path(vault_root) / zip_name;
         std::string command = "powershell -Command \"Compress-Archive -Path '" + escapePsPath(vault_path) + "\\*' -DestinationPath '" + escapePsPath(zip_path.string()) + "' -Force\"";
         std::system(command.c_str());
-        clear();
+        if (clear_after) clear();
     }
 }

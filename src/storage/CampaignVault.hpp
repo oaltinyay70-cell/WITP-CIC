@@ -34,7 +34,7 @@ namespace storage {
         void clear();
         
         // Package the active campaign into its zip file
-        void package();
+        void package(bool clear_after = true);
         
         // Save metadata
         void saveMeta();

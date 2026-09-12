@@ -1878,17 +1878,19 @@ wiki_pages = {
                             } else if (key == VK_RETURN) {
                                 if (!campaign_input_name.empty()) {
                                     vault.create(vault_root, campaign_input_name);
-                                      vault.meta.source_dirs = data_dirs;
+                                      data_dirs.clear(); // Fresh campaign has no data dirs
+                                        vault.meta.source_dirs = data_dirs;
                                       vault.saveMeta();
+                                        vault.package(false);
                                       syncCampaignData();
                                       campaign_input_mode = false;
                                       campaign_input_name = "";
                                       chat_history = vault.loadChatHistory();
                                       stats = engine.stats;
                                       active_war_room = "ALLIED";
-                                      state = State::MAIN;
-                                      loadMainMenu();
-                                      drawMain();
+                                        state = State::DIR_CONFIG;
+                                        dir_error_msg = "[000] NEW CAMPAIGN REQUIRES DATA SOURCE. PLEASE CONFIGURE DIRECTORY.";
+                                        drawDirConfig();
                                 }
                             } else if (ch >= 32 && ch <= 126) {
                                 campaign_input_name += ch;
