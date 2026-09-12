@@ -1444,6 +1444,12 @@ wiki_pages = {
                         } else if (key == VK_RETURN) {
                             playSelectSound();
                             if (hub_selected_item == 0 || hub_selected_item == 1) {
+                                  if (vault.meta.name.empty()) {
+                                      state = State::CAMPAIGN_MGR;
+                                      vault_status_msg = "[000] ACTIVE CAMPAIGN REQUIRED. PLEASE LOAD OR CREATE.";
+                                      drawCampaignMgr();
+                                      continue;
+                                  }
                                 // Scan for .pws files in data_dirs and parent folders
                                 for (const auto& dir : data_dirs) {
                                     if (std::filesystem::exists(dir)) {
