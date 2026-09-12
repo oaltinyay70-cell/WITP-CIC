@@ -525,7 +525,7 @@ wiki_pages = {
             for(int i=0; i<HUB_ITEMS; i++) {
                 if (i == hub_selected_item) {
                     setColor(160);
-                    std::cout << "\n     " << hub_items[i];
+                    std::cout << "     " << hub_items[i];
                     for(size_t j=hub_items[i].length(); j<35; j++) std::cout << " ";
                     std::cout << "\n";
                 } else {
@@ -682,7 +682,7 @@ wiki_pages = {
                 for (size_t i = 0; i < wiki_pages.size(); ++i) {
                     if ((int)i == wiki_menu_selected) {
                         setColor(160);
-                        std::cout << "\n     " << wiki_pages[i].title;
+                        std::cout << "     " << wiki_pages[i].title;
                         for (size_t j = wiki_pages[i].title.length(); j < 35; j++) std::cout << " ";
                         std::cout << "\n";
                         setColor(10);
