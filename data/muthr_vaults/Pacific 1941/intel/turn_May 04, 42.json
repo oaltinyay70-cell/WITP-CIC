@@ -588,6 +588,726 @@
     "category": 1
   },
   {
+    "title": "> [DISCOVERED] SS K XII reports having been sighted by the enemy at 54 , 78",
+    "reasoning": "OPS REPORT: SS K XII reports having been sighted by the enemy at 54 , 78",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [HVT] 21st Light AA Regiment packing for load on xAK Michael Embiricos ...",
+    "reasoning": "OPS REPORT: 21st Light AA Regiment packing for load on xAK Michael Embiricos (TF 325), 1 day(s) remaining",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT] B Sqn 3rd Hussars Regiment packing for load on xAK Maldive (TF 32...",
+    "reasoning": "OPS REPORT: B Sqn 3rd Hussars Regiment packing for load on xAK Maldive (TF 325), 1 day(s) remaining",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT] 21st Light AA Regiment packing for load on xAK Clan Lamont (TF 32...",
+    "reasoning": "OPS REPORT: 21st Light AA Regiment packing for load on xAK Clan Lamont (TF 325), 1 day(s) remaining",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT] B Sqn 3rd Hussars Regiment packing for load on xAK Bhima (TF 325)...",
+    "reasoning": "OPS REPORT: B Sqn 3rd Hussars Regiment packing for load on xAK Bhima (TF 325), 1 day(s) remaining",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT] 21st Light AA Regiment packing for load on xAK African Prince (TF...",
+    "reasoning": "OPS REPORT: 21st Light AA Regiment packing for load on xAK African Prince (TF 325), 1 day(s) remaining",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT] I US Amphib Corps packing for load on xAP Santa Maria (TF 389), 2...",
+    "reasoning": "OPS REPORT: I US Amphib Corps packing for load on xAP Santa Maria (TF 389), 2 day(s) remaining",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT] I US Amphib Corps packing for load on xAKL Mexican (TF 389), 2 da...",
+    "reasoning": "OPS REPORT: I US Amphib Corps packing for load on xAKL Mexican (TF 389), 2 day(s) remaining",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT] CS Convoy TF 321 unable to load any cargo at Vancouver ",
+    "reasoning": "OPS REPORT: CS Convoy TF 321 unable to load any cargo at Vancouver ",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT] TF 442 converted to Escort TF 491 (4 ships) and routed to Manila",
+    "reasoning": "OPS REPORT: TF 442 converted to Escort TF 491 (4 ships) and routed to Manila",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT] Repairs completed on CA New Orleans at Pearl Harbor, ship returne...",
+    "reasoning": "OPS REPORT: Repairs completed on CA New Orleans at Pearl Harbor, ship returned to service",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT] 21st Light AA Regiment packing for load on xAK Michael Embiricos ...",
+    "reasoning": "OPS REPORT: 21st Light AA Regiment packing for load on xAK Michael Embiricos (TF 325), 1 day(s) remaining",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT] B Sqn 3rd Hussars Regiment packing for load on xAK Maldive (TF 32...",
+    "reasoning": "OPS REPORT: B Sqn 3rd Hussars Regiment packing for load on xAK Maldive (TF 325), 1 day(s) remaining",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT] 21st Light AA Regiment packing for load on xAK Clan Lamont (TF 32...",
+    "reasoning": "OPS REPORT: 21st Light AA Regiment packing for load on xAK Clan Lamont (TF 325), 1 day(s) remaining",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT] B Sqn 3rd Hussars Regiment packing for load on xAK Bhima (TF 325)...",
+    "reasoning": "OPS REPORT: B Sqn 3rd Hussars Regiment packing for load on xAK Bhima (TF 325), 1 day(s) remaining",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT] 21st Light AA Regiment packing for load on xAK African Prince (TF...",
+    "reasoning": "OPS REPORT: 21st Light AA Regiment packing for load on xAK African Prince (TF 325), 1 day(s) remaining",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT] I US Amphib Corps packing for load on xAP Santa Maria (TF 389), 2...",
+    "reasoning": "OPS REPORT: I US Amphib Corps packing for load on xAP Santa Maria (TF 389), 2 day(s) remaining",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT] I US Amphib Corps packing for load on xAKL Mexican (TF 389), 2 da...",
+    "reasoning": "OPS REPORT: I US Amphib Corps packing for load on xAKL Mexican (TF 389), 2 day(s) remaining",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [DISCOVERED] TF 400 shadowed by Japanese Float Plane at 49,74 near Georgetown",
+    "reasoning": "OPS REPORT: TF 400 shadowed by Japanese Float Plane at 49,74 near Georgetown",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] TF 447 observes Japanese Aircraft at 76,68 near Paracel Islands",
+    "reasoning": "OPS REPORT: TF 447 observes Japanese Aircraft at 76,68 near Paracel Islands",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] TF 338 sighted by Japanese Aircraft at 50,84 near Singapore",
+    "reasoning": "OPS REPORT: TF 338 sighted by Japanese Aircraft at 50,84 near Singapore",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Kuantan ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Kuantan ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Clark Field ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Clark Field ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Clark Field ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Clark Field ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Clark Field ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Clark Field ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Torpedo Bomber sighted over 21st Chinese Corps",
+    "reasoning": "OPS REPORT: Japanese Torpedo Bomber sighted over 21st Chinese Corps",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Ki-51 Sonia sighted over 21st Chinese Corps",
+    "reasoning": "OPS REPORT: Ki-51 Sonia sighted over 21st Chinese Corps",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] C5M2 Babs sighted over Batangas ",
+    "reasoning": "OPS REPORT: C5M2 Babs sighted over Batangas ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Recon sighted over 21st Chinese Corps",
+    "reasoning": "OPS REPORT: Japanese Recon sighted over 21st Chinese Corps",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Ki-36 Ida sighted over Tuguegarao ",
+    "reasoning": "OPS REPORT: Ki-36 Ida sighted over Tuguegarao ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Light Bomber sighted over Tuguegarao ",
+    "reasoning": "OPS REPORT: Japanese Light Bomber sighted over Tuguegarao ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Dive Bomber sighted over Tuguegarao ",
+    "reasoning": "OPS REPORT: Japanese Dive Bomber sighted over Tuguegarao ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Torpedo Bomber sighted over Chengchow ",
+    "reasoning": "OPS REPORT: Japanese Torpedo Bomber sighted over Chengchow ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Fighter Bomber sighted over Tsingsing ",
+    "reasoning": "OPS REPORT: Japanese Fighter Bomber sighted over Tsingsing ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Fighter sighted over 26th Group Army",
+    "reasoning": "OPS REPORT: Japanese Fighter sighted over 26th Group Army",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Changsha ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Changsha ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Ki-15-II Babs sighted over Wenchow ",
+    "reasoning": "OPS REPORT: Ki-15-II Babs sighted over Wenchow ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Fighter Bomber sighted over Iba ",
+    "reasoning": "OPS REPORT: Japanese Fighter Bomber sighted over Iba ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over San Fernando ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over San Fernando ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Ki-15-II Babs sighted over 20th Chinese Corps",
+    "reasoning": "OPS REPORT: Ki-15-II Babs sighted over 20th Chinese Corps",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Recon sighted over 20th Chinese Corps",
+    "reasoning": "OPS REPORT: Japanese Recon sighted over 20th Chinese Corps",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Hong Kong ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Hong Kong ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Georgetown ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Georgetown ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Ki-15-II Babs sighted over Taiping ",
+    "reasoning": "OPS REPORT: Ki-15-II Babs sighted over Taiping ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Mersing ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Mersing ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Ki-46-II Dinah sighted over Manila ",
+    "reasoning": "OPS REPORT: Ki-46-II Dinah sighted over Manila ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Fighter sighted over Kuantan ",
+    "reasoning": "OPS REPORT: Japanese Fighter sighted over Kuantan ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Fighter Bomber sighted over Clark Field ",
+    "reasoning": "OPS REPORT: Japanese Fighter Bomber sighted over Clark Field ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] C5M2 Babs sighted over Clark Field ",
+    "reasoning": "OPS REPORT: C5M2 Babs sighted over Clark Field ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Fighter sighted over Clark Field ",
+    "reasoning": "OPS REPORT: Japanese Fighter sighted over Clark Field ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Dive Bomber sighted over 21st Chinese Corps",
+    "reasoning": "OPS REPORT: Japanese Dive Bomber sighted over 21st Chinese Corps",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over 21st Chinese Corps",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over 21st Chinese Corps",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] C5M2 Babs sighted over Batangas ",
+    "reasoning": "OPS REPORT: C5M2 Babs sighted over Batangas ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Light Bomber sighted over 21st Chinese Corps",
+    "reasoning": "OPS REPORT: Japanese Light Bomber sighted over 21st Chinese Corps",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Light Bomber sighted over Tuguegarao ",
+    "reasoning": "OPS REPORT: Japanese Light Bomber sighted over Tuguegarao ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Chengchow ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Chengchow ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Tsingsing ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Tsingsing ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over 26th Group Army",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over 26th Group Army",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Changsha ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Changsha ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Ki-15-II Babs sighted over Wenchow ",
+    "reasoning": "OPS REPORT: Ki-15-II Babs sighted over Wenchow ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Fighter Bomber sighted over Iba ",
+    "reasoning": "OPS REPORT: Japanese Fighter Bomber sighted over Iba ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over San Fernando ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over San Fernando ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over 20th Chinese Corps",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over 20th Chinese Corps",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over 20th Chinese Corps",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over 20th Chinese Corps",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over 20th Chinese Corps",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over 20th Chinese Corps",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Fighter sighted over Hong Kong ",
+    "reasoning": "OPS REPORT: Japanese Fighter sighted over Hong Kong ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Georgetown ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Georgetown ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Ki-15-II Babs sighted over Taiping ",
+    "reasoning": "OPS REPORT: Ki-15-II Babs sighted over Taiping ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Mersing ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Mersing ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Manila ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Manila ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] TF 338 shadowed by Japanese Float Plane at 50,84 near Singapore",
+    "reasoning": "OPS REPORT: TF 338 shadowed by Japanese Float Plane at 50,84 near Singapore",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Kota Bharu ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Kota Bharu ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Kuantan ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Kuantan ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Johore Bahru ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Johore Bahru ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Dive Bomber sighted over 21st Chinese Corps",
+    "reasoning": "OPS REPORT: Japanese Dive Bomber sighted over 21st Chinese Corps",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over 21st Chinese Corps",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over 21st Chinese Corps",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Batangas ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Batangas ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Light Bomber sighted over 21st Chinese Corps",
+    "reasoning": "OPS REPORT: Japanese Light Bomber sighted over 21st Chinese Corps",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Light Bomber sighted over Tuguegarao ",
+    "reasoning": "OPS REPORT: Japanese Light Bomber sighted over Tuguegarao ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Torpedo Bomber sighted over Tuguegarao ",
+    "reasoning": "OPS REPORT: Japanese Torpedo Bomber sighted over Tuguegarao ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Ki-36 Ida sighted over Tuguegarao ",
+    "reasoning": "OPS REPORT: Ki-36 Ida sighted over Tuguegarao ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over 55th Chinese Corps",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over 55th Chinese Corps",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over 26th Group Army",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over 26th Group Army",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over 88th Chinese Corps",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over 88th Chinese Corps",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Wenchow ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Wenchow ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Bataan ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Bataan ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Iba ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Iba ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Ki-46-I Dinah sighted over San Fernando ",
+    "reasoning": "OPS REPORT: Ki-46-I Dinah sighted over San Fernando ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Georgetown ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Georgetown ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Alor Star ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Alor Star ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Taiping ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Taiping ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Recon sighted over Mandalay ",
+    "reasoning": "OPS REPORT: Japanese Recon sighted over Mandalay ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Vigan ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Vigan ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Manila ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Manila ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Kota Bharu ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Kota Bharu ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Recon sighted over Kuantan ",
+    "reasoning": "OPS REPORT: Japanese Recon sighted over Kuantan ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Torpedo Bomber sighted over Johore Bahru ",
+    "reasoning": "OPS REPORT: Japanese Torpedo Bomber sighted over Johore Bahru ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Ki-51 Sonia sighted over 21st Chinese Corps",
+    "reasoning": "OPS REPORT: Ki-51 Sonia sighted over 21st Chinese Corps",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Dive Bomber sighted over 21st Chinese Corps",
+    "reasoning": "OPS REPORT: Japanese Dive Bomber sighted over 21st Chinese Corps",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Recon sighted over Batangas ",
+    "reasoning": "OPS REPORT: Japanese Recon sighted over Batangas ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Dive Bomber sighted over 21st Chinese Corps",
+    "reasoning": "OPS REPORT: Japanese Dive Bomber sighted over 21st Chinese Corps",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Light Bomber sighted over Tuguegarao ",
+    "reasoning": "OPS REPORT: Japanese Light Bomber sighted over Tuguegarao ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over 55th Chinese Corps",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over 55th Chinese Corps",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over 26th Group Army",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over 26th Group Army",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Fighter sighted over 88th Chinese Corps",
+    "reasoning": "OPS REPORT: Japanese Fighter sighted over 88th Chinese Corps",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Fighter sighted over Wenchow ",
+    "reasoning": "OPS REPORT: Japanese Fighter sighted over Wenchow ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Bataan ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Bataan ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Iba ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Iba ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over San Fernando ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over San Fernando ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Fighter sighted over Georgetown ",
+    "reasoning": "OPS REPORT: Japanese Fighter sighted over Georgetown ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Alor Star ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Alor Star ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Ki-15-II Babs sighted over Taiping ",
+    "reasoning": "OPS REPORT: Ki-15-II Babs sighted over Taiping ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Mandalay ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Mandalay ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Japanese Aircraft sighted over Vigan ",
+    "reasoning": "OPS REPORT: Japanese Aircraft sighted over Vigan ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] Ki-46-II Dinah sighted over Manila ",
+    "reasoning": "OPS REPORT: Ki-46-II Dinah sighted over Manila ",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [HVT] 3 x Do-24K-1 transporting SSVF Brigade from Singapore",
+    "reasoning": "OPS REPORT: 3 x Do-24K-1 transporting SSVF Brigade from Singapore",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT] 21st PA Infantry Division - some devices have been upgraded at Li...",
+    "reasoning": "OPS REPORT: 21st PA Infantry Division - some devices have been upgraded at Lingayen",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT] 51st PA Infantry Division - some devices have been upgraded at Lu...",
+    "reasoning": "OPS REPORT: 51st PA Infantry Division - some devices have been upgraded at Lucena",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT] Device(s) upgraded in 22nd Light Horse Regiment supplied from Hob...",
+    "reasoning": "OPS REPORT: Device(s) upgraded in 22nd Light Horse Regiment supplied from Hobart",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT] Device(s) upgraded in 31st Infantry Regiment supplied from Manila",
+    "reasoning": "OPS REPORT: Device(s) upgraded in 31st Infantry Regiment supplied from Manila",
+    "solidity": 90,
+    "category": 1
+  },
+  {
     "title": "> [DISCOVERED] TF 17 observes Japanese Aircraft at 107,142 near Rennell Island",
     "reasoning": "OPS REPORT: TF 17 observes Japanese Aircraft at 107,142 near Rennell Island",
     "solidity": 100,
@@ -662,6 +1382,42 @@
   {
     "title": "> [HVT] 16th Ind.Mixed Brigade is located at Kaoping(89,42).",
     "reasoning": "SIGINT REPORT: 16th Ind.Mixed Brigade is located at Kaoping(89,42).",
+    "solidity": 60,
+    "category": 1
+  },
+  {
+    "title": "> [CRITICAL] 1/5th Field AF Construction Battalion is loaded on a Yusen A...",
+    "reasoning": "SIGINT REPORT: 1/5th Field AF Construction Battalion is loaded on a Yusen A class AK moving to Kota Bharu.",
+    "solidity": 80,
+    "category": 0
+  },
+  {
+    "title": "> [CRITICAL] 2/5th Field Artillery Regiment is loaded on a Japanese xAK m...",
+    "reasoning": "SIGINT REPORT: 2/5th Field Artillery Regiment is loaded on a Japanese xAK moving to Kota Bharu.",
+    "solidity": 80,
+    "category": 0
+  },
+  {
+    "title": "> [CRITICAL] 2/Kure 1st SNLF  is loaded on a Ansyu-C Cargo class xAK movi...",
+    "reasoning": "SIGINT REPORT: 2/Kure 1st SNLF  is loaded on a Ansyu-C Cargo class xAK moving to Legaspi.",
+    "solidity": 80,
+    "category": 0
+  },
+  {
+    "title": "> [CRITICAL] 2/2nd Ind.Art.Mortar Battalion is loaded on a Japanese xAK m...",
+    "reasoning": "SIGINT REPORT: 2/2nd Ind.Art.Mortar Battalion is loaded on a Japanese xAK moving to Batan Island.",
+    "solidity": 80,
+    "category": 0
+  },
+  {
+    "title": "> [CRITICAL] 1/148th Infantry Regiment is loaded on a Japanese xAKL movin...",
+    "reasoning": "SIGINT REPORT: 1/148th Infantry Regiment is loaded on a Japanese xAKL moving to Kota Bharu.",
+    "solidity": 80,
+    "category": 0
+  },
+  {
+    "title": "> [HVT] 57th Infantry Regiment is located at Sunwu(113,34).",
+    "reasoning": "SIGINT REPORT: 57th Infantry Regiment is located at Sunwu(113,34).",
     "solidity": 60,
     "category": 1
   },
@@ -820,6 +1576,114 @@
     "reasoning": "COMBAT REPORT: Amphibious Assault at Batan Island (85,70)",
     "solidity": 95,
     "category": 0
+  },
+  {
+    "title": "> [CRITICAL] Invasion Support action off Kota Bharu (51,75)",
+    "reasoning": "COMBAT REPORT: Invasion Support action off Kota Bharu (51,75)",
+    "solidity": 95,
+    "category": 0
+  },
+  {
+    "title": "> [HVT] DD Uranami firing at 8th Indian Brigade",
+    "reasoning": "COMBAT REPORT: DD Uranami firing at 8th Indian Brigade",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [DISCOVERED] SS I-124 is sighted by escort",
+    "reasoning": "COMBAT REPORT: SS I-124 is sighted by escort",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [DISCOVERED] SS I-124 is sighted by xAKL Don Jose",
+    "reasoning": "COMBAT REPORT: SS I-124 is sighted by xAKL Don Jose",
+    "solidity": 100,
+    "category": 2
+  },
+  {
+    "title": "> [CRITICAL] Invasion Support action off Kota Bharu (51,75)",
+    "reasoning": "COMBAT REPORT: Invasion Support action off Kota Bharu (51,75)",
+    "solidity": 95,
+    "category": 0
+  },
+  {
+    "title": "> [CRITICAL] Invasion Support action off Kota Bharu (51,75)",
+    "reasoning": "COMBAT REPORT: Invasion Support action off Kota Bharu (51,75)",
+    "solidity": 95,
+    "category": 0
+  },
+  {
+    "title": "> [HVT] Morning Air attack on 20th Chinese Corps, at 83,51 , near Wuchang",
+    "reasoning": "COMBAT REPORT: Morning Air attack on 20th Chinese Corps, at 83,51 , near Wuchang",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT]     13th Ind.Mixed Brigade",
+    "reasoning": "COMBAT REPORT:     13th Ind.Mixed Brigade",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT]     89th Chinese Corps",
+    "reasoning": "COMBAT REPORT:     89th Chinese Corps",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT]     37th Division",
+    "reasoning": "COMBAT REPORT:     37th Division",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT]     41st Division",
+    "reasoning": "COMBAT REPORT:     41st Division",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT]     4th Ind.Mixed Brigade",
+    "reasoning": "COMBAT REPORT:     4th Ind.Mixed Brigade",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT]     6th Medium Field Artillery Regiment",
+    "reasoning": "COMBAT REPORT:     6th Medium Field Artillery Regiment",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT]     1/19th Chinese Corps",
+    "reasoning": "COMBAT REPORT:     1/19th Chinese Corps",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT]     FMSV Brigade",
+    "reasoning": "COMBAT REPORT:     FMSV Brigade",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT]     8th Indian Brigade",
+    "reasoning": "COMBAT REPORT:     8th Indian Brigade",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT]     56th Infantry Regiment",
+    "reasoning": "COMBAT REPORT:     56th Infantry Regiment",
+    "solidity": 90,
+    "category": 1
+  },
+  {
+    "title": "> [HVT]     12th Engineer Regiment",
+    "reasoning": "COMBAT REPORT:     12th Engineer Regiment",
+    "solidity": 90,
+    "category": 1
   },
   {
     "title": "> [HVT]       CA New Orleans",

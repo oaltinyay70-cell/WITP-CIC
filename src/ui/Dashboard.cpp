@@ -277,7 +277,13 @@ namespace ui {
                 "     5. Press ENTER on the Provider to switch it to 'Local Model (Ollama)'.",
                 "     6. Arrow down to 'Local Model Name', press ENTER, type 'gemma2:2b',",
                 "        and press ENTER again.",
-                "     7. Arrow down to [TEST CONNECTION] to confirm it works."
+                "     7. Arrow down to [TEST CONNECTION] to confirm it works.",
+                "",
+                "   7. ERROR CODES",
+                "   ------------------------------------------------------------------------------",
+                "   [ERR-001] No log files found:",
+                "       The directory you mapped does not contain any .txt log files.",
+                "       Ensure you select a valid 'SAVE\\archive' directory containing text reports."
             };
 
             // Setup Vault Root strictly inside the project directory
@@ -972,8 +978,12 @@ namespace ui {
             std::cout << "  ===============================================================================\n\n";
             
             if (!dir_error_msg.empty()) {
-                setColor(12); // Light red
-                std::cout << " " << dir_error_msg << "\n\n";
+                if (dir_error_msg.find("SUCCESS") != std::string::npos || dir_error_msg.find("LOG FILES ARE PROCESSED") != std::string::npos) {
+                    setColor(10); // Light green for success
+                } else {
+                    setColor(12); // Light red for errors
+                }
+                std::cout << "   " << dir_error_msg << "\n\n";
                 setColor(2);
             }
 
@@ -1800,8 +1810,23 @@ namespace ui {
                         } else if (key == VK_RETURN) {
                             playSelectSound();
                             if (browser_selected == -1) {
-                                // Add this path and go back to config
-                                data_dirs.push_back(browser_path.string());
+                                // Scan directory for .txt files before adding
+                                bool has_txt = false;
+                                try {
+                                    for (const auto& entry : std::filesystem::directory_iterator(browser_path)) {
+                                        if (entry.is_regular_file() && entry.path().extension() == ".txt") {
+                                            has_txt = true;
+                                            break;
+                                        }
+                                    }
+                                } catch (...) {}
+                                
+                                if (has_txt) {
+                                    data_dirs.push_back(browser_path.string());
+                                    dir_error_msg = "SUCCESS: Log files are processed and added the info to that campaign's knowledge base.";
+                                } else {
+                                    dir_error_msg = "[ERR-001] No log files (.txt) found in this directory.";
+                                }
                                 state = State::DIR_CONFIG;
                                 drawDirConfig();
                             } else {
