@@ -11,6 +11,23 @@ namespace fs = std::filesystem;
 
 namespace storage {
 
+
+
+
+    
+    static std::string extractJsonField(const std::string& json, const std::string& key) {
+        std::string pattern = "\"" + key + "\": \"";
+        size_t start = json.find(pattern);
+        if (start == std::string::npos) return "";
+        start += pattern.length();
+        std::string result;
+        for (size_t i = start; i < json.length(); ++i) {
+            if (json[i] == '"') break;
+            result += json[i];
+        }
+        return result;
+    }
+
     static std::string escapeJsonString(const std::string& input) {
         std::ostringstream ss;
         for (char c : input) {
@@ -34,6 +51,9 @@ namespace storage {
         return ss.str();
     }
     
+    
+
+
     static std::string currentIsoTime() {
         std::time_t t = std::time(nullptr);
         std::tm* tm = std::localtime(&t);
@@ -44,71 +64,69 @@ namespace storage {
 
     std::vector<std::string> CampaignVault::listCampaigns(const std::string& vault_root) {
         std::vector<std::string> campaigns;
-        if (!fs::exists(vault_root) || !fs::is_directory(vault_root)) {
-            return campaigns;
-        }
+        if (!fs::exists(vault_root)) return campaigns;
         for (const auto& entry : fs::directory_iterator(vault_root)) {
-            if (entry.is_directory()) {
-                campaigns.push_back(entry.path().filename().string());
+            if (entry.is_regular_file() && entry.path().extension() == ".zip") {
+                campaigns.push_back(entry.path().stem().string());
             }
         }
         return campaigns;
     }
 
-    void CampaignVault::create(const std::string& vault_root, const std::string& name) {
-        this->vault_root = vault_root;
-        this->meta.name = name;
-        this->vault_path = (fs::path(vault_root) / name).string();
-        this->meta.created_date = currentIsoTime();
-        this->meta.last_played = this->meta.created_date;
-
+    void CampaignVault::create(const std::string& vault_root_arg, const std::string& name) {
+        vault_root = vault_root_arg;
+        meta.name = name;
+        meta.created_date = currentIsoTime();
+        meta.last_played = meta.created_date;
+        
+        vault_path = (fs::path("scratch") / "active_campaign").string();
+        if (fs::exists(vault_path)) {
+            try { fs::remove_all(vault_path); } catch (...) {}
+        }
+        
         fs::create_directories(vault_path);
         fs::create_directories(fs::path(vault_path) / "intel");
         fs::create_directories(fs::path(vault_path) / "reports");
         fs::create_directories(fs::path(vault_path) / "sigint");
         fs::create_directories(fs::path(vault_path) / "pws");
         fs::create_directories(fs::path(vault_path) / "ships");
-
+        
         saveMeta();
     }
 
-    void CampaignVault::load(const std::string& vault_path) {
-        this->vault_path = vault_path;
-        this->vault_root = fs::path(vault_path).parent_path().string();
+    
+    static std::string escapePsPath(const std::string& path) {
+        std::string res;
+        for (char ch : path) {
+            if (ch == '\'') res += "''";
+            else res += ch;
+        }
+        return res;
+    }
+
+    void CampaignVault::load(const std::string& vault_path_arg) { // vault_path_arg is the zip file path or name
+        meta = CampaignMeta();
+        fs::path zip_p = fs::path(vault_path_arg);
+        if (zip_p.extension() != ".zip") zip_p = fs::path(vault_root) / (vault_path_arg + ".zip");
         
+        vault_path = (fs::path("scratch") / "active_campaign").string();
+        fs::create_directories(vault_path);
+        
+        if (fs::exists(zip_p)) {
+            std::string command = "powershell -Command \"Expand-Archive -Path '" + escapePsPath(zip_p.string()) + "' -DestinationPath '" + escapePsPath(vault_path) + "' -Force\"";
+            std::system(command.c_str());
+        }
+
         fs::path meta_file = fs::path(vault_path) / "campaign.json";
         if (fs::exists(meta_file)) {
             std::ifstream ifs(meta_file);
-            std::string line;
-            while (std::getline(ifs, line)) {
-                // simple primitive extraction since no JSON lib
-                if (line.find("\"name\"") != std::string::npos) {
-                    size_t start = line.find(":") + 1;
-                    size_t q1 = line.find("\"", start);
-                    size_t q2 = line.find("\"", q1 + 1);
-                    if (q1 != std::string::npos && q2 != std::string::npos) meta.name = line.substr(q1 + 1, q2 - q1 - 1);
-                } else if (line.find("\"scenario\"") != std::string::npos) {
-                    size_t start = line.find(":") + 1;
-                    size_t q1 = line.find("\"", start);
-                    size_t q2 = line.find("\"", q1 + 1);
-                    if (q1 != std::string::npos && q2 != std::string::npos) meta.scenario = line.substr(q1 + 1, q2 - q1 - 1);
-                } else if (line.find("\"game_version\"") != std::string::npos) {
-                    size_t start = line.find(":") + 1;
-                    size_t q1 = line.find("\"", start);
-                    size_t q2 = line.find("\"", q1 + 1);
-                    if (q1 != std::string::npos && q2 != std::string::npos) meta.game_version = line.substr(q1 + 1, q2 - q1 - 1);
-                } else if (line.find("\"created_date\"") != std::string::npos) {
-                    size_t start = line.find(":") + 1;
-                    size_t q1 = line.find("\"", start);
-                    size_t q2 = line.find("\"", q1 + 1);
-                    if (q1 != std::string::npos && q2 != std::string::npos) meta.created_date = line.substr(q1 + 1, q2 - q1 - 1);
-                } else if (line.find("\"last_played\"") != std::string::npos) {
-                    size_t start = line.find(":") + 1;
-                    size_t q1 = line.find("\"", start);
-                    size_t q2 = line.find("\"", q1 + 1);
-                    if (q1 != std::string::npos && q2 != std::string::npos) meta.last_played = line.substr(q1 + 1, q2 - q1 - 1);
-                }
-            }
+            std::string content((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+            meta.name = extractJsonField(content, "name");
+            meta.scenario = extractJsonField(content, "scenario");
+            meta.game_version = extractJsonField(content, "game_version");
+            meta.created_date = extractJsonField(content, "created_date");
+            meta.last_played = extractJsonField(content, "last_played");
+            // NOTE: source_dirs array parsing is more complex, keeping it simple or we can fix it if needed.
         }
     }
 
@@ -291,15 +309,6 @@ namespace storage {
         return history;
     }
 
-    static std::string escapePsPath(const std::string& path) {
-        std::string res;
-        for (char c : path) {
-            if (c == '\'') res += "''";
-            else res += c;
-        }
-        return res;
-    }
-
     std::string CampaignVault::exportZip() {
         std::string zip_name = meta.name + ".zip";
         fs::path zip_path = fs::path(vault_root) / zip_name;
@@ -315,4 +324,21 @@ namespace storage {
         std::system(command.c_str());
     }
 
+    void CampaignVault::clear() {
+        meta = CampaignMeta();
+        if (fs::exists(vault_path)) {
+            try { fs::remove_all(vault_path); } catch (...) {}
+        }
+        vault_path = "";
+    }
+
+    void CampaignVault::package() {
+        if (vault_path.empty() || meta.name.empty()) return;
+        saveMeta();
+        std::string zip_name = meta.name + ".zip";
+        fs::path zip_path = fs::path(vault_root) / zip_name;
+        std::string command = "powershell -Command \"Compress-Archive -Path '" + escapePsPath(vault_path) + "\\*' -DestinationPath '" + escapePsPath(zip_path.string()) + "' -Force\"";
+        std::system(command.c_str());
+        clear();
+    }
 }

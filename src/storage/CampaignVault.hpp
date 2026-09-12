@@ -30,6 +30,12 @@ namespace storage {
         // Load an existing campaign
         void load(const std::string& vault_path);
         
+        // Clear vault from memory and disk (scratch)
+        void clear();
+        
+        // Package the active campaign into its zip file
+        void package();
+        
         // Save metadata
         void saveMeta();
         

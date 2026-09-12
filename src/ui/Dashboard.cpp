@@ -73,7 +73,14 @@ namespace ui {
         
         // Wiki state
         int wiki_scroll = 0;
-        std::vector<std::string> wiki_content;
+        struct WikiPage {
+            std::string title;
+            std::vector<std::string> content;
+        };
+        std::vector<WikiPage> wiki_pages;
+        int wiki_selected_page = -1;
+        int wiki_menu_selected = 0;
+
 
         // Storage & Campaign Vault
         storage::CampaignVault vault;
@@ -215,79 +222,55 @@ namespace ui {
             current_art_index = rand() % intro_arts.size();
 
             // Populate WIKI
-            wiki_content = {
-                "   W.U.T.H.U.R USER MANUAL & WIKI DATABASE",
-                "   ==============================================================================",
-                "",
-                "   1. HOW IT WORKS",
-                "   ------------------------------------------------------------------------------",
-                "   W.U.T.H.U.R processes your daily output text files from War in the Pacific:",
-                "   Admiral's Edition (Operations Reports, SIGINT, Combat Reports). It aggregates",
-                "   historical data from the 'SAVE\\archive' folder to extract vital intelligence.",
-                "",
-                "   2. SETUP & DIRECTORIES",
-                "   ------------------------------------------------------------------------------",
-                "   Use the [ADD/MANAGE CAMPAIGN VAULT] menu to map your game directory.",
-                "   The system requires files to be located in the 'SAVE\\archive' subdirectory.",
-                "   If you map the 'SAVE' directory, the engine will automatically adjust to",
-                "   process the 'archive' subdirectory. Only text files (.txt) are processed.",
-                "",
-                "   3. INTELLIGENCE KEYWORDS",
-                "   ------------------------------------------------------------------------------",
-                "   The intelligence engine categorizes parsed reports using specific keywords:",
-                "   ",
-                "    > [CRITICAL] : Tactical early warnings.",
-                "        Triggers: 'loaded on', 'moving to', 'Invasion', 'Amphibious'.",
-                "        Meaning : Imminent enemy operations or major movements.",
-                "   ",
-                "    > [DISCOVERED] : Allied unit exposure.",
-                "        Triggers: 'sighted over', 'shadowed by', 'observes Japanese'.",
-                "        Meaning : The enemy has spotted your forces, task forces, or bases.",
-                "   ",
-                "    > [HVT] : High Value Target Tracker.",
-                "        Triggers: Mentions of massive strategic assets.",
-                "        Meaning : Tracks carriers (CV, CVL, CVE), battleships (BB), heavy",
-                "                  cruisers (CA), Tankers, Task Forces (TF), and major land",
-                "                  elements (Corps, Commands, Divisions, Brigades, Regiments).",
-                "",
-                "   4. CONFIDENCE LVL AND BLINKING",
-                "   ------------------------------------------------------------------------------",
-                "   'CONFIDENCE LVL' measures the reliability and certainty of an intel report.",
-                "      - SIGINT Reports   : Moderate confidence (60% - 80%).",
-                "      - Ops/Combat Reps  : Absolute certainty (90% - 100%).",
-                "   ",
-                "   When the engine determines a CONFIDENCE LVL above 90%, the indicator",
-                "   inside the Item Detail Modal will BLINK at a rate of once every second",
-                "   (1.0 Hz) frequency. This signifies confirmed intelligence that requires attention.",
-                "   The main board listing remains completely static for comfortable reading.",
-                "",
-                "   5. NAVIGATION",
-                "   ------------------------------------------------------------------------------",
-                "   Use UP/DOWN arrows to navigate menus and lists.",
-                "   Press ENTER to view detailed intelligence assessments.",
-                "   Press ESC multiple times to return to the Hub or Exit.",
-                "",
-                "   6. OFFLINE AI / MENTOR SETUP",
-                "   ------------------------------------------------------------------------------",
-                "   You can run a powerful, offline Google AI (Gemma 2) locally on your PC:",
-                "     1. Download and install 'Ollama' from https://ollama.com",
-                "     2. Open a standard Windows command prompt and type: ollama run gemma2:2b",
-                "     3. Wait for the download to finish, then type: /bye",
-                "     4. Open W.U.T.H.U.R -> SETTINGS -> AI MODEL CONFIGURATION.",
-                "     5. Press ENTER on the Provider to switch it to 'Local Model (Ollama)'.",
-                "     6. Arrow down to 'Local Model Name', press ENTER, type 'gemma2:2b',",
-                "        and press ENTER again.",
-                "     7. Arrow down to [TEST CONNECTION] to confirm it works.",
-                "",
-                "   7. ERROR CODES",
-                "   ------------------------------------------------------------------------------",
-                "   [ERR-001] No log files found:",
-                "       The directory you mapped does not contain any .txt log files.",
-                "       Ensure you select a valid 'SAVE\\archive' directory containing text reports."
+wiki_pages = {
+                {
+                    "1. HOW IT WORKS",
+                    {
+                        " W.U.T.H.U.R processes your daily output text files from War in the Pacific:",
+                        " Admiral's Edition (Operations Reports, SIGINT, Combat Reports). It aggregates",
+                        " historical data from the 'SAVE\\\\archive' folder to extract vital intelligence."
+                    }
+                },
+                {
+                    "2. SETUP & DIRECTORIES",
+                    {
+                        " Use the [ADD/MANAGE CAMPAIGN VAULT] menu to map your game directory.",
+                        " The system requires files to be located in the 'SAVE\\\\archive' subdirectory.",
+                        " Only text files (.txt) are processed."
+                    }
+                },
+                {
+                    "3. INTELLIGENCE KEYWORDS",
+                    {
+                        " The intelligence engine categorizes parsed reports using specific keywords:",
+                        " ",
+                        "  > [CRITICAL] : Tactical early warnings.",
+                        "      Triggers: 'loaded on', 'moving to', 'Invasion', 'Amphibious'.",
+                        "      Meaning : Imminent enemy operations or major movements.",
+                        " ",
+                        "  > [DISCOVERED] : Allied unit exposure.",
+                        "      Triggers: 'sighted over', 'shadowed by', 'observes Japanese'.",
+                        "      Meaning : The enemy has spotted your forces, task forces, or bases.",
+                        " ",
+                        "  > [HVT] : High Value Target Tracker.",
+                        "      Triggers: Mentions of massive strategic assets."
+                    }
+                },
+                {
+                    "4. ERROR REGISTRY",
+                    {
+                        " This section catalogs all application errors and their resolutions:",
+                        " ",
+                        "  > [001] No Log Files Found",
+                        "      Cause : The selected directory does not contain any .txt log files.",
+                        "      Fix   : Ensure you are selecting a directory that contains .txt logs",
+                        "              such as the SAVE/archive folder."
+                    }
+                }
             };
 
             // Setup Vault Root strictly inside the project directory
-            std::filesystem::path proj_vault = std::filesystem::current_path() / "data" / "muthr_vaults";
+            std::filesystem::path proj_vault = std::filesystem::current_path() / "Campaigns";
             std::filesystem::create_directories(proj_vault);
             vault_root = proj_vault.string();
             
@@ -496,6 +479,13 @@ namespace ui {
             }
         }
 
+        void returnToHub() {
+            vault.package();
+            engine.clear();
+            { vault.package(); engine.clear(); state = State::HUB_MENU; }
+            drawHub();
+        }
+
         void drawHub() {
             clear();
             setColor(10);
@@ -663,42 +653,46 @@ namespace ui {
             setColor(2);
         }
 
-        void drawWiki() {
+                void drawWiki() {
             clear();
             setColor(2);
             std::cout << "  ===============================================================================\n";
             setColor(10);
-            if (hub_selected_item == 1) {
-                std::cout << "   [ JAPANESE WAR ROOM ]\n";
-            } else {
-                std::cout << "   [ W.U.T.H.U.R WIKI DATABASE ]\n";
-            }
+            std::cout << "   [ W.U.T.H.U.R USER MANUAL & WIKI DATABASE ]\n";
             setColor(2);
             std::cout << "  ===============================================================================\n\n";
-            
-            if (hub_selected_item == 1) {
-                setColor(10);
-                std::cout << "\n\n\n";
-                std::cout << "                     +--------------------------------------+\n";
-                std::cout << "                     |                                      |\n";
-                std::cout << "                     |   [ SECTION UNDER DEVELOPMENT ]      |\n";
-                std::cout << "                     |                                      |\n";
-                std::cout << "                     |   This module is not yet active.     |\n";
-                std::cout << "                     |   Check back in a future release.    |\n";
-                std::cout << "                     |                                      |\n";
-                std::cout << "                     +--------------------------------------+\n\n\n";
+
+            if (wiki_selected_page == -1) {
+                for (size_t i = 0; i < wiki_pages.size(); ++i) {
+                    if ((int)i == wiki_menu_selected) {
+                        setColor(160);
+                        std::cout << "     " << wiki_pages[i].title;
+                        for (size_t j = wiki_pages[i].title.length(); j < 35; j++) std::cout << " ";
+                        std::cout << "\n";
+                        setColor(10);
+                    } else {
+                        std::cout << "     " << wiki_pages[i].title << "\n";
+                    }
+                    std::cout << "\n";
+                }
+                setColor(2);
+                std::cout << "\n  -------------------------------------------------------------------------------\n";
+                std::cout << " UP/DOWN: Select Topic  |  ENTER: Read Topic  |  ESC: Return\n";
             } else {
-                int max_lines = 16;
-                if (wiki_scroll < 0) wiki_scroll = 0;
-                if (wiki_scroll > (int)wiki_content.size() - max_lines && wiki_content.size() > max_lines) {
-                    wiki_scroll = (int)wiki_content.size() - max_lines;
+                const auto& page = wiki_pages[wiki_selected_page];
+                setColor(14);
+                std::cout << "   " << page.title << "\n\n";
+                setColor(10);
+                
+                int max_lines = 14;
+                if (wiki_scroll > (int)page.content.size() - max_lines && page.content.size() > max_lines) {
+                    wiki_scroll = (int)page.content.size() - max_lines;
                 }
                 
-                setColor(10);
                 for (int i = 0; i < max_lines; ++i) {
                     int idx = wiki_scroll + i;
-                    if (idx < (int)wiki_content.size()) {
-                        std::cout << wiki_content[idx] << "\n";
+                    if (idx < (int)page.content.size()) {
+                        std::cout << page.content[idx] << "\n";
                     } else {
                         std::cout << "\n";
                     }
@@ -706,10 +700,10 @@ namespace ui {
                 
                 setColor(2);
                 std::cout << "  -------------------------------------------------------------------------------\n";
-                std::cout << " UP/DOWN: Scroll  |  ENTER/ESC: Return to W.U.T.H.U.R\n";
+                std::cout << " UP/DOWN: Scroll  |  ESC: Back to Wiki Menu\n";
             }
         }
-
+        
         void drawCampaignMgr() {
             clear();
             setColor(2);
@@ -1393,8 +1387,7 @@ namespace ui {
                             continue;
                         } else if (state == State::SETTINGS_MENU || state == State::VAULT_MENU) {
                             playNavSound();
-                            state = State::HUB_MENU;
-                            drawHub();
+                            returnToHub();
                             continue;
                         } else if (state == State::LIST_VIEW || state == State::WIKI_VIEW || state == State::DIR_CONFIG || state == State::DIR_BROWSER || state == State::CAMPAIGN_MGR || state == State::AI_CHAT) {
                             playNavSound();
@@ -1402,14 +1395,14 @@ namespace ui {
                             else if (state == State::DIR_BROWSER) state = State::DIR_CONFIG;
                             else if (state == State::CAMPAIGN_MGR || state == State::DIR_CONFIG) state = State::VAULT_MENU;
                             else if (state == State::AI_CHAT && active_war_room != "") state = State::MAIN;
-                            else state = State::HUB_MENU;
+                            else { vault.package(); engine.clear(); state = State::HUB_MENU; }
                             
                             if (state == State::MAIN) loadMainMenu();
                             redrawCurrentState();
                             continue;
                         } else if (state == State::MAIN) {
                             playNavSound();
-                            state = State::HUB_MENU;
+                            { vault.package(); engine.clear(); state = State::HUB_MENU; }
                             redrawCurrentState();
                             continue;
                         } else if (state == State::HUB_MENU) {
@@ -1542,16 +1535,15 @@ namespace ui {
                                 state = State::DIR_CONFIG;
                                 drawDirConfig();
                             } else if (vault_menu_selected == 2) {
-                                state = State::HUB_MENU;
-                                drawHub();
+                                returnToHub();
                             }
                         }
                     } 
                     else if (state == State::MODAL_EXIT) {
-                        if (ch == 'y' || ch == 'Y' || key == VK_RETURN) { playSelectSound(); running = false; }
+                        if (ch == 'y' || ch == 'Y' || key == VK_RETURN) { playSelectSound(); vault.package(); engine.clear(); running = false; }
                         else if (ch == 'n' || ch == 'N' || key == VK_ESCAPE) { 
                             playNavSound();
-                            state = State::HUB_MENU; drawHub(); 
+                            returnToHub(); 
                         }
                     }
                     else if (state == State::MODAL_INFO) {
@@ -1570,21 +1562,41 @@ namespace ui {
                             std::system(("start \"\" \"" + bat_path + "\"").c_str());
                         }
                     }
-                    else if (state == State::WIKI_VIEW) {
-                        if (key == VK_UP) {
-                            if (wiki_scroll > 0) {
-                                wiki_scroll--;
+                                        else if (state == State::WIKI_VIEW) {
+                        if (wiki_selected_page == -1) {
+                            if (key == VK_UP) {
+                                playNavSound();
+                                wiki_menu_selected = (wiki_menu_selected - 1 + wiki_pages.size()) % wiki_pages.size();
+                                drawWiki();
+                            } else if (key == VK_DOWN || key == VK_TAB) {
+                                playNavSound();
+                                wiki_menu_selected = (wiki_menu_selected + 1) % wiki_pages.size();
+                                drawWiki();
+                            } else if (key == VK_RETURN) {
+                                playSelectSound();
+                                wiki_selected_page = wiki_menu_selected;
+                                wiki_scroll = 0;
+                                drawWiki();
+                            } else if (key == VK_ESCAPE) {
+                                playNavSound();
+                                returnToHub();
+                            }
+                        } else {
+                            if (key == VK_UP) {
+                                if (wiki_scroll > 0) {
+                                    wiki_scroll--;
+                                    drawWiki();
+                                }
+                            } else if (key == VK_DOWN) {
+                                if (wiki_scroll < (int)wiki_pages[wiki_selected_page].content.size() - 14) {
+                                    wiki_scroll++;
+                                    drawWiki();
+                                }
+                            } else if (key == VK_ESCAPE) {
+                                playNavSound();
+                                wiki_selected_page = -1;
                                 drawWiki();
                             }
-                        } else if (key == VK_DOWN) {
-                            if (wiki_scroll < (int)wiki_content.size() - 16) {
-                                wiki_scroll++;
-                                drawWiki();
-                            }
-                        } else if (key == VK_RETURN || key == VK_ESCAPE) {
-                            playNavSound();
-                            state = State::HUB_MENU;
-                            drawHub();
                         }
                     }
                     else if (state == State::SETTINGS_MENU) {
@@ -1610,8 +1622,7 @@ namespace ui {
                                 state = State::DIR_CONFIG;
                                 drawDirConfig();
                             } else if (settings_selected == 2) {
-                                state = State::HUB_MENU;
-                                drawHub();
+                                returnToHub();
                             }
                         }
                     }
@@ -1825,7 +1836,7 @@ namespace ui {
                                     data_dirs.push_back(browser_path.string());
                                     dir_error_msg = "SUCCESS: Log files are processed and added the info to that campaign's knowledge base.";
                                 } else {
-                                    dir_error_msg = "[ERR-001] No log files (.txt) found in this directory.";
+                                    dir_error_msg = "[001] No log files (.txt) found in this directory.";
                                 }
                                 state = State::DIR_CONFIG;
                                 drawDirConfig();
@@ -1942,8 +1953,7 @@ namespace ui {
                                 loadMainMenu();
                                 drawMain();
                             } else {
-                                state = State::HUB_MENU;
-                                drawHub();
+                                returnToHub();
                             }
                         } else if (key == VK_BACK) {
                             if (!chat_input.empty()) {
@@ -2058,8 +2068,7 @@ namespace ui {
                             playSelectSound();
                             auto type = current_menu[selected_item].type;
                             if (type == ItemType::EXIT) {
-                                state = State::HUB_MENU;
-                                drawHub();
+                                returnToHub();
                             } else if (type == ItemType::BACK) {
                                 state = State::MAIN;
                                 loadMainMenu();

@@ -46,7 +46,7 @@ namespace engine {
         
         if (!fs::exists(target_path)) return;
 
-        for (const auto& entry : fs::directory_iterator(target_path)) {
+        for (const auto& entry : fs::recursive_directory_iterator(target_path)) {
             if (entry.path().extension() != ".txt") continue;
 
             std::ifstream file(entry.path());
@@ -57,6 +57,19 @@ namespace engine {
             int days = 0;
             std::string dateStr = "Unknown";
 
+            std::string filename = entry.path().filename().string();
+            // Try extracting date from filename (e.g. 411208, 1941_12_08)
+            std::string filename_date = "";
+            {
+                int digits = 0;
+                for (char c : filename) {
+                    if (isdigit(c)) { digits++; filename_date += c; }
+                    else if (c == '_' || c == '-') { filename_date += c; }
+                }
+                if (digits < 6) filename_date = ""; 
+            }
+
+
             // Check first 5 lines for a valid header
             for(int i=0; i<5; ++i) {
                 if (!std::getline(file, line)) break;
@@ -64,7 +77,7 @@ namespace engine {
                     file_type = 1; is_valid_report = true;
                     size_t pos = line.find("FOR ");
                     if (pos != std::string::npos && pos + 4 < line.length()) {
-                        dateStr = line.substr(pos + 4);
+                        dateStr = filename_date.empty() ? line.substr(pos + 4) : filename_date;
                         days = parseDateToDays(dateStr);
                         if (days > 0) {
                             if (days < ops_min) ops_min = days;
@@ -77,7 +90,7 @@ namespace engine {
                     file_type = 2; is_valid_report = true;
                     size_t pos = line.find("FOR ");
                     if (pos != std::string::npos && pos + 4 < line.length()) {
-                        dateStr = line.substr(pos + 4);
+                        dateStr = filename_date.empty() ? line.substr(pos + 4) : filename_date;
                         days = parseDateToDays(dateStr);
                         if (days > 0) {
                             if (days < sigint_min) sigint_min = days;
@@ -92,7 +105,7 @@ namespace engine {
                     // Let's attempt to find "FOR " just in case, or default to the most recent ops date if not available.
                     size_t pos = line.find("FOR ");
                     if (pos != std::string::npos && pos + 4 < line.length()) {
-                        dateStr = line.substr(pos + 4);
+                        dateStr = filename_date.empty() ? line.substr(pos + 4) : filename_date;
                         days = parseDateToDays(dateStr);
                         if (days > 0) {
                             if (days < combat_min) combat_min = days;
@@ -161,5 +174,9 @@ namespace engine {
         stats.ops_days = (ops_max >= ops_min) ? (ops_max - ops_min + 1) : 0;
         stats.sigint_days = (sigint_max >= sigint_min) ? (sigint_max - sigint_min + 1) : 0;
         stats.combat_days = (combat_max >= combat_min) ? (combat_max - combat_min + 1) : 0;
+    }
+    void IntelligenceEngine::clear() {
+        items.clear();
+        stats = DataStats();
     }
 }

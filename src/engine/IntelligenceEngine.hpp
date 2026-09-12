@@ -30,5 +30,7 @@ namespace engine {
         DataStats stats;
         
         void processDirectory(const std::string& path);
+        
+        void clear();
     };
 }
