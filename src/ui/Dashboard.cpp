@@ -589,7 +589,7 @@ namespace ui {
             int b_line = csbi.srWindow.Bottom - csbi.srWindow.Top;
             gotoxy(2, b_line);
             setColor(2);
-            std::cout << "[A] AI Staff Officer  |  [C/H/D] Jump  |  [X] Logout  |  [ENTER] Inspect";
+            std::cout << "[A] AI Chat  |  [Y] YOINK  |  [C/H/D] Jump  |  [X] Logout  |  [ENTER] Inspect";
         }
 
         void drawListView() {
@@ -1983,6 +1983,10 @@ namespace ui {
                             state = State::AI_CHAT;
                             ai_officer.start(vault.vault_path);
                             drawAIChat();
+                        } else if (state == State::MAIN && (ch == 'y' || ch == 'Y')) {
+                            // ponytail: OS window manager handles TUI separation natively.
+                            std::string cmd = "start cmd /c \"cd /d \\\"" + vault.vault_path + "\\yoink\\\" && yoink\"";
+                            std::system(cmd.c_str());
                         } else if (state == State::MAIN && (ch == 'c' || ch == 'C')) {
                             if (first_c_idx != -1) selected_item = first_c_idx; 
                             playNavSound();
