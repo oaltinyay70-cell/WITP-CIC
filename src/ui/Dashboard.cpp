@@ -281,6 +281,22 @@ wiki_pages = {
                 campaign_list.push_back("Pacific 1941");
             } else {
                 vault.load((std::filesystem::path(vault_root) / campaign_list[0]).string());
+                                      engine.clear();
+                                      data_dirs = vault.meta.source_dirs;
+                                      for (const auto& dir : vault.meta.source_dirs) {
+                                          if (std::filesystem::exists(dir)) {
+                                              engine.processDirectory(dir);
+                                          }
+                                      }
+                                      if (!engine.items.empty()) {
+                                          vault.saveIntelItems(engine.stats.turn_date, engine.items);
+                                      } else {
+                                          auto historical = vault.loadAllIntel();
+                                          if (!historical.empty()) {
+                                              engine.items = historical;
+                                              engine.stats.turn_date = vault.meta.last_played;
+                                          }
+                                      }
             }
             chat_history = vault.loadChatHistory();
             loadAIConfig();
@@ -509,7 +525,7 @@ wiki_pages = {
             for(int i=0; i<HUB_ITEMS; i++) {
                 if (i == hub_selected_item) {
                     setColor(160);
-                    std::cout << "     " << hub_items[i];
+                    std::cout << "\n     " << hub_items[i];
                     for(size_t j=hub_items[i].length(); j<35; j++) std::cout << " ";
                     std::cout << "\n";
                 } else {
@@ -666,7 +682,7 @@ wiki_pages = {
                 for (size_t i = 0; i < wiki_pages.size(); ++i) {
                     if ((int)i == wiki_menu_selected) {
                         setColor(160);
-                        std::cout << "     " << wiki_pages[i].title;
+                        std::cout << "\n     " << wiki_pages[i].title;
                         for (size_t j = wiki_pages[i].title.length(); j < 35; j++) std::cout << " ";
                         std::cout << "\n";
                         setColor(10);
@@ -1594,8 +1610,7 @@ wiki_pages = {
                                 }
                             } else if (key == VK_ESCAPE) {
                                 playNavSound();
-                                wiki_selected_page = -1;
-                                drawWiki();
+                                returnToHub();
                             }
                         }
                     }
@@ -1790,6 +1805,10 @@ wiki_pages = {
                                 // Delete selected directory
                                 playSelectSound();
                                 data_dirs.erase(data_dirs.begin() + dir_selected);
+                                  if (!vault.meta.name.empty()) {
+                                      vault.meta.source_dirs = data_dirs;
+                                      vault.saveMeta();
+                                  }
                                 if (dir_selected >= (int)data_dirs.size()) {
                                     dir_selected = data_dirs.empty() ? -1 : (int)data_dirs.size() - 1;
                                 }
@@ -1834,6 +1853,10 @@ wiki_pages = {
                                 
                                 if (has_txt) {
                                     data_dirs.push_back(browser_path.string());
+                                    if (!vault.meta.name.empty()) {
+                                        vault.meta.source_dirs = data_dirs;
+                                        vault.saveMeta();
+                                    }
                                     dir_error_msg = "SUCCESS: Log files are processed and added the info to that campaign's knowledge base.";
                                 } else {
                                     dir_error_msg = "[001] No log files (.txt) found in this directory.";
@@ -1867,6 +1890,8 @@ wiki_pages = {
                             } else if (key == VK_RETURN) {
                                 if (!campaign_input_name.empty()) {
                                     vault.create(vault_root, campaign_input_name);
+                                      vault.meta.source_dirs = data_dirs;
+                                      vault.saveMeta();
                                     campaign_list = storage::CampaignVault::listCampaigns(vault_root);
                                     vault_status_msg = "NEW CAMPAIGN CREATED: " + campaign_input_name;
                                     campaign_input_mode = false;
@@ -1919,6 +1944,22 @@ wiki_pages = {
                                 if (!campaign_list.empty() && campaign_selected < (int)campaign_list.size()) {
                                     std::string sel_name = campaign_list[campaign_selected];
                                     vault.load((std::filesystem::path(vault_root) / sel_name).string());
+                                      engine.clear();
+                                      data_dirs = vault.meta.source_dirs;
+                                      for (const auto& dir : vault.meta.source_dirs) {
+                                          if (std::filesystem::exists(dir)) {
+                                              engine.processDirectory(dir);
+                                          }
+                                      }
+                                      if (!engine.items.empty()) {
+                                          vault.saveIntelItems(engine.stats.turn_date, engine.items);
+                                      } else {
+                                          auto historical = vault.loadAllIntel();
+                                          if (!historical.empty()) {
+                                              engine.items = historical;
+                                              engine.stats.turn_date = vault.meta.last_played;
+                                          }
+                                      }
                                     vault_status_msg = "SWITCHED ACTIVE CAMPAIGN TO: " + sel_name;
                                     chat_history = vault.loadChatHistory();
                                     drawCampaignMgr();

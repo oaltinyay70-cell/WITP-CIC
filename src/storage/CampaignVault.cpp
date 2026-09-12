@@ -126,7 +126,26 @@ namespace storage {
             meta.game_version = extractJsonField(content, "game_version");
             meta.created_date = extractJsonField(content, "created_date");
             meta.last_played = extractJsonField(content, "last_played");
-            // NOTE: source_dirs array parsing is more complex, keeping it simple or we can fix it if needed.
+            
+            // Parse source_dirs array
+            size_t arr_start = content.find("\"source_dirs\": [");
+            if (arr_start != std::string::npos) {
+                size_t arr_end = content.find("]", arr_start);
+                if (arr_end != std::string::npos) {
+                    std::string arr_str = content.substr(arr_start, arr_end - arr_start);
+                    size_t pos = 0;
+                    while ((pos = arr_str.find("\"", pos)) != std::string::npos) {
+                        size_t end_pos = arr_str.find("\"", pos + 1);
+                        if (end_pos != std::string::npos) {
+                            meta.source_dirs.push_back(arr_str.substr(pos + 1, end_pos - pos - 1));
+                            pos = end_pos + 1;
+                        } else {
+                            break;
+                        }
+                    }
+                }
+            }
+
         }
     }
 
