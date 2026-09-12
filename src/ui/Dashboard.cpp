@@ -507,12 +507,12 @@ wiki_pages = {
             setColor(10);
             std::cout << intro_arts[current_art_index];
             std::cout << R"(
-       __          __     _   _     _____     _   _     _   _     ____
-       \ \        / /    | | | |   |_   _|   | | | |   | | | |   |  _ \ 
-        \ \  /\  / /  _  | | | | _   | |  _  | |_| |   | | | | _ | |_) | _
-         \ \/  \/ /  (_) | |_| |(_)  | | (_) |  _  |   | |_| |(_)|  _ < (_)
-          \  /\  /    _   \___/  _   |_|  _  |_| |_|    \___/  _ |_| \_\ _
-           \/  \/    (_)        (_)      (_)                   (_)       (_)
+         __          __     _   _     _____     _   _     _   _     ____
+         \ \        / /    | | | |   |_   _|   | | | |   | | | |   |  _ \ 
+          \ \  /\  / /     | | | |     | |     | |_| |   | | | |   | |_) |
+           \ \/  \/ /      | |_| |     | |     |  _  |   | |_| |   |  _ < 
+            \  /\  /    _   \___/  _   |_|  _  |_| |_| _  \___/  _ |_| \_\ 
+             \/  \/    (_)        (_)      (_)        (_)       (_)       
   )" << "\n";
                           std::cout << "     INTERFACE 1943.12 INITIALIZED\n";
             std::cout << "     ============================================================\n";
@@ -1442,7 +1442,10 @@ wiki_pages = {
                             drawHub();
                         } else if (key == VK_RETURN) {
                             playSelectSound();
-                            if (hub_selected_item == 0 || hub_selected_item == 1) {
+                            if (hub_selected_item == 1) {
+                                playErrorSound();
+                                continue;
+                            } else if (hub_selected_item == 0) {
                                   if (vault.meta.name.empty()) {
                                       state = State::CAMPAIGN_MGR;
                                       vault_status_msg = "[000] ACTIVE CAMPAIGN REQUIRED. PLEASE LOAD OR CREATE.";
@@ -1606,7 +1609,10 @@ wiki_pages = {
                                 returnToHub();
                             }
                         } else {
-                            if (key == VK_UP) {
+                              if (key == VK_ESCAPE) {
+                                  playNavSound();
+                                  returnToHub();
+                              } else                             if (key == VK_UP) {
                                 if (wiki_scroll > 0) {
                                     wiki_scroll--;
                                     drawWiki();
