@@ -513,7 +513,8 @@ wiki_pages = {
      | |  | | | |_| |   | |   |  _  | | |_| | |  _ <
      |_|  |_|  \___/    |_|   |_| |_|  \___/  |_| \_\
 )" << "\n";
-            std::cout << "     INTERFACE 1943.12 INITIALIZED\n";
+            std::cout << "     [ 0. W.U.T.H.U.R HUB ]\n";
+              std::cout << "     INTERFACE 1943.12 INITIALIZED\n";
             std::cout << "     ============================================================\n";
             std::string hub_items[5] = {
                 "ALLIED WAR ROOM", 
@@ -563,7 +564,8 @@ wiki_pages = {
             setColor(2); // Dark Green border
             std::cout << "===============================================================================\n";
             setColor(10); // Light green title
-            std::cout << " [ " << active_war_room << " COMBAT INFORMATION CENTER ]                     Turn: " << stats.turn_date << "\n";
+            std::string prefix_main = (active_war_room == "ALLIED") ? "1. " : "2. ";
+              std::cout << " [ " << prefix_main << active_war_room << " COMBAT INFORMATION CENTER ]                     Turn: " << stats.turn_date << "\n";
             setColor(2);
             std::cout << "===============================================================================\n";
             
@@ -621,7 +623,8 @@ wiki_pages = {
             setColor(2);
             std::cout << "  ===============================================================================\n";
             setColor(10);
-            std::cout << "   [ " << active_war_room << " COMBAT INFORMATION CENTER ]                     Turn: " << stats.turn_date << "\n";
+            std::string prefix_lv = (active_war_room == "ALLIED") ? "1.1 " : "2.1 ";
+              std::cout << "   [ " << prefix_lv << "OPERATIONS & INTEL LIST ]                     Turn: " << stats.turn_date << "\n";
             setColor(2);
             std::cout << "  ===============================================================================\n";
             
@@ -674,7 +677,7 @@ wiki_pages = {
             setColor(2);
             std::cout << "  ===============================================================================\n";
             setColor(10);
-            std::cout << "   [ W.U.T.H.U.R USER MANUAL & WIKI DATABASE ]\n";
+            std::cout << "   [ 5. W.U.T.H.U.R USER MANUAL & WIKI DATABASE ]\n";
             setColor(2);
             std::cout << "  ===============================================================================\n\n";
 
@@ -725,7 +728,7 @@ wiki_pages = {
             setColor(2);
             std::cout << "  ===============================================================================\n";
             setColor(10);
-            std::cout << "   [ CAMPAIGN VAULT MANAGER & PORTABILITY ]\n";
+            std::cout << "   [ 3. CAMPAIGN VAULT MANAGER & PORTABILITY ]\n";
             setColor(2);
             std::cout << "  ===============================================================================\n\n";
 
@@ -794,7 +797,8 @@ wiki_pages = {
             setColor(2);
             std::cout << "  ===============================================================================\n";
             setColor(10);
-            std::cout << "   [ W.U.T.H.U.R TACTICAL STAFF OFFICER ]              Campaign: " << vault.meta.name << "\n";
+            std::string prefix_chat = (active_war_room == "ALLIED") ? "1.2 " : "2.2 ";
+              std::cout << "   [ " << prefix_chat << "W.U.T.H.U.R TACTICAL STAFF OFFICER ]              Campaign: " << vault.meta.name << "\n";
             setColor(2);
             std::cout << "  ===============================================================================\n";
 
@@ -857,7 +861,7 @@ wiki_pages = {
             setColor(2);
             std::cout << "  ===============================================================================\n";
             setColor(10);
-            std::cout << "   [ W.U.T.H.U.R SYSTEM SETTINGS & PREFERENCES ]\n";
+            std::cout << "   [ 4. W.U.T.H.U.R SYSTEM SETTINGS & PREFERENCES ]\n";
             setColor(2);
             std::cout << "  ===============================================================================\n\n";
 
@@ -894,7 +898,7 @@ wiki_pages = {
             setColor(2);
             std::cout << "  ===============================================================================\n";
             setColor(10);
-            std::cout << "   [ AI MENTOR & MODEL CONFIGURATION ]\n";
+            std::cout << "   [ 4.1 AI MENTOR & MODEL CONFIGURATION ]\n";
             setColor(2);
             std::cout << "  ===============================================================================\n\n";
 
@@ -977,7 +981,7 @@ wiki_pages = {
             setColor(2);
             std::cout << "  ===============================================================================\n";
             setColor(10);
-            std::cout << "   [ FILE DIRECTORY CONFIGURATION ]\n";
+            std::cout << "   [ 4.2 FILE DIRECTORY CONFIGURATION ]\n";
             setColor(2);
             std::cout << "  ===============================================================================\n\n";
             
@@ -1056,7 +1060,7 @@ wiki_pages = {
             setColor(2);
             std::cout << "  ===============================================================================\n";
             setColor(10);
-            std::cout << "   [ SELECT DIRECTORY ]\n";
+            std::cout << "   [ 4.2.1 SELECT DIRECTORY ]\n";
             setColor(2);
             std::cout << "  ===============================================================================\n\n";
 
@@ -1113,7 +1117,7 @@ wiki_pages = {
             setColor(2);
             std::cout << "  ===============================================================================\n";
             setColor(10);
-            std::cout << "   [ W.U.T.H.U.R CAMPAIGN VAULT & FILE MANAGER ]\n";
+            std::cout << "   [ 3.0 W.U.T.H.U.R CAMPAIGN VAULT & FILE MANAGER ]\n";
             setColor(2);
             std::cout << "  ===============================================================================\n\n";
 
@@ -1188,7 +1192,8 @@ wiki_pages = {
             // Title bar
             setColor(160); // Green BG, black text - just for the title line
             gotoxy(box_left+1, box_top+1);
-            std::string title_bar = " INTEL ASSESSMENT ";
+            std::string prefix_modal = (active_war_room == "ALLIED") ? "1.1.1 " : "2.1.1 ";
+              std::string title_bar = " " + prefix_modal + "INTEL ASSESSMENT ";
             std::cout << title_bar;
             for(int x = title_bar.length(); x < inner_width; x++) std::cout << " ";
 
@@ -1313,7 +1318,7 @@ wiki_pages = {
             // Title
             setColor(160);
             gotoxy(box_left+1, box_top+1);
-            std::string title = " SYSTEM LOGOUT ";
+            std::string title = " 0.1 SYSTEM LOGOUT ";
             std::cout << title;
             for(int x = title.length(); x < inner_width; x++) std::cout << " ";
 
