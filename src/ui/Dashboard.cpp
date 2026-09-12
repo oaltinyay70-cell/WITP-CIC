@@ -1501,13 +1501,6 @@ wiki_pages = {
                                     }
                                 }
 
-                                if (engine.items.empty()) {
-                                    dir_error_msg = "[!] NO VALID ARCHIVE FILES (OPERATIONS/SIGINT) FOUND IN THE CONFIGURED DIRECTORIES.";
-                                    dir_selected = -1;
-                                    state = State::DIR_CONFIG;
-                                    drawDirConfig();
-                                    playErrorSound();
-                                } else {
                                     dir_error_msg = "";
                                     if (hub_selected_item == 0) {
                                         stats = engine.stats;
@@ -1522,7 +1515,7 @@ wiki_pages = {
                                           loadMainMenu();
                                           drawMain();
                                       }
-                                }
+
                             } else if (hub_selected_item == 2) {
                                   state = State::CAMPAIGN_MGR;
                                   campaign_selected = 0;
