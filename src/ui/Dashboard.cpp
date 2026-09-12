@@ -265,7 +265,19 @@ namespace ui {
                 " ------------------------------------------------------------------------------",
                 " Use UP/DOWN arrows to navigate menus and lists.",
                 " Press ENTER to view detailed intelligence assessments.",
-                " Press ESC multiple times to return to the Hub or Exit."
+                " Press ESC multiple times to return to the Hub or Exit.",
+                "",
+                " 6. OFFLINE AI / MENTOR SETUP",
+                " ------------------------------------------------------------------------------",
+                " You can run a powerful, offline Google AI (Gemma 2) locally on your PC:",
+                "   1. Download and install 'Ollama' from https://ollama.com",
+                "   2. Open a standard Windows command prompt and type: ollama run gemma2:2b",
+                "   3. Wait for the download to finish, then type: /bye",
+                "   4. Open W.U.T.H.U.R -> SETTINGS -> AI MODEL CONFIGURATION.",
+                "   5. Press ENTER on the Provider to switch it to 'Local Model (Ollama)'.",
+                "   6. Arrow down to 'Local Model Name', press ENTER, type 'gemma2:2b',",
+                "      and press ENTER again.",
+                "   7. Arrow down to [TEST CONNECTION] to confirm it works."
             };
 
             // Setup Vault Root strictly inside the project directory
@@ -928,11 +940,12 @@ namespace ui {
                 std::cout << "    (No credit card required. Free tier supports up to 15 requests/min).\n";
                 std::cout << "  - Press [ENTER] on Item 2 to enter or update your API key.\n";
             } else {
-                std::cout << "  - LOCAL MODEL: Runs 100% locally on your computer with complete privacy.\n";
-                std::cout << "  - Zero internet connection required. Free forever.\n";
-                std::cout << "  - PREREQUISITE: Install Ollama (https://ollama.com) or LM Studio.\n";
-                std::cout << "    Run in terminal: 'ollama run llama3.2' (or mistral, qwen2.5).\n";
-                std::cout << "  - Default endpoint: http://localhost:11434/v1\n";
+                std::cout << "  - LOCAL MODEL: Runs 100% locally on your PC with complete privacy.\n";
+                std::cout << "  - RECOMMENDED OFFLINE AI: Google Gemma 2 (2 Billion Parameter)\n";
+                std::cout << "    1. Install Ollama (https://ollama.com)\n";
+                std::cout << "    2. Run in a standard Windows command prompt: ollama run gemma2:2b\n";
+                std::cout << "    3. Change 'Local Model Name' above to: gemma2:2b\n";
+                std::cout << "  - Default endpoint for Ollama: http://localhost:11434/v1\n";
             }
 
             setColor(2);
