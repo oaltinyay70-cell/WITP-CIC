@@ -13,6 +13,21 @@ import glob
 import urllib.request
 import urllib.error
 
+import re
+import uuid
+from datetime import datetime
+
+def extract_and_save_yoink(text, vault_path):
+    if not vault_path: return
+    yoink_dir = os.path.join(vault_path, "yoink")
+    os.makedirs(yoink_dir, exist_ok=True)
+    pattern = re.compile(r"```yoink\s*(.*?)\s*```", re.DOTALL)
+    for match in pattern.finditer(text):
+        content = match.group(1).strip()
+        filename = f"prediction_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:6]}.md"
+        with open(os.path.join(yoink_dir, filename), 'w', encoding='utf-8') as f:
+            f.write(content)
+
 def send_response(data):
     try:
         sys.stdout.write(json.dumps(data) + '\n')
@@ -81,6 +96,17 @@ tracking data for this campaign. Your role:
 - Track Japanese carrier and battleship movements across turns
 - Warn about potential invasion targets based on SIGINT patterns
 - Answer questions about unit positions, ship statuses, and battle outcomes
+
+When you make a concrete prediction about future enemy movements or combats, ALWAYS format it as a YOINK note inside a ```yoink codeblock, like this:
+```yoink
+---
+title: Short summary of prediction
+claim: Specific testable event (e.g. Invasion of Port Moresby)
+settles: YYYY-MM-DD (estimated date of event)
+confidence: 0.0 to 1.0
+---
+Your reasoning here.
+```
 
 Always ground your analysis in the actual data provided. Be concise and military in tone.
 Use proper naval terminology. Address the user as "Commander"."""
@@ -197,6 +223,7 @@ def main():
                     ]
                     try:
                         reply = call_local_model(endpoint, model, messages)
+                        extract_and_save_yoink(reply, vault_path)
                         send_response({"type": "response", "text": reply, "done": True})
                     except Exception as e:
                         send_response({"type": "error", "text": str(e)})
@@ -225,9 +252,12 @@ def main():
                             model=model,
                             contents=full_contents
                         )
+                        full_reply = ""
                         for chunk in response:
                             if chunk.text:
+                                full_reply += chunk.text
                                 send_response({"type": "response", "text": chunk.text, "done": False})
+                        extract_and_save_yoink(full_reply, vault_path)
                         send_response({"type": "response", "text": "", "done": True})
                     except Exception as e:
                         send_response({"type": "error", "text": f"Gemini API Error: {str(e)}"})
@@ -244,6 +274,7 @@ def main():
                     model = cfg.get("local_model", "llama3.2")
                     try:
                         reply = call_local_model(endpoint, model, [{"role": "user", "content": prompt}])
+                        extract_and_save_yoink(reply, vault_path)
                         for line in reply.split('\n'):
                             if line.strip():
                                 send_response({"type": "suggestion", "text": line.strip()})
@@ -259,6 +290,7 @@ def main():
                         model = cfg.get("gemini_model", "gemini-2.0-flash")
                         r = client.models.generate_content(model=model, contents=prompt)
                         if r.text:
+                            extract_and_save_yoink(r.text, vault_path)
                             for line in r.text.split('\n'):
                                 if line.strip():
                                     send_response({"type": "suggestion", "text": line.strip()})
