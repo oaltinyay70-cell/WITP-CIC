@@ -24,3 +24,7 @@ update_docs.py
 .zig-cache/
 frontend/node_modules/
 frontend/dist/
+
+# Save data
+Campaigns/
+*.zip
