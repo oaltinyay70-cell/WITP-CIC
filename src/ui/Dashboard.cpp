@@ -276,28 +276,7 @@ wiki_pages = {
             
             // Discover existing campaigns
             campaign_list = storage::CampaignVault::listCampaigns(vault_root);
-            if (campaign_list.empty()) {
-                vault.create(vault_root, "Pacific 1941");
-                campaign_list.push_back("Pacific 1941");
-            } else {
-                vault.load((std::filesystem::path(vault_root) / campaign_list[0]).string());
-                                      engine.clear();
-                                      data_dirs = vault.meta.source_dirs;
-                                      for (const auto& dir : vault.meta.source_dirs) {
-                                          if (std::filesystem::exists(dir)) {
-                                              engine.processDirectory(dir);
-                                          }
-                                      }
-                                      if (!engine.items.empty()) {
-                                          vault.saveIntelItems(engine.stats.turn_date, engine.items);
-                                      } else {
-                                          auto historical = vault.loadAllIntel();
-                                          if (!historical.empty()) {
-                                              engine.items = historical;
-                                              engine.stats.turn_date = vault.meta.last_played;
-                                          }
-                                      }
-            }
+            // Auto-create and auto-load disabled. User must explicitly load via CAMPAIGN_MGR.
             chat_history = vault.loadChatHistory();
             loadAIConfig();
         }
