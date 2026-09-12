@@ -1399,12 +1399,11 @@ wiki_pages = {
                             playNavSound();
                             returnToHub();
                             continue;
-                        } else if (state == State::LIST_VIEW || state == State::WIKI_VIEW || state == State::DIR_CONFIG || state == State::DIR_BROWSER || state == State::CAMPAIGN_MGR || state == State::AI_CHAT) {
+                        } else if (state == State::LIST_VIEW || state == State::WIKI_VIEW || state == State::DIR_CONFIG || state == State::DIR_BROWSER || state == State::AI_CHAT) {
                             playNavSound();
                             if (state == State::LIST_VIEW) state = State::MAIN;
                             else if (state == State::DIR_BROWSER) state = State::DIR_CONFIG;
                             else if (state == State::DIR_CONFIG) returnToHub();
-                              else if (state == State::CAMPAIGN_MGR) returnToHub();
                             else if (state == State::AI_CHAT && active_war_room != "") state = State::MAIN;
                             else { vault.package(); engine.clear(); state = State::HUB_MENU; }
                             
@@ -1990,8 +1989,7 @@ wiki_pages = {
                                 drawCampaignMgr();
                             } else if (key == VK_ESCAPE) {
                                 playNavSound();
-                                state = State::VAULT_MENU;
-                                drawVaultMenu();
+                                returnToHub();
                             }
                         }
                     }
